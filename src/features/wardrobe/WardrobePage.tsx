@@ -26,7 +26,7 @@ export function WardrobePage() {
   const [temperatureFilter, setTemperatureFilter] = useState<TemperatureBand | "All">("All");
   const [weatherFilter, setWeatherFilter] = useState<WeatherCondition | "All">("All");
   const [colorRangeStart, setColorRangeStart] = useState(0);
-  const [colorRangeEnd, setColorRangeEnd] = useState(Number.MAX_SAFE_INTEGER);
+  const [colorRangeEnd, setColorRangeEnd] = useState<number | null>(null);
   const deferredSearch = useDeferredValue(search);
 
   const categories = useMemo(
@@ -45,7 +45,8 @@ export function WardrobePage() {
   const colorIndexMap = useMemo(() => new Map(colorTags.map((entry, index) => [entry.value, index])), [colorTags]);
   const maxColorIndex = Math.max(0, colorTags.length - 1);
   const effectiveColorRangeStart = Math.min(colorRangeStart, maxColorIndex);
-  const effectiveColorRangeEnd = Math.min(Math.max(colorRangeEnd, effectiveColorRangeStart), maxColorIndex);
+  const effectiveColorRangeEnd =
+    colorRangeEnd == null ? maxColorIndex : Math.min(Math.max(colorRangeEnd, effectiveColorRangeStart), maxColorIndex);
   const isColorRangeActive = colorTags.length > 0 && (effectiveColorRangeStart > 0 || effectiveColorRangeEnd < maxColorIndex);
   const darkestColor = colorTags[0]?.value;
   const lightestColor = colorTags[colorTags.length - 1]?.value;
@@ -67,7 +68,7 @@ export function WardrobePage() {
 
   useEffect(() => {
     setColorRangeStart((current) => Math.min(Math.max(current, 0), maxColorIndex));
-    setColorRangeEnd((current) => Math.min(Math.max(current, 0), maxColorIndex));
+    setColorRangeEnd((current) => (current == null ? null : Math.min(Math.max(current, 0), maxColorIndex)));
   }, [maxColorIndex]);
 
   useEffect(() => {

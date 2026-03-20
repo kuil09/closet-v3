@@ -257,6 +257,8 @@ describe("app flows", () => {
     await view.findByText(/Your Digital Sanctuary/i);
     await view.findByText("Show archived");
     await view.findByText("Palette range");
+    const lightestColorInput = view.getByLabelText("Lightest color") as HTMLInputElement;
+    expect(lightestColorInput.value).toBe(lightestColorInput.max);
   });
 
   test("filters wardrobe items by the saved palette range", async () => {
