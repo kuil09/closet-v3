@@ -203,6 +203,23 @@ describe("app flows", () => {
     await view.findByDisplayValue("Structured Wool Blazer");
   });
 
+  test("keeps home helper copy hidden until the info hint is opened", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/");
+
+    await view.findByRole("button", { name: /Total Pieces/i });
+    expect(view.queryByText("Keep capture, browsing, and explainable daily picks within reach without crowding the screen.")).toBeNull();
+    expect(view.queryByText("Everything stays in this browser. Save as a draft first, then refine when you are ready.")).toBeNull();
+    expect(view.queryByText("A quieter read on what the wardrobe already covers.")).toBeNull();
+
+    await user.click(view.getByRole("button", { name: /A calmer front door for your wardrobe\.\s·\sShow help/i }));
+    expect(await view.findByText("Keep capture, browsing, and explainable daily picks within reach without crowding the screen.")).toBeTruthy();
+    expect(await view.findByText("Everything stays in this browser. Save as a draft first, then refine when you are ready.")).toBeTruthy();
+
+    await user.click(view.getByRole("button", { name: /Collection snapshot\s·\sShow help/i }));
+    expect(await view.findByText("A quieter read on what the wardrobe already covers.")).toBeTruthy();
+  });
+
   test("creates a draft item without uploading an image", async () => {
     const user = userEvent.setup();
     const view = renderAt("/register");

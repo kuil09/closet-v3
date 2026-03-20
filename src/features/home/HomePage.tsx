@@ -7,6 +7,7 @@ import { useI18n } from "../../lib/i18n/i18n";
 import { categoryMessageKey, temperatureMessageKey, weatherMessageKey } from "../../lib/i18n/label-keys";
 import { buildRecommendations } from "../../lib/recommendation/engine";
 import { ItemImage } from "../shared/ItemImage";
+import { InfoHint } from "../shared/InfoHint";
 import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
 const seasonBands: Array<{ key: "winter" | "spring" | "summer" | "fall"; bands: TemperatureBand[] }> = [
@@ -160,14 +161,22 @@ export function HomePage() {
       value: t("badge.local")
     }
   ];
+  const heroHintContent = (
+    <>
+      <span className="info-hint-copy-block">{t("home.heroBody")}</span>
+      <span className="info-hint-copy-block">{t("home.heroFootnote")}</span>
+    </>
+  );
 
   return (
     <div className="page-stack home-page">
       <section className="hero-card home-hero-card home-minimal-hero">
         <div className="hero-copy home-hero-copy">
           <span className="eyebrow">{t("home.heroEyebrow")}</span>
-          <h2>{t("home.heroTitle")}</h2>
-          <p>{t("home.heroBody")}</p>
+          <div className="label-with-hint home-heading-with-hint">
+            <h2>{t("home.heroTitle")}</h2>
+            <InfoHint label={t("home.heroTitle")} content={heroHintContent} align="left" />
+          </div>
           <div className="button-row hero-actions">
             <button
               className="primary-button"
@@ -182,7 +191,6 @@ export function HomePage() {
           </div>
           <div className="hero-footnote">
             <span className="local-pill">{t("badge.local")}</span>
-            <p className="muted-copy">{t("home.heroFootnote")}</p>
           </div>
         </div>
 
@@ -260,9 +268,11 @@ export function HomePage() {
           <div className="panel-head home-panel-head">
             <div>
               <span className="section-tag">{t("nav.home")}</span>
-              <h3>{t("home.overviewTitle")}</h3>
+              <div className="label-with-hint home-heading-with-hint">
+                <h3>{t("home.overviewTitle")}</h3>
+                <InfoHint label={t("home.overviewTitle")} content={t("home.overviewBody")} />
+              </div>
             </div>
-            <p className="muted-copy">{t("home.overviewBody")}</p>
           </div>
 
           <div className="home-overview-list">

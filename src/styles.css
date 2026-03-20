@@ -885,8 +885,8 @@ button {
   align-items: flex-start;
 }
 
-.home-panel-head .muted-copy {
-  max-width: 26rem;
+.home-heading-with-hint {
+  align-items: flex-start;
 }
 
 .home-overview-row {
@@ -1022,6 +1022,8 @@ button {
   z-index: 8;
   min-width: 180px;
   max-width: min(280px, calc(100vw - 3rem));
+  display: grid;
+  gap: 0.5rem;
   padding: 0.75rem 0.85rem;
   border: 1px solid var(--border);
   border-radius: 1rem;
@@ -1038,6 +1040,10 @@ button {
 
 .info-hint-popover-left {
   left: 0;
+}
+
+.info-hint-copy-block {
+  display: block;
 }
 
 .disclosure-meta,
