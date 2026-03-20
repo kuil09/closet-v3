@@ -8,6 +8,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "preview:ci": "vite preview --host 127.0.0.1 --port 4173",
+    "ci:screenshots": "bun scripts/capture-ci-screenshots.mjs",
     "test": "bun test",
     "test:watch": "bun test --watch"
   },
@@ -32,6 +34,7 @@
     "bun-types": "^1.3.10",
     "fake-indexeddb": "^6.0.0",
     "happy-dom": "^17.4.4",
+    "playwright": "^1.58.2",
     "typescript": "^5.8.2",
     "vite": "^6.2.2",
     "vite-plugin-pwa": "^0.21.2"

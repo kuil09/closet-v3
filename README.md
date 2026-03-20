@@ -109,6 +109,17 @@ The test suite covers:
 - Recommendation engine scoring
 - Browser flows for theme/language switching, item registration, lookbook save, manual weather override, and local data reset
 
+## Visual CI Screenshots
+
+Pull requests also run a visual smoke pass in GitHub Actions:
+
+- Build the production preview
+- Capture representative screenshots with a headless Chromium browser
+- Upload the PNGs as a workflow artifact
+- Post or update a pull request comment with a link to the screenshot artifact
+
+Current captures include desktop views for Home, Wardrobe, Register, and Lookbook, plus a mobile Settings capture that shows the sheet-style secondary controls.
+
 ## GitHub Pages Deployment
 
 This repository is configured to deploy automatically from `main` with GitHub Actions.

@@ -53,7 +53,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <span className="local-pill">{t("badge.local")}</span>
             <select
               aria-label={t("settings.language")}
-              className="control-select"
+              className="control-select shell-language-select"
               value={language}
               onChange={(event) => setLanguage(event.target.value as typeof language)}
             >
@@ -67,10 +67,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             </select>
             <button
               aria-label={t("settings.theme")}
-              className="theme-toggle"
+              className="theme-toggle shell-theme-toggle"
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
             >
-              {theme === "light" ? t("settings.themeDark") : t("settings.themeLight")}
+              <span aria-hidden="true">{theme === "light" ? "◐" : "◑"}</span>
             </button>
           </div>
         </header>

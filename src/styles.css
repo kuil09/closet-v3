@@ -768,6 +768,25 @@ button {
   background: var(--surface-soft);
 }
 
+.shell-language-select {
+  width: auto;
+  min-width: 4.4rem;
+  padding: 0.72rem 0.9rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-elevated) 82%, transparent);
+}
+
+.shell-theme-toggle {
+  min-width: 2.9rem;
+  width: 2.9rem;
+  height: 2.9rem;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+  background: color-mix(in srgb, var(--surface-elevated) 82%, transparent);
+}
+
 .mobile-nav {
   display: none;
 }
@@ -800,6 +819,14 @@ button {
 
   .topbar {
     padding: 1rem;
+  }
+
+  .topbar-controls {
+    gap: 0.55rem;
+  }
+
+  .local-pill {
+    display: none;
   }
 
   .stats-grid,
