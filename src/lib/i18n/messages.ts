@@ -44,6 +44,7 @@ export type MessageKey =
   | "wardrobe.sortDirection"
   | "wardrobe.sortUpdated"
   | "wardrobe.sortName"
+  | "wardrobe.sortColor"
   | "wardrobe.sortAscending"
   | "wardrobe.sortDescending"
   | "wardrobe.favorite"
@@ -199,6 +200,7 @@ const base: Catalog = {
   "wardrobe.sortDirection": "Order",
   "wardrobe.sortUpdated": "Updated",
   "wardrobe.sortName": "Name",
+  "wardrobe.sortColor": "Color",
   "wardrobe.sortAscending": "Ascending",
   "wardrobe.sortDescending": "Descending",
   "wardrobe.favorite": "Favorite",
@@ -352,6 +354,7 @@ export const messages: Record<Locale, Catalog> = {
     "wardrobe.sortDirection": "정렬 방향",
     "wardrobe.sortUpdated": "수정일",
     "wardrobe.sortName": "이름순",
+    "wardrobe.sortColor": "색상순",
     "wardrobe.sortAscending": "오름차순",
     "wardrobe.sortDescending": "내림차순",
     "wardrobe.favorite": "즐겨찾기",

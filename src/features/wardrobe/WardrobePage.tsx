@@ -5,11 +5,11 @@ import { atelierDb } from "../../lib/db/app-db";
 import { archiveItem, toggleFavorite } from "../../lib/db/repository";
 import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { temperatureBandLabel, normalizeToken } from "../../lib/utils/format";
-import { buildPaletteTags, itemMatchesPaletteRange } from "../../lib/utils/palette-range";
+import { buildPaletteTags, itemMatchesPaletteRange, itemPaletteLightness } from "../../lib/utils/palette-range";
 import { useI18n } from "../../lib/i18n/i18n";
 import { ItemImage } from "../shared/ItemImage";
 
-type SortField = "updated" | "name";
+type SortField = "updated" | "name" | "color";
 type SortDirection = "asc" | "desc";
 
 export function WardrobePage() {
@@ -127,6 +127,15 @@ export function WardrobePage() {
       if (sortField === "name") {
         const byName = left.name.localeCompare(right.name);
         return sortDirection === "asc" ? byName : -byName;
+      }
+
+      if (sortField === "color") {
+        const byColor = itemPaletteLightness(left) - itemPaletteLightness(right);
+        if (byColor !== 0) {
+          return sortDirection === "asc" ? byColor : -byColor;
+        }
+
+        return left.name.localeCompare(right.name);
       }
 
       const byUpdated = left.updatedAt.localeCompare(right.updatedAt);
@@ -259,6 +268,7 @@ export function WardrobePage() {
           >
             <option value="updated">{t("wardrobe.sortUpdated")}</option>
             <option value="name">{t("wardrobe.sortName")}</option>
+            <option value="color">{t("wardrobe.sortColor")}</option>
           </select>
           <select
             aria-label={t("wardrobe.sortDirection")}

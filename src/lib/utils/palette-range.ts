@@ -42,3 +42,12 @@ export function itemMatchesPaletteRange(
     return index !== undefined && index >= rangeStart && index <= rangeEnd;
   });
 }
+
+export function itemPaletteLightness(item: ClosetItem): number {
+  if (item.paletteColors.length === 0) {
+    return 1;
+  }
+
+  const values = item.paletteColors.map(colorLightness);
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}

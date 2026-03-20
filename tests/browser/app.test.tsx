@@ -315,6 +315,25 @@ describe("app flows", () => {
     await user.selectOptions(view.getByLabelText("Sort by"), "updated");
     await user.selectOptions(view.getByLabelText("Order"), "asc");
     await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe("Over-Sized Cashmere Coat"));
+
+    await user.selectOptions(view.getByLabelText("Sort by"), "color");
+    await user.selectOptions(view.getByLabelText("Order"), "asc");
+    await waitFor(() =>
+      expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual([
+        "Raw Indigo Denim",
+        "Terra Chelsea Boots",
+        "Structured Wool Blazer"
+      ])
+    );
+
+    await user.selectOptions(view.getByLabelText("Order"), "desc");
+    await waitFor(() =>
+      expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual([
+        "Essential Linen Shirt",
+        "Over-Sized Cashmere Coat",
+        "Structured Wool Blazer"
+      ])
+    );
   });
 
   test("filters wardrobe items by the saved palette range", async () => {
