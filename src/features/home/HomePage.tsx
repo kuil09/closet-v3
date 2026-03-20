@@ -162,6 +162,47 @@ function WeatherIcon({ condition }: { condition: WeatherCondition }) {
   }
 }
 
+function InsightBadgeIcon({ kind }: { kind: "category" | "season" | "weather" }) {
+  switch (kind) {
+    case "category":
+      return (
+        <svg viewBox="0 0 20 20" aria-hidden="true" className="insight-icon-svg">
+          <path d="M4 4.2h4.8V9H4zM11.2 4.2H16V9h-4.8zM4 11h4.8v4.8H4zM11.2 11H16v4.8h-4.8z" />
+        </svg>
+      );
+    case "season":
+      return (
+        <svg viewBox="0 0 20 20" aria-hidden="true" className="insight-icon-svg">
+          <path d="M10 2.6v14.8M4.4 5.2l11.2 9.6M15.6 5.2 4.4 14.8M3.3 10h13.4" />
+        </svg>
+      );
+    case "weather":
+      return (
+        <svg viewBox="0 0 20 20" aria-hidden="true" className="insight-icon-svg">
+          <circle cx="10" cy="10" r="3.4" />
+          <path d="M10 1.8v2.3M10 15.9v2.3M1.8 10h2.3M15.9 10h2.3M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M15.8 4.2l-1.6 1.6M5.8 14.2l-1.6 1.6" />
+        </svg>
+      );
+  }
+}
+
+function InsightCenterLabel({
+  kind,
+  label
+}: {
+  kind: "category" | "season" | "weather";
+  label: string;
+}) {
+  return (
+    <span className="insight-pie-center-stack">
+      <span className="insight-pie-center-icon" aria-hidden="true">
+        <InsightBadgeIcon kind={kind} />
+      </span>
+      <span className="insight-pie-center-label">{label}</span>
+    </span>
+  );
+}
+
 function InsightPieChart({
   label,
   gradient,
@@ -267,7 +308,9 @@ export function HomePage() {
             </div>
           </div>
           <div className="insight-chart-panel">
-            <InsightPieChart label={t("home.insightsCategoryTitle")} gradient={categoryPieGradient} />
+            <InsightPieChart label={t("home.insightsCategoryTitle")} gradient={categoryPieGradient}>
+              <InsightCenterLabel kind="category" label={t("home.insightsCategory")} />
+            </InsightPieChart>
             <div className="insight-legend">
               {categoryStats.map((entry, index) => (
                 <div key={entry.label} className="insight-legend-item">
@@ -296,7 +339,7 @@ export function HomePage() {
             <div className="insight-subpanel">
               <span className="section-tag">{t("home.insightsSeason")}</span>
               <InsightPieChart label={t("home.insightsSeason")} gradient={seasonPieGradient}>
-                <span className="insight-pie-center-label">{t("home.insightsSeason")}</span>
+                <InsightCenterLabel kind="season" label={t("home.insightsSeason")} />
               </InsightPieChart>
               <div className="insight-legend">
                 {seasonStats.map((entry, index) => (
@@ -316,7 +359,7 @@ export function HomePage() {
             <div className="insight-subpanel">
               <span className="section-tag">{t("home.insightsWeather")}</span>
               <InsightPieChart label={t("home.insightsWeather")} gradient={weatherPieGradient}>
-                <span className="insight-pie-center-label">{t("home.insightsWeather")}</span>
+                <InsightCenterLabel kind="weather" label={t("home.insightsWeather")} />
               </InsightPieChart>
               <div className="insight-legend">
                 {weatherStats.map((entry) => (

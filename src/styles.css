@@ -375,11 +375,34 @@ button {
 .insight-pie-center-label {
   padding: 0 0.6rem;
   text-align: center;
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   line-height: 1.2;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
+}
+
+.insight-pie-center-stack {
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+}
+
+.insight-pie-center-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--surface-soft) 84%, var(--surface-elevated));
+  border: 1px solid color-mix(in srgb, var(--border) 76%, transparent);
+}
+
+.insight-pie-center-icon .insight-icon-svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .insight-legend {
