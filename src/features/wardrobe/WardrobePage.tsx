@@ -153,7 +153,6 @@ export function WardrobePage() {
       <section className="filter-bar wardrobe-filter-panel">
         <div className="filter-copy">
           <span className="section-tag">{t("nav.wardrobe")}</span>
-          <h2>{t("wardrobe.title")}</h2>
         </div>
         {colorTags.length > 0 ? (
           <div className="color-range-filter filter-primary-block">

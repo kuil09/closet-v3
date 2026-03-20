@@ -35,7 +35,6 @@ export type MessageKey =
   | "home.stats.items"
   | "home.stats.lookbooks"
   | "home.stats.favorites"
-  | "wardrobe.title"
   | "wardrobe.search"
   | "wardrobe.searchLabel"
   | "wardrobe.empty"
@@ -188,7 +187,6 @@ const base: Catalog = {
   "home.stats.items": "Total Pieces",
   "home.stats.lookbooks": "Lookbooks",
   "home.stats.favorites": "Favorites",
-  "wardrobe.title": "Your Digital Sanctuary",
   "wardrobe.search": "Search your collection...",
   "wardrobe.searchLabel": "Search wardrobe",
   "wardrobe.empty": "No pieces match this combination yet.",
@@ -339,7 +337,6 @@ export const messages: Record<Locale, Catalog> = {
     "home.weatherFallback": "자동 날씨를 불러오지 못했습니다. 위치 권한이나 네트워크 상태를 확인하세요.",
     "home.recentMore": "아이템 더 보기",
     "home.recentLess": "아이템 접기",
-    "wardrobe.title": "당신의 디지털 생추어리",
     "wardrobe.search": "컬렉션 검색...",
     "wardrobe.searchLabel": "옷장 검색",
     "wardrobe.empty": "조건에 맞는 아이템이 없습니다.",

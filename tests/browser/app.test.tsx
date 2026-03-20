@@ -89,7 +89,7 @@ describe("app flows", () => {
 
     await view.findByText(/Total Pieces/i);
     await user.click(view.getByRole("button", { name: /Total Pieces/i }));
-    await view.findByText(/Your Digital Sanctuary/i);
+    await view.findByLabelText("Search wardrobe");
 
     await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
     await view.findByText(/Total Pieces/i);
@@ -99,7 +99,7 @@ describe("app flows", () => {
     await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
     await view.findByText(/Total Pieces/i);
     await user.click(view.getByRole("button", { name: /Favorites/i }));
-    await view.findByText(/Your Digital Sanctuary/i);
+    await view.findByLabelText("Search wardrobe");
     expect(view.getByRole("button", { name: /^Favorites$/ }).className).toContain("is-active");
   });
 
@@ -136,7 +136,7 @@ describe("app flows", () => {
     await user.type(view.getByLabelText("Storage location"), "Entry Closet");
     await user.click(view.getByText("Save draft"));
 
-    await view.findByText(/Your Digital Sanctuary/i);
+    await view.findByLabelText("Search wardrobe");
     await waitFor(async () => {
       const saved = (await atelierDb.items.toArray()).find((item) => item.name === "Test Trench");
       expect(saved?.status).toBe("draft");
@@ -259,7 +259,7 @@ describe("app flows", () => {
   test("shows unified wardrobe filters with palette range by default", async () => {
     const view = renderAt("/wardrobe");
 
-    await view.findByText(/Your Digital Sanctuary/i);
+    await view.findByLabelText("Search wardrobe");
     await view.findByText("Show archived");
     await view.findByText("Palette range");
     const lightestColorInput = view.getByLabelText("Lightest color") as HTMLInputElement;
@@ -269,7 +269,7 @@ describe("app flows", () => {
   test("filters wardrobe items by the saved palette range", async () => {
     const view = renderAt("/wardrobe");
 
-    await view.findByText(/Your Digital Sanctuary/i);
+    await view.findByLabelText("Search wardrobe");
     await view.findByText("Palette range");
     expect(view.container.querySelector(".color-range-summary")).toBeNull();
     expect(view.queryByText("Black side")).toBeNull();
