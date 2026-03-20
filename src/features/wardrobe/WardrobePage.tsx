@@ -74,6 +74,38 @@ export function WardrobePage() {
   }, [colorTags, maxColorIndex]);
   const rangeStartPercent = maxColorIndex === 0 ? 0 : (effectiveColorRangeStart / maxColorIndex) * 100;
   const rangeEndPercent = maxColorIndex === 0 ? 100 : (effectiveColorRangeEnd / maxColorIndex) * 100;
+  const activeAdvancedFilters = useMemo(
+    () =>
+      [
+        deferredSearch ? `${t("wardrobe.searchLabel")}: ${deferredSearch}` : null,
+        category !== ALL_FILTER_VALUE
+          ? categoryMessageKey(category)
+            ? t(categoryMessageKey(category)!)
+            : category
+          : null,
+        sortField !== "updated" ? t(sortField === "name" ? "wardrobe.sortName" : "wardrobe.sortColor") : null,
+        sortDirection !== "desc" ? t("wardrobe.sortAscending") : null,
+        showFavorites ? t("wardrobe.favorites") : null,
+        showArchived ? t("wardrobe.showArchived") : null,
+        materialFilter !== ALL_FILTER_VALUE ? materialFilter : null,
+        occasionFilter !== ALL_FILTER_VALUE ? occasionFilter : null,
+        temperatureFilter !== ALL_FILTER_VALUE ? t(temperatureMessageKey(temperatureFilter)) : null,
+        weatherFilter !== ALL_FILTER_VALUE ? t(weatherMessageKey(weatherFilter)) : null
+      ].filter(Boolean) as string[],
+    [
+      category,
+      deferredSearch,
+      materialFilter,
+      occasionFilter,
+      showArchived,
+      showFavorites,
+      sortDirection,
+      sortField,
+      t,
+      temperatureFilter,
+      weatherFilter
+    ]
+  );
 
   useEffect(() => {
     setColorRangeStart((current) => Math.min(Math.max(current, 0), maxColorIndex));
@@ -255,109 +287,156 @@ export function WardrobePage() {
           screenId="wardrobe"
           sectionId="wardrobe-hidden-filters"
           title={t("wardrobe.advancedFilters")}
+          summary={
+            activeAdvancedFilters.length > 0 ? (
+              <span className="wardrobe-filter-summary">
+                {activeAdvancedFilters.slice(0, 3).map((entry) => (
+                  <span key={entry} className="wardrobe-filter-summary-chip">
+                    {entry}
+                  </span>
+                ))}
+              </span>
+            ) : null
+          }
           defaultOpen={false}
           variant="soft"
           className="wardrobe-hidden-filters"
         >
-          <div className="section-inline-tools">
-            <InfoHint label={t("wardrobe.advancedFilters")} content={t("wardrobe.advancedHint")} />
+          <div className="wardrobe-filter-studio">
+            <div className="wardrobe-filter-studio-head">
+              <div className="wardrobe-filter-title-block">
+                <span className="section-tag">{t("nav.wardrobe")}</span>
+                <strong>{t("wardrobe.advancedFilters")}</strong>
+              </div>
+              <InfoHint label={t("wardrobe.advancedFilters")} content={t("wardrobe.advancedHint")} />
+            </div>
+
+            <div className="wardrobe-filter-cluster-grid">
+              <section className="wardrobe-filter-cluster">
+                <div className="wardrobe-filter-cluster-head">
+                  <span className="wardrobe-filter-glyph" aria-hidden="true">
+                    ◌
+                  </span>
+                  <span>{t("wardrobe.searchLabel")}</span>
+                </div>
+                <div className="filter-actions wardrobe-filter-actions wardrobe-filter-actions-search">
+                  <input
+                    aria-label={t("wardrobe.searchLabel")}
+                    className="text-input"
+                    placeholder={t("wardrobe.search")}
+                    value={search}
+                    onChange={(event) => {
+                      const next = event.target.value;
+                      startTransition(() => setSearch(next));
+                    }}
+                  />
+                  <select className="control-select" value={category} onChange={(event) => setCategory(event.target.value)}>
+                    {categories.map((entry) => (
+                      <option key={entry} value={entry}>
+                        {entry === ALL_FILTER_VALUE ? t("common.all") : categoryMessageKey(entry) ? t(categoryMessageKey(entry)!) : entry}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </section>
+
+              <section className="wardrobe-filter-cluster">
+                <div className="wardrobe-filter-cluster-head">
+                  <span className="wardrobe-filter-glyph" aria-hidden="true">
+                    ↕
+                  </span>
+                  <span>{t("wardrobe.sortField")}</span>
+                </div>
+                <div className="filter-actions wardrobe-filter-actions">
+                  <select
+                    aria-label={t("wardrobe.sortField")}
+                    className="control-select"
+                    value={sortField}
+                    onChange={(event) => setSortField(event.target.value as SortField)}
+                  >
+                    <option value="updated">{t("wardrobe.sortUpdated")}</option>
+                    <option value="name">{t("wardrobe.sortName")}</option>
+                    <option value="color">{t("wardrobe.sortColor")}</option>
+                  </select>
+                  <select
+                    aria-label={t("wardrobe.sortDirection")}
+                    className="control-select"
+                    value={sortDirection}
+                    onChange={(event) => setSortDirection(event.target.value as SortDirection)}
+                  >
+                    <option value="asc">{t("wardrobe.sortAscending")}</option>
+                    <option value="desc">{t("wardrobe.sortDescending")}</option>
+                  </select>
+                  <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
+                    {t("wardrobe.favorites")}
+                  </button>
+                  <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
+                    {t("wardrobe.showArchived")}
+                  </button>
+                </div>
+              </section>
+            </div>
           </div>
-          <div className="filter-actions wardrobe-filter-actions">
-            <input
-              aria-label={t("wardrobe.searchLabel")}
-              className="text-input"
-              placeholder={t("wardrobe.search")}
-              value={search}
-              onChange={(event) => {
-                const next = event.target.value;
-                startTransition(() => setSearch(next));
-              }}
-            />
-            <select className="control-select" value={category} onChange={(event) => setCategory(event.target.value)}>
-              {categories.map((entry) => (
-                <option key={entry} value={entry}>
-                  {entry === ALL_FILTER_VALUE ? t("common.all") : categoryMessageKey(entry) ? t(categoryMessageKey(entry)!) : entry}
-                </option>
-              ))}
-            </select>
-            <select
-              aria-label={t("wardrobe.sortField")}
-              className="control-select"
-              value={sortField}
-              onChange={(event) => setSortField(event.target.value as SortField)}
-            >
-              <option value="updated">{t("wardrobe.sortUpdated")}</option>
-              <option value="name">{t("wardrobe.sortName")}</option>
-              <option value="color">{t("wardrobe.sortColor")}</option>
-            </select>
-            <select
-              aria-label={t("wardrobe.sortDirection")}
-              className="control-select"
-              value={sortDirection}
-              onChange={(event) => setSortDirection(event.target.value as SortDirection)}
-            >
-              <option value="asc">{t("wardrobe.sortAscending")}</option>
-              <option value="desc">{t("wardrobe.sortDescending")}</option>
-            </select>
-            <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
-              {t("wardrobe.favorites")}
-            </button>
-            <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
-              {t("wardrobe.showArchived")}
-            </button>
-          </div>
-          <div className="form-grid">
-            <label>
-              <span>{t("register.materials")}</span>
-              <select className="control-select" value={materialFilter} onChange={(event) => setMaterialFilter(event.target.value)}>
-                {materials.map((entry) => (
-                  <option key={entry} value={entry}>
-                    {entry === ALL_FILTER_VALUE ? t("common.all") : entry}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              <span>{t("register.occasionTags")}</span>
-              <select className="control-select" value={occasionFilter} onChange={(event) => setOccasionFilter(event.target.value)}>
-                {occasions.map((entry) => (
-                  <option key={entry} value={entry}>
-                    {entry === ALL_FILTER_VALUE ? t("common.all") : entry}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              <span>{t("register.temperature")}</span>
-              <select
-                className="control-select"
-                value={temperatureFilter}
-                onChange={(event) => setTemperatureFilter(event.target.value as TemperatureBand | typeof ALL_FILTER_VALUE)}
-              >
-                <option value={ALL_FILTER_VALUE}>{t("common.all")}</option>
-                <option value="freezing">{t(temperatureMessageKey("freezing"))}</option>
-                <option value="cold">{t(temperatureMessageKey("cold"))}</option>
-                <option value="mild">{t(temperatureMessageKey("mild"))}</option>
-                <option value="warm">{t(temperatureMessageKey("warm"))}</option>
-                <option value="hot">{t(temperatureMessageKey("hot"))}</option>
-              </select>
-            </label>
-            <label>
-              <span>{t("register.weather")}</span>
-              <select
-                className="control-select"
-                value={weatherFilter}
-                onChange={(event) => setWeatherFilter(event.target.value as WeatherCondition | typeof ALL_FILTER_VALUE)}
-              >
-                <option value={ALL_FILTER_VALUE}>{t("common.all")}</option>
-                <option value="clear">{t(weatherMessageKey("clear"))}</option>
-                <option value="cloudy">{t(weatherMessageKey("cloudy"))}</option>
-                <option value="rain">{t(weatherMessageKey("rain"))}</option>
-                <option value="snow">{t(weatherMessageKey("snow"))}</option>
-                <option value="wind">{t(weatherMessageKey("wind"))}</option>
-              </select>
-            </label>
-          </div>
+          <section className="wardrobe-filter-cluster wardrobe-filter-cluster-wide">
+            <div className="wardrobe-filter-cluster-head">
+              <span className="wardrobe-filter-glyph" aria-hidden="true">
+                ✦
+              </span>
+              <span>{t("register.weatherSection")}</span>
+            </div>
+            <div className="form-grid wardrobe-filter-form-grid">
+              <label>
+                <span>{t("register.materials")}</span>
+                <select className="control-select" value={materialFilter} onChange={(event) => setMaterialFilter(event.target.value)}>
+                  {materials.map((entry) => (
+                    <option key={entry} value={entry}>
+                      {entry === ALL_FILTER_VALUE ? t("common.all") : entry}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>{t("register.occasionTags")}</span>
+                <select className="control-select" value={occasionFilter} onChange={(event) => setOccasionFilter(event.target.value)}>
+                  {occasions.map((entry) => (
+                    <option key={entry} value={entry}>
+                      {entry === ALL_FILTER_VALUE ? t("common.all") : entry}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>{t("register.temperature")}</span>
+                <select
+                  className="control-select"
+                  value={temperatureFilter}
+                  onChange={(event) => setTemperatureFilter(event.target.value as TemperatureBand | typeof ALL_FILTER_VALUE)}
+                >
+                  <option value={ALL_FILTER_VALUE}>{t("common.all")}</option>
+                  <option value="freezing">{t(temperatureMessageKey("freezing"))}</option>
+                  <option value="cold">{t(temperatureMessageKey("cold"))}</option>
+                  <option value="mild">{t(temperatureMessageKey("mild"))}</option>
+                  <option value="warm">{t(temperatureMessageKey("warm"))}</option>
+                  <option value="hot">{t(temperatureMessageKey("hot"))}</option>
+                </select>
+              </label>
+              <label>
+                <span>{t("register.weather")}</span>
+                <select
+                  className="control-select"
+                  value={weatherFilter}
+                  onChange={(event) => setWeatherFilter(event.target.value as WeatherCondition | typeof ALL_FILTER_VALUE)}
+                >
+                  <option value={ALL_FILTER_VALUE}>{t("common.all")}</option>
+                  <option value="clear">{t(weatherMessageKey("clear"))}</option>
+                  <option value="cloudy">{t(weatherMessageKey("cloudy"))}</option>
+                  <option value="rain">{t(weatherMessageKey("rain"))}</option>
+                  <option value="snow">{t(weatherMessageKey("snow"))}</option>
+                  <option value="wind">{t(weatherMessageKey("wind"))}</option>
+                </select>
+              </label>
+            </div>
+          </section>
         </DisclosureSection>
       </section>
 

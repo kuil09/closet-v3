@@ -513,6 +513,142 @@ button {
   border: 1px solid var(--border);
 }
 
+.wardrobe-filter-summary {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+  max-width: min(28rem, 100%);
+}
+
+.wardrobe-filter-summary-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.9rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-elevated) 84%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1;
+}
+
+.wardrobe-hidden-filters {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--tertiary) 18%, transparent), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface-soft) 80%, var(--surface-elevated)), color-mix(in srgb, var(--surface-soft) 95%, transparent));
+}
+
+.wardrobe-hidden-filters::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--surface-elevated) 72%, transparent), transparent 45%);
+  opacity: 0.85;
+}
+
+.wardrobe-hidden-filters > * {
+  position: relative;
+  z-index: 1;
+}
+
+.wardrobe-filter-studio {
+  display: grid;
+  gap: 1rem;
+}
+
+.wardrobe-filter-studio-head,
+.wardrobe-filter-cluster-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.wardrobe-filter-title-block {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.wardrobe-filter-title-block strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: -0.03em;
+}
+
+.wardrobe-filter-cluster-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.wardrobe-filter-cluster {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+  border-radius: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated) 84%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 35%, transparent);
+}
+
+.wardrobe-filter-cluster-head {
+  justify-content: flex-start;
+  color: var(--muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.wardrobe-filter-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary-soft) 70%, var(--surface-elevated));
+  color: var(--text);
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.wardrobe-filter-actions-search > .text-input {
+  flex: 1 1 280px;
+}
+
+.wardrobe-filter-actions-search > .control-select {
+  flex: 0 1 220px;
+}
+
+.wardrobe-filter-cluster-wide {
+  background: color-mix(in srgb, var(--surface-elevated) 78%, transparent);
+}
+
+.wardrobe-filter-form-grid {
+  gap: 0.9rem;
+}
+
+.wardrobe-filter-form-grid label {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.85rem 0.9rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-soft) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 84%, transparent);
+}
+
+.wardrobe-filter-form-grid label > span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .weather-card h3,
 .panel-head h3,
 .panel-head h2 {
@@ -1703,6 +1839,10 @@ button {
   .closet-drawer-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .wardrobe-filter-cluster-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 920px) {
@@ -1774,6 +1914,16 @@ button {
 
   .insight-grid {
     grid-template-columns: 1fr;
+  }
+
+  .wardrobe-filter-summary {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+
+  .wardrobe-filter-cluster,
+  .wardrobe-filter-form-grid label {
+    padding: 0.9rem;
   }
 
   .stat-card {
