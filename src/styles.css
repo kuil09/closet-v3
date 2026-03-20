@@ -1,5 +1,7 @@
 :root {
   color-scheme: light;
+  --font-body: "Work Sans", sans-serif;
+  --font-display: "Manrope", sans-serif;
   --surface: #f9f9f7;
   --surface-elevated: #ffffff;
   --surface-muted: #ecefec;
@@ -28,6 +30,21 @@
   --shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
+html[lang="ko"] {
+  --font-body: "Noto Sans KR", "Work Sans", sans-serif;
+  --font-display: "Noto Sans KR", "Manrope", sans-serif;
+}
+
+html[lang="ja"] {
+  --font-body: "Noto Sans JP", "Work Sans", sans-serif;
+  --font-display: "Noto Sans JP", "Manrope", sans-serif;
+}
+
+html[lang="zh-CN"] {
+  --font-body: "Noto Sans SC", "Work Sans", sans-serif;
+  --font-display: "Noto Sans SC", "Manrope", sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -40,7 +57,7 @@ body,
 
 body {
   margin: 0;
-  font-family: "Work Sans", sans-serif;
+  font-family: var(--font-body);
   background: radial-gradient(circle at top right, rgba(109, 93, 68, 0.12), transparent 24%),
     linear-gradient(180deg, var(--surface) 0%, color-mix(in srgb, var(--surface) 86%, var(--surface-muted)) 100%);
   color: var(--text);
@@ -73,7 +90,7 @@ button {
 .panel-head h2,
 .stat-card strong,
 .title-input {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-display);
 }
 
 .app-shell {
@@ -370,7 +387,7 @@ button {
 
 .disclosure-copy strong,
 .sheet-launcher-copy strong {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.08rem;
   letter-spacing: -0.03em;
 }
@@ -422,7 +439,7 @@ button {
 
 .sheet-panel-head h3 {
   margin: 0.3rem 0 0;
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.2rem;
 }
 
@@ -449,7 +466,7 @@ button {
   display: flex;
   align-items: flex-end;
   padding: 1.4rem;
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-display);
   font-weight: 800;
   letter-spacing: -0.06em;
   font-size: 2rem;
@@ -488,7 +505,7 @@ button {
 }
 
 .lookbook-card-body strong {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.05rem;
   letter-spacing: -0.04em;
 }
@@ -575,7 +592,7 @@ button {
 .recommendation-body strong,
 .item-card-body strong,
 .item-meta strong {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.05rem;
   letter-spacing: -0.04em;
 }
@@ -691,7 +708,7 @@ button {
 }
 
 .temperature-slider-meta strong {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-display);
   font-size: 1.05rem;
 }
 
@@ -720,7 +737,7 @@ button {
 }
 
 .color-range-head strong {
-  font-family: "Manrope", sans-serif;
+  font-family: var(--font-display);
   font-size: 1rem;
   letter-spacing: -0.03em;
 }

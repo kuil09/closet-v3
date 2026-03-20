@@ -6,7 +6,8 @@ import useImage from "use-image";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { saveLookbook } from "../../lib/db/repository";
-import type { ClosetItem, Lookbook, LookbookElement } from "../../lib/db/types";
+import type { ClosetItem, Locale, Lookbook, LookbookElement } from "../../lib/db/types";
+import { getBodyFontStack, getDisplayFontStack } from "../../lib/i18n/font-stacks";
 import { useI18n } from "../../lib/i18n/i18n";
 import { useStoredImageSource } from "../../lib/media/images";
 import { makeId } from "../../lib/utils/id";
@@ -20,7 +21,7 @@ const backgroundMap = {
   olive: "#dee4e0"
 } as const;
 
-function createBlankLookbook(title: string, defaultHeadline: string, defaultBody: string): Lookbook {
+function createBlankLookbook(title: string, defaultHeadline: string, defaultBody: string, locale: Locale): Lookbook {
   const now = new Date().toISOString();
   return {
     id: makeId("look"),
@@ -40,7 +41,7 @@ function createBlankLookbook(title: string, defaultHeadline: string, defaultBody
         style: {
           color: "#5F5E5E",
           fontSize: 34,
-          fontFamily: "Manrope",
+          fontFamily: getDisplayFontStack(locale),
           fontWeight: 800
         },
         refId: null,
@@ -57,7 +58,7 @@ function createBlankLookbook(title: string, defaultHeadline: string, defaultBody
         style: {
           color: "#5F5E5E",
           fontSize: 16,
-          fontFamily: "Work Sans",
+          fontFamily: getBodyFontStack(locale),
           fontWeight: 500
         },
         refId: null,
@@ -89,14 +90,14 @@ function elementLabel(element: LookbookElement): string {
 }
 
 export function LookbookPage() {
-  const { t } = useI18n();
+  const { locale, t } = useI18n();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const untitledTitle = t("lookbook.untitled");
   const items = useLiveQuery(() => atelierDb.items.filter((item) => item.status !== "archived").toArray(), [], []);
   const lookbooks = useLiveQuery(() => atelierDb.lookbooks.toArray(), [], []);
   const [current, setCurrent] = useState<Lookbook>(() =>
-    createBlankLookbook(untitledTitle, t("lookbook.defaultHeadline"), t("lookbook.defaultBody"))
+    createBlankLookbook(untitledTitle, t("lookbook.defaultHeadline"), t("lookbook.defaultBody"), locale)
   );
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -176,7 +177,7 @@ export function LookbookPage() {
       style: {
         color: "#5F5E5E",
         fontSize: type === "headline" ? 34 : 16,
-        fontFamily: type === "headline" ? "Manrope" : "Work Sans",
+        fontFamily: type === "headline" ? getDisplayFontStack(locale) : getBodyFontStack(locale),
         fontWeight: type === "headline" ? 800 : 500
       },
       refId: null,
@@ -313,7 +314,12 @@ export function LookbookPage() {
             <button
               className="secondary-button"
               onClick={() => {
-                const next = createBlankLookbook(untitledTitle, t("lookbook.defaultHeadline"), t("lookbook.defaultBody"));
+                const next = createBlankLookbook(
+                  untitledTitle,
+                  t("lookbook.defaultHeadline"),
+                  t("lookbook.defaultBody"),
+                  locale
+                );
                 setCurrent(next);
                 setSelectedElementId(next.elements[0]?.id ?? null);
                 setValidationError(null);
@@ -350,6 +356,7 @@ export function LookbookPage() {
                     element={element}
                     item={items.find((item) => item.id === element.refId)}
                     selected={element.id === selectedElementId}
+                    locale={locale}
                     onSelect={() => setSelectedElementId(element.id)}
                     onChange={upsertElement}
                   />
@@ -560,12 +567,14 @@ function CanvasElement({
   element,
   item,
   selected,
+  locale,
   onSelect,
   onChange
 }: {
   element: LookbookElement;
   item?: ClosetItem;
   selected: boolean;
+  locale: Locale;
   onSelect: () => void;
   onChange: (element: LookbookElement) => void;
 }) {
@@ -608,7 +617,7 @@ function CanvasElement({
         text={element.text ?? ""}
         fill={element.style.color ?? "#5F5E5E"}
         fontSize={element.style.fontSize ?? 16}
-        fontFamily={element.style.fontFamily ?? "Work Sans"}
+        fontFamily={element.style.fontFamily ?? getBodyFontStack(locale)}
         fontStyle={element.style.fontWeight === 800 ? "bold" : "normal"}
         draggable={draggable}
         onClick={onSelect}

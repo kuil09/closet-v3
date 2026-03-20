@@ -249,8 +249,7 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
-    await view.findByText(/My Lookbooks/i);
-    await user.click(view.getByRole("button", { name: /Autumn Redaction/i }));
+    await user.click(await view.findByRole("button", { name: /Autumn Redaction/i }));
     await view.findByDisplayValue("Autumn Redaction");
   });
 });

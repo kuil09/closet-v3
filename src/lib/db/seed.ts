@@ -1,3 +1,4 @@
+import { getDisplayFontStack } from "../i18n/font-stacks";
 import type { ClosetItem, Lookbook, LookbookElement } from "./types";
 
 const now = new Date().toISOString();
@@ -135,7 +136,7 @@ const seedLookbookElements: LookbookElement[] = [
     rotation: 0,
     zIndex: 1,
     locked: false,
-    style: { color: "#5F5E5E", fontSize: 34, fontFamily: "Manrope", fontWeight: 800 },
+    style: { color: "#5F5E5E", fontSize: 34, fontFamily: getDisplayFontStack("en"), fontWeight: 800 },
     refId: null,
     text: "AUTUMN\nREDACTION"
   },
