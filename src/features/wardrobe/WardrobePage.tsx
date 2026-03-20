@@ -47,10 +47,9 @@ export function WardrobePage() {
   const maxColorIndex = Math.max(0, colorTags.length - 1);
   const effectiveColorRangeStart = Math.min(colorRangeStart, maxColorIndex);
   const effectiveColorRangeEnd = Math.min(Math.max(colorRangeEnd, effectiveColorRangeStart), maxColorIndex);
-  const selectedColorTags = colorTags.slice(effectiveColorRangeStart, effectiveColorRangeEnd + 1);
   const isColorRangeActive = colorTags.length > 0 && (effectiveColorRangeStart > 0 || effectiveColorRangeEnd < maxColorIndex);
-  const selectedColorStart = selectedColorTags[0]?.value;
-  const selectedColorEnd = selectedColorTags[selectedColorTags.length - 1]?.value;
+  const darkestColor = colorTags[0]?.value;
+  const lightestColor = colorTags[colorTags.length - 1]?.value;
   const colorRangeTrack = useMemo(() => {
     if (colorTags.length === 0) {
       return "linear-gradient(90deg, #1B1B1B 0%, #F5F5F5 100%)";
@@ -66,13 +65,6 @@ export function WardrobePage() {
   }, [colorTags, maxColorIndex]);
   const rangeStartPercent = maxColorIndex === 0 ? 0 : (effectiveColorRangeStart / maxColorIndex) * 100;
   const rangeEndPercent = maxColorIndex === 0 ? 100 : (effectiveColorRangeEnd / maxColorIndex) * 100;
-  const colorRangeSummary = useMemo(() => {
-    if (!colorTags.length || !selectedColorTags.length) {
-      return t("wardrobe.colorRangeAll");
-    }
-
-    return `${selectedColorTags[0]?.value} → ${selectedColorTags[selectedColorTags.length - 1]?.value}`;
-  }, [colorTags.length, selectedColorTags, t]);
 
   useEffect(() => {
     setColorRangeStart((current) => Math.min(Math.max(current, 0), maxColorIndex));
@@ -266,11 +258,6 @@ export function WardrobePage() {
             <div className="full-width color-range-filter">
               <div className="color-range-head">
                 <span>{t("wardrobe.colorRange")}</span>
-                <div className="color-range-summary" aria-label={colorRangeSummary} title={colorRangeSummary}>
-                  {selectedColorStart ? <span className="color-range-summary-swatch" style={{ backgroundColor: selectedColorStart }} /> : null}
-                  <span className="color-range-summary-bar" style={{ background: colorRangeTrack }} />
-                  {selectedColorEnd ? <span className="color-range-summary-swatch" style={{ backgroundColor: selectedColorEnd }} /> : null}
-                </div>
               </div>
               <div className="color-range-slider-shell">
                 <div className="color-range-slider-track" style={{ background: colorRangeTrack }} />
@@ -309,7 +296,13 @@ export function WardrobePage() {
                 />
               </div>
               <div className="color-range-scale" aria-hidden="true">
-                <span>{t("wardrobe.colorRangeDark")}</span>
+                {darkestColor ? (
+                  <span
+                    className="color-range-edge-swatch"
+                    style={{ backgroundColor: darkestColor }}
+                    title={darkestColor}
+                  />
+                ) : null}
                 <div className="color-range-stops">
                   {colorTags.map((entry, index) => {
                     const active = index >= effectiveColorRangeStart && index <= effectiveColorRangeEnd;
@@ -323,7 +316,13 @@ export function WardrobePage() {
                     );
                   })}
                 </div>
-                <span>{t("wardrobe.colorRangeLight")}</span>
+                {lightestColor ? (
+                  <span
+                    className="color-range-edge-swatch"
+                    style={{ backgroundColor: lightestColor }}
+                    title={lightestColor}
+                  />
+                ) : null}
               </div>
               <p className="muted-copy">{t("wardrobe.colorRangeHint")}</p>
             </div>

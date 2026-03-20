@@ -258,6 +258,9 @@ describe("app flows", () => {
       await user.click(view.getByRole("button", { name: /Advanced filters/i }));
     }
     await view.findByText("Palette range");
+    expect(view.container.querySelector(".color-range-summary")).toBeNull();
+    expect(view.queryByText("Black side")).toBeNull();
+    expect(view.queryByText("White side")).toBeNull();
 
     fireEvent.change(view.getByLabelText("Lightest color"), { target: { value: "0" } });
     expect((view.getByLabelText("Lightest color") as HTMLInputElement).value).toBe("0");
