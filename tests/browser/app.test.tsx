@@ -76,6 +76,17 @@ function getWardrobeCardTitles(container: HTMLElement) {
     .filter(Boolean);
 }
 
+async function openWardrobeHiddenFilters(user: ReturnType<typeof userEvent.setup>, view: ReturnType<typeof render>) {
+  const toggle = await waitFor(() => {
+    const node = view.container.querySelector<HTMLButtonElement>(".wardrobe-hidden-filters .disclosure-toggle");
+    expect(node, "wardrobe hidden-filters toggle should render").toBeTruthy();
+    return node!;
+  });
+
+  await user.click(toggle);
+  await view.findByLabelText("Search wardrobe");
+}
+
 describe("app flows", () => {
   test("supports theme and language switching from the shell", async () => {
     const user = userEvent.setup();
@@ -95,12 +106,12 @@ describe("app flows", () => {
 
     await view.findByText(/Total Pieces/i);
     await user.click(view.getByRole("button", { name: /Total Pieces/i }));
-    await view.findByLabelText("Search wardrobe");
+    await view.findByText("Palette range");
 
     await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
     await view.findByText(/Total Pieces/i);
     await user.click(view.getByRole("button", { name: /Favorites/i }));
-    await view.findByLabelText("Search wardrobe");
+    await openWardrobeHiddenFilters(user, view);
     expect(view.getByRole("button", { name: /^Favorites$/ }).className).toContain("is-active");
   });
 
@@ -137,7 +148,7 @@ describe("app flows", () => {
     await user.type(view.getByLabelText("Storage location"), "Entry Closet");
     await user.click(view.getByText("Save draft"));
 
-    await view.findByLabelText("Search wardrobe");
+    await view.findByText("Palette range");
     await waitFor(async () => {
       const saved = (await atelierDb.items.toArray()).find((item) => item.name === "Test Trench");
       expect(saved?.status).toBe("draft");
@@ -226,14 +237,14 @@ describe("app flows", () => {
     window.confirm = originalConfirm;
   });
 
-  test("shows unified wardrobe filters with palette range by default", async () => {
+  test("shows only the palette range filter by default", async () => {
     const view = renderAt("/wardrobe");
 
-    await view.findByLabelText("Search wardrobe");
-    await view.findByText("Show archived");
     await view.findByText("Palette range");
-    expect((view.getByLabelText("Sort by") as HTMLSelectElement).value).toBe("updated");
-    expect((view.getByLabelText("Order") as HTMLSelectElement).value).toBe("desc");
+    expect(view.queryByLabelText("Search wardrobe")).toBeNull();
+    expect(view.queryByText("Show archived")).toBeNull();
+    expect(view.queryByLabelText("Sort by")).toBeNull();
+    expect(view.queryByLabelText("Order")).toBeNull();
     expect(view.queryByRole("option", { name: "Favorites first" })).toBeNull();
     const lightestColorInput = view.getByLabelText("Lightest color") as HTMLInputElement;
     expect(lightestColorInput.value).toBe(lightestColorInput.max);
@@ -243,7 +254,7 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/wardrobe");
 
-    await view.findByLabelText("Search wardrobe");
+    await openWardrobeHiddenFilters(user, view);
     await waitFor(() => expect(getWardrobeCardTitles(view.container).length).toBeGreaterThan(3));
 
     await act(async () => {
@@ -302,7 +313,6 @@ describe("app flows", () => {
   test("filters wardrobe items by the saved palette range", async () => {
     const view = renderAt("/wardrobe");
 
-    await view.findByLabelText("Search wardrobe");
     await view.findByText("Palette range");
     expect(view.container.querySelector(".color-range-summary")).toBeNull();
     expect(view.queryByText("Black side")).toBeNull();

@@ -8,6 +8,7 @@ import { temperatureBandLabel, normalizeToken } from "../../lib/utils/format";
 import { buildPaletteTags, itemMatchesPaletteRange, itemPaletteLightness } from "../../lib/utils/palette-range";
 import { useI18n } from "../../lib/i18n/i18n";
 import { InfoHint } from "../shared/InfoHint";
+import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
 
 type SortField = "updated" | "name" | "color";
@@ -245,105 +246,114 @@ export function WardrobePage() {
             </div>
           </div>
         ) : null}
-        <div className="filter-actions wardrobe-filter-actions">
-          <input
-            aria-label={t("wardrobe.searchLabel")}
-            className="text-input"
-            placeholder={t("wardrobe.search")}
-            value={search}
-            onChange={(event) => {
-              const next = event.target.value;
-              startTransition(() => setSearch(next));
-            }}
-          />
-          <select className="control-select" value={category} onChange={(event) => setCategory(event.target.value)}>
-            {categories.map((entry) => (
-              <option key={entry} value={entry}>
-                {entry}
-              </option>
-            ))}
-          </select>
-          <select
-            aria-label={t("wardrobe.sortField")}
-            className="control-select"
-            value={sortField}
-            onChange={(event) => setSortField(event.target.value as SortField)}
-          >
-            <option value="updated">{t("wardrobe.sortUpdated")}</option>
-            <option value="name">{t("wardrobe.sortName")}</option>
-            <option value="color">{t("wardrobe.sortColor")}</option>
-          </select>
-          <select
-            aria-label={t("wardrobe.sortDirection")}
-            className="control-select"
-            value={sortDirection}
-            onChange={(event) => setSortDirection(event.target.value as SortDirection)}
-          >
-            <option value="asc">{t("wardrobe.sortAscending")}</option>
-            <option value="desc">{t("wardrobe.sortDescending")}</option>
-          </select>
-          <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
-            {t("wardrobe.favorites")}
-          </button>
-          <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
-            {t("wardrobe.showArchived")}
-          </button>
-        </div>
-        <div className="form-grid">
-          <label>
-            <span>{t("register.materials")}</span>
-            <select className="control-select" value={materialFilter} onChange={(event) => setMaterialFilter(event.target.value)}>
-              {materials.map((entry) => (
+        <DisclosureSection
+          screenId="wardrobe"
+          sectionId="wardrobe-hidden-filters"
+          title={t("wardrobe.advancedFilters")}
+          defaultOpen={false}
+          variant="soft"
+          className="wardrobe-hidden-filters"
+        >
+          <div className="section-inline-tools">
+            <InfoHint label={t("wardrobe.advancedFilters")} content={t("wardrobe.advancedHint")} />
+          </div>
+          <div className="filter-actions wardrobe-filter-actions">
+            <input
+              aria-label={t("wardrobe.searchLabel")}
+              className="text-input"
+              placeholder={t("wardrobe.search")}
+              value={search}
+              onChange={(event) => {
+                const next = event.target.value;
+                startTransition(() => setSearch(next));
+              }}
+            />
+            <select className="control-select" value={category} onChange={(event) => setCategory(event.target.value)}>
+              {categories.map((entry) => (
                 <option key={entry} value={entry}>
                   {entry}
                 </option>
               ))}
             </select>
-          </label>
-          <label>
-            <span>{t("register.occasionTags")}</span>
-            <select className="control-select" value={occasionFilter} onChange={(event) => setOccasionFilter(event.target.value)}>
-              {occasions.map((entry) => (
-                <option key={entry} value={entry}>
-                  {entry}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>{t("register.temperature")}</span>
             <select
+              aria-label={t("wardrobe.sortField")}
               className="control-select"
-              value={temperatureFilter}
-              onChange={(event) => setTemperatureFilter(event.target.value as TemperatureBand | "All")}
+              value={sortField}
+              onChange={(event) => setSortField(event.target.value as SortField)}
             >
-              <option value="All">All</option>
-              <option value="freezing">freezing</option>
-              <option value="cold">cold</option>
-              <option value="mild">mild</option>
-              <option value="warm">warm</option>
-              <option value="hot">hot</option>
+              <option value="updated">{t("wardrobe.sortUpdated")}</option>
+              <option value="name">{t("wardrobe.sortName")}</option>
+              <option value="color">{t("wardrobe.sortColor")}</option>
             </select>
-          </label>
-          <label>
-            <span>{t("register.weather")}</span>
             <select
+              aria-label={t("wardrobe.sortDirection")}
               className="control-select"
-              value={weatherFilter}
-              onChange={(event) => setWeatherFilter(event.target.value as WeatherCondition | "All")}
+              value={sortDirection}
+              onChange={(event) => setSortDirection(event.target.value as SortDirection)}
             >
-              <option value="All">All</option>
-              <option value="clear">clear</option>
-              <option value="cloudy">cloudy</option>
-              <option value="rain">rain</option>
-              <option value="snow">snow</option>
-              <option value="wind">wind</option>
+              <option value="asc">{t("wardrobe.sortAscending")}</option>
+              <option value="desc">{t("wardrobe.sortDescending")}</option>
             </select>
-          </label>
-        </div>
-        <div className="secondary-actions wardrobe-filter-notes">
-          <InfoHint label={t("wardrobe.advancedFilters")} content={t("wardrobe.advancedHint")} />
-        </div>
+            <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
+              {t("wardrobe.favorites")}
+            </button>
+            <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
+              {t("wardrobe.showArchived")}
+            </button>
+          </div>
+          <div className="form-grid">
+            <label>
+              <span>{t("register.materials")}</span>
+              <select className="control-select" value={materialFilter} onChange={(event) => setMaterialFilter(event.target.value)}>
+                {materials.map((entry) => (
+                  <option key={entry} value={entry}>
+                    {entry}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>{t("register.occasionTags")}</span>
+              <select className="control-select" value={occasionFilter} onChange={(event) => setOccasionFilter(event.target.value)}>
+                {occasions.map((entry) => (
+                  <option key={entry} value={entry}>
+                    {entry}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>{t("register.temperature")}</span>
+              <select
+                className="control-select"
+                value={temperatureFilter}
+                onChange={(event) => setTemperatureFilter(event.target.value as TemperatureBand | "All")}
+              >
+                <option value="All">All</option>
+                <option value="freezing">freezing</option>
+                <option value="cold">cold</option>
+                <option value="mild">mild</option>
+                <option value="warm">warm</option>
+                <option value="hot">hot</option>
+              </select>
+            </label>
+            <label>
+              <span>{t("register.weather")}</span>
+              <select
+                className="control-select"
+                value={weatherFilter}
+                onChange={(event) => setWeatherFilter(event.target.value as WeatherCondition | "All")}
+              >
+                <option value="All">All</option>
+                <option value="clear">clear</option>
+                <option value="cloudy">cloudy</option>
+                <option value="rain">rain</option>
+                <option value="snow">snow</option>
+                <option value="wind">wind</option>
+              </select>
+            </label>
+          </div>
+        </DisclosureSection>
       </section>
 
       {filtered.length === 0 ? <div className="empty-state">{t("wardrobe.empty")}</div> : null}

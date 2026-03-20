@@ -890,7 +890,8 @@ button {
 
 .color-range-slider-shell {
   position: relative;
-  min-height: 2.25rem;
+  min-height: 2.75rem;
+  padding-inline: 0.55rem;
   align-items: center;
   touch-action: none;
   overscroll-behavior: contain;
@@ -901,8 +902,8 @@ button {
 .color-range-slider-track,
 .color-range-slider-selection {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 0.55rem;
+  right: 0.55rem;
   top: 50%;
   transform: translateY(-50%);
   border-radius: 999px;
@@ -924,21 +925,31 @@ button {
   -webkit-appearance: none;
   appearance: none;
   position: absolute;
-  inset: 0;
-  width: 100%;
+  left: 0.55rem;
+  right: 0.55rem;
+  width: calc(100% - 1.1rem);
+  height: 100%;
   margin: 0;
   background: transparent;
   pointer-events: none;
   touch-action: none;
 }
 
+.color-range-thumb-start {
+  z-index: 3;
+}
+
+.color-range-thumb-end {
+  z-index: 2;
+}
+
 .color-range-thumb::-webkit-slider-runnable-track {
-  height: 2.25rem;
+  height: 2.75rem;
   background: transparent;
 }
 
 .color-range-thumb::-moz-range-track {
-  height: 2.25rem;
+  height: 2.75rem;
   background: transparent;
   border: 0;
 }
@@ -946,9 +957,9 @@ button {
 .color-range-thumb::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 1.1rem;
-  height: 1.1rem;
-  margin-top: 0.575rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.7rem;
   border-radius: 999px;
   border: 2px solid var(--surface-elevated);
   background: var(--text);
@@ -958,8 +969,8 @@ button {
 }
 
 .color-range-thumb::-moz-range-thumb {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 1.35rem;
+  height: 1.35rem;
   border-radius: 999px;
   border: 2px solid var(--surface-elevated);
   background: var(--text);
@@ -1176,6 +1187,10 @@ button {
 
 .secondary-actions .muted-copy {
   flex: 1;
+}
+
+.wardrobe-hidden-filters {
+  width: 100%;
 }
 
 .local-pill {
