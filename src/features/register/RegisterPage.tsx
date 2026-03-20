@@ -133,6 +133,17 @@ export function RegisterPage() {
     };
   }, [previewUrl]);
 
+  useEffect(() => {
+    if (!isSamplingPaletteColor || !heroImageElementRef.current || window.innerWidth > 920) {
+      return;
+    }
+
+    heroImageElementRef.current.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }, [isSamplingPaletteColor]);
+
   const heroImageRef = previewUrl ?? storedUrl ?? draft.heroImage;
   const selectedTemperature = draft.temperatureBand[0] ?? null;
   const selectedTemperatureIndex = selectedTemperature ? Math.max(0, temperatureOptions.indexOf(selectedTemperature)) : 2;
@@ -394,6 +405,11 @@ export function RegisterPage() {
                   imgRef={heroImageElementRef}
                   onImagePointerDown={handleImagePaletteSample}
                 />
+                {isSamplingPaletteColor ? (
+                  <div className="register-sampling-banner" role="status">
+                    {t("register.pickFromImageActive")}
+                  </div>
+                ) : null}
               </div>
             ) : (
               <label className="image-dropzone-action">
@@ -597,6 +613,7 @@ export function RegisterPage() {
           screenId="register"
           sectionId="register-palette"
           title={t("register.paletteSection")}
+          mobileBehavior="inline"
         >
           <div className="register-section-summary">{paletteSummary}</div>
           <div className="palette-row">

@@ -77,6 +77,15 @@ function getWardrobeCardTitles(container: HTMLElement) {
     .filter(Boolean);
 }
 
+function getHeroUploadInput(container: HTMLElement) {
+  const input = container.querySelector<HTMLInputElement>('input[aria-label="Hero Image"]');
+  if (!input) {
+    throw new Error("Hero image input not found");
+  }
+
+  return input;
+}
+
 function mockLookbookExport() {
   const gradient = { addColorStop() {} };
   const drawImage = mock(() => {});
@@ -140,6 +149,53 @@ function mockLookbookExport() {
   return {
     downloads,
     drawImage,
+    restore() {
+      document.createElement = originalCreateElement;
+      globalThis.Image = originalImage;
+    }
+  };
+}
+
+function mockImageSampling() {
+  const originalCreateElement = document.createElement.bind(document);
+  const originalImage = globalThis.Image;
+  const context = {
+    drawImage: mock(() => {}),
+    getImageData: () => ({
+      data: new Uint8ClampedArray([255, 0, 0, 255])
+    })
+  } as unknown as CanvasRenderingContext2D;
+  const canvas = {
+    width: 0,
+    height: 0,
+    getContext: () => context,
+    toBlob(callback: BlobCallback) {
+      callback(new Blob(["png"], { type: "image/png" }));
+    }
+  } as unknown as HTMLCanvasElement;
+
+  document.createElement = ((tagName: string) => {
+    if (tagName === "canvas") {
+      return canvas;
+    }
+
+    return originalCreateElement(tagName);
+  }) as typeof document.createElement;
+
+  class MockImage {
+    naturalWidth = 200;
+    naturalHeight = 100;
+    onload: null | (() => void) = null;
+    onerror: null | (() => void) = null;
+
+    set src(_value: string) {
+      queueMicrotask(() => this.onload?.());
+    }
+  }
+
+  globalThis.Image = MockImage as unknown as typeof Image;
+
+  return {
     restore() {
       document.createElement = originalCreateElement;
       globalThis.Image = originalImage;
@@ -281,6 +337,88 @@ describe("app flows", () => {
     await user.click(view.getByRole("button", { name: "×" }));
 
     await waitFor(() => expect(view.container.querySelectorAll(".palette-editor").length).toBe(0));
+  });
+
+  test("samples a palette color from the uploaded image on desktop", async () => {
+    const sampling = mockImageSampling();
+    const user = userEvent.setup();
+    const view = renderAt("/register");
+    const file = new File(["hero"], "hero.png", { type: "image/png" });
+
+    try {
+      await view.findByText(/Capture a new piece/i);
+      await user.upload(getHeroUploadInput(view.container), file);
+      await user.click(view.getByRole("button", { name: /Color palette/i }));
+      await user.click(view.getByRole("button", { name: /^Pick from image$/i }));
+
+      const preview = await view.findByAltText("Hero Image");
+      Object.defineProperty(preview, "naturalWidth", { configurable: true, value: 200 });
+      Object.defineProperty(preview, "naturalHeight", { configurable: true, value: 100 });
+      preview.getBoundingClientRect = () => ({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 100,
+        right: 200,
+        bottom: 100,
+        x: 0,
+        y: 0,
+        toJSON() {
+          return "";
+        }
+      });
+
+      fireEvent.pointerDown(preview, { clientX: 50, clientY: 50 });
+
+      await waitFor(() => expect(view.container.querySelectorAll(".palette-editor").length).toBe(1));
+      expect((view.getByLabelText("Palette 1") as HTMLInputElement).value).toBe("#ff0000");
+    } finally {
+      sampling.restore();
+    }
+  });
+
+  test("returns to the preview and samples a palette color on mobile", async () => {
+    const sampling = mockImageSampling();
+    const user = userEvent.setup();
+    const view = renderAt("/register", 390);
+    const file = new File(["hero"], "hero.png", { type: "image/png" });
+
+    try {
+      await view.findByText(/Capture a new piece/i);
+      await user.upload(getHeroUploadInput(view.container), file);
+      await user.click(view.getByRole("button", { name: /Color palette/i }));
+
+      const preview = await view.findByAltText("Hero Image");
+      const scrollIntoView = mock(() => {});
+      preview.scrollIntoView = scrollIntoView as typeof preview.scrollIntoView;
+      Object.defineProperty(preview, "naturalWidth", { configurable: true, value: 200 });
+      Object.defineProperty(preview, "naturalHeight", { configurable: true, value: 100 });
+      preview.getBoundingClientRect = () => ({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 100,
+        right: 200,
+        bottom: 100,
+        x: 0,
+        y: 0,
+        toJSON() {
+          return "";
+        }
+      });
+
+      await user.click(view.getByRole("button", { name: /^Pick from image$/i }));
+
+      await waitFor(() => expect(scrollIntoView).toHaveBeenCalled());
+      expect(await view.findByText(/Tap or click inside the uploaded image/i)).toBeTruthy();
+
+      fireEvent.pointerDown(preview, { clientX: 50, clientY: 50 });
+
+      await waitFor(() => expect(view.container.querySelectorAll(".palette-editor").length).toBe(1));
+      expect((view.getByLabelText("Palette 1") as HTMLInputElement).value).toBe("#ff0000");
+    } finally {
+      sampling.restore();
+    }
   });
 
   test("re-edits an existing item and saves changes", async () => {
