@@ -403,6 +403,13 @@ button {
   dominant-baseline: middle;
 }
 
+.insight-donut-label-metric {
+  fill: var(--text);
+  font-size: 10px;
+  font-weight: 600;
+  dominant-baseline: middle;
+}
+
 .insight-icon-svg {
   width: 1rem;
   height: 1rem;

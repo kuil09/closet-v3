@@ -38,6 +38,8 @@ type SliceSide = "left" | "right";
 interface DonutSlice {
   key: string;
   label: string;
+  count: number;
+  percent: number;
   color: string;
   path: string;
   side: SliceSide;
@@ -141,6 +143,7 @@ function buildDonutLayout<T extends { key: string; label: string; count: number;
 
     return {
       ...entry,
+      percent: Math.round((entry.count / total) * 100),
       path: describeDonutSlice(startAngle, endAngle),
       side: Math.cos(midAngle) >= 0 ? ("right" as const) : ("left" as const),
       lineStartX: lineStart.x,
@@ -278,12 +281,14 @@ function InsightDonutChart({
   label,
   slices,
   renderGlyph,
-  showLabels = true
+  showLabels = true,
+  showPrimaryLabel = true
 }: {
   label: string;
   slices: DonutSlice[];
   renderGlyph: (key: string) => ReactNode;
   showLabels?: boolean;
+  showPrimaryLabel?: boolean;
 }) {
   return (
     <div className="insight-pie-wrap">
@@ -294,11 +299,15 @@ function InsightDonutChart({
         <circle className="insight-donut-core" cx={DONUT_CENTER_X} cy={DONUT_CENTER_Y} r={DONUT_INNER_RADIUS - 1} />
         {showLabels
           ? slices.map((slice) => {
-              const labelWidth = Math.max(72, slice.label.length * 7.4 + 42);
-              const labelHeight = 30;
+              const metricText = `${slice.count} · ${slice.percent}%`;
+              const primaryWidth = showPrimaryLabel ? slice.label.length * 7.1 + 42 : 0;
+              const metricWidth = metricText.length * 7 + 38;
+              const labelWidth = Math.max(94, primaryWidth, metricWidth);
+              const labelHeight = showPrimaryLabel ? 44 : 32;
               const labelX = slice.side === "right" ? DONUT_WIDTH - labelWidth - 12 : 12;
               const labelY = slice.labelY - labelHeight / 2;
               const lineEndX = slice.side === "right" ? labelX : labelX + labelWidth;
+              const metricY = showPrimaryLabel ? labelY + 30 : labelY + 18;
 
               return (
                 <g key={`${slice.key}-label`} className="insight-donut-callout">
@@ -310,16 +319,23 @@ function InsightDonutChart({
                   <rect x={labelX} y={labelY} rx={15} ry={15} width={labelWidth} height={labelHeight} className="insight-donut-label" />
                   <circle
                     cx={labelX + 15}
-                    cy={labelY + labelHeight / 2}
+                    cy={showPrimaryLabel ? labelY + 14 : labelY + labelHeight / 2}
                     r={9}
                     className="insight-donut-label-chip"
                     style={{ fill: `${slice.color}22`, stroke: slice.color }}
                   />
-                  <svg x={labelX + 9} y={labelY + 9} width={12} height={12} viewBox="0 0 20 20" className="insight-icon-svg">
-                    {renderGlyph(slice.key)}
-                  </svg>
-                  <text x={labelX + 29} y={labelY + 18} className="insight-donut-label-text">
-                    {slice.label}
+                  {showPrimaryLabel ? (
+                    <>
+                      <svg x={labelX + 9} y={labelY + 8} width={12} height={12} viewBox="0 0 20 20" className="insight-icon-svg">
+                        {renderGlyph(slice.key)}
+                      </svg>
+                      <text x={labelX + 29} y={labelY + 17} className="insight-donut-label-text">
+                        {slice.label}
+                      </text>
+                    </>
+                  ) : null}
+                  <text x={labelX + 29} y={metricY} className="insight-donut-label-metric">
+                    {metricText}
                   </text>
                 </g>
               );
@@ -486,7 +502,7 @@ export function HomePage() {
               label={t("home.insightsPaletteTitle")}
               slices={paletteSlices}
               renderGlyph={() => <PaletteGlyphPaths />}
-              showLabels={false}
+              showPrimaryLabel={false}
             />
           </div>
         </article>
