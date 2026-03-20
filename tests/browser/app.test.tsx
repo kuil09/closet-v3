@@ -420,12 +420,12 @@ describe("app flows", () => {
     await waitFor(() => expect(categoryCard?.textContent).toContain("Outerwear"));
     await waitFor(() => expect(seasonCard?.textContent).toContain("Winter"));
     await waitFor(() => expect(weatherCard?.textContent).toContain("Clear"));
-    expect(categoryCard?.querySelectorAll(".insight-pie-chart").length).toBeGreaterThan(0);
-    expect(categoryCard?.querySelectorAll(".insight-pie-marker").length).toBeGreaterThan(0);
-    expect(seasonCard?.querySelectorAll(".insight-pie-chart").length).toBeGreaterThan(0);
-    expect(seasonCard?.querySelectorAll(".insight-pie-marker").length).toBeGreaterThan(0);
-    expect(weatherCard?.querySelectorAll(".insight-pie-chart").length).toBeGreaterThan(0);
-    expect(weatherCard?.querySelectorAll(".insight-pie-marker").length).toBeGreaterThan(0);
+    expect(categoryCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
+    expect(categoryCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
+    expect(seasonCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
+    expect(seasonCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
+    expect(weatherCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
+    expect(weatherCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
     expect(view.getByText(String(activeSeedCount))).toBeTruthy();
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
