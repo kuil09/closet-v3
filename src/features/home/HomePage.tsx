@@ -6,7 +6,6 @@ import { useWeather } from "../../lib/weather/use-weather";
 import { useI18n } from "../../lib/i18n/i18n";
 import { usePreferencesStore } from "../../lib/state/preferences-store";
 import { formatTemperature } from "../../lib/utils/format";
-import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
 
 export function HomePage() {
@@ -14,7 +13,7 @@ export function HomePage() {
   const units = usePreferencesStore((state) => state.units);
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
   const lookbooks = useLiveQuery(() => atelierDb.lookbooks.toArray(), [], []);
-  const { context, loading, error, refresh } = useWeather();
+  const { context, loading, error } = useWeather();
   const [showAllRecent, setShowAllRecent] = useState(false);
 
   const activeItems = items.filter((item) => item.status !== "archived");
@@ -62,25 +61,9 @@ export function HomePage() {
           </h3>
           <div className="weather-meta">
             <p>{context ? `${context.condition} · ${Math.round(context.windKph)} kph wind` : t("home.weatherUnavailable")}</p>
-            <DisclosureSection
-              screenId="home"
-              sectionId="home-weather-details"
-              title={t("home.weatherDetails")}
-              summary={context ? t("settings.weatherAuto") : t("home.weatherUnavailable")}
-              defaultOpen={false}
-              mobileBehavior="inline"
-              variant="soft"
-            >
-              <p className="muted-copy">
-                {context ? `${context.locationName} · ${context.source}` : t("home.weatherUnavailable")}
-              </p>
-              {error ? <small>{`${error}. ${t("home.weatherFallback")}`}</small> : null}
-            </DisclosureSection>
+            {error ? <small>{`${error}. ${t("home.weatherFallback")}`}</small> : null}
           </div>
         </div>
-        <button className="secondary-button" onClick={() => void refresh()}>
-          {t("home.weatherRefresh")}
-        </button>
       </section>
 
       <section className="two-column-grid">

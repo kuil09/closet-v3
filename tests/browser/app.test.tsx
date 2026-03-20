@@ -123,11 +123,9 @@ describe("app flows", () => {
   });
 
   test("shows an unavailable state when automatic weather cannot be loaded", async () => {
-    const user = userEvent.setup();
     const view = renderAt("/", 1280, { geolocationFails: true });
 
     await waitFor(() => expect(view.getAllByText("Weather unavailable").length).toBeGreaterThan(0));
-    await user.click(view.getByRole("button", { name: /Weather details/i }));
     expect(await view.findByText(/Permission denied/i)).toBeTruthy();
   });
 

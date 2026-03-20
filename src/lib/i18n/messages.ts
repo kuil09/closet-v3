@@ -28,8 +28,6 @@ export type MessageKey =
   | "home.weatherRefreshing"
   | "home.weatherUnavailable"
   | "home.weatherFallback"
-  | "home.weatherRefresh"
-  | "home.weatherDetails"
   | "home.recentMore"
   | "home.recentLess"
   | "home.stats.items"
@@ -189,8 +187,6 @@ const base: Catalog = {
   "home.weatherRefreshing": "Refreshing conditions...",
   "home.weatherUnavailable": "Weather unavailable",
   "home.weatherFallback": "Automatic weather could not be loaded. Check location permission or network access.",
-  "home.weatherRefresh": "Refresh",
-  "home.weatherDetails": "Weather details",
   "home.recentMore": "Show more pieces",
   "home.recentLess": "Show fewer pieces",
   "home.stats.items": "Total Pieces",
@@ -351,8 +347,6 @@ export const messages: Record<Locale, Catalog> = {
     "home.weatherRefreshing": "날씨를 새로고침하는 중...",
     "home.weatherUnavailable": "날씨 정보를 불러올 수 없습니다",
     "home.weatherFallback": "자동 날씨를 불러오지 못했습니다. 위치 권한이나 네트워크 상태를 확인하세요.",
-    "home.weatherRefresh": "새로고침",
-    "home.weatherDetails": "날씨 세부 정보",
     "home.recentMore": "아이템 더 보기",
     "home.recentLess": "아이템 접기",
     "wardrobe.title": "당신의 디지털 생추어리",
