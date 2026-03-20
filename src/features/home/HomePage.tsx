@@ -181,13 +181,6 @@ export function HomePage() {
       value: t("badge.local")
     }
   ];
-  const heroHintContent = (
-    <>
-      <span className="info-hint-copy-block">{t("home.heroBody")}</span>
-      <span className="info-hint-copy-block">{t("home.heroFootnote")}</span>
-    </>
-  );
-
   return (
     <div className="page-stack home-page">
       <section className="hero-card home-hero-card home-minimal-hero home-overview-hero">
@@ -231,64 +224,32 @@ export function HomePage() {
         <div className="hero-orb home-hero-orb" />
       </section>
 
-      <section className="two-column-grid home-focus-grid">
-        <div className="panel-card">
-          <div className="panel-head home-panel-head">
-            <div>
-              <span className="section-tag">{t("home.recommendations")}</span>
-              <h3>{t("home.recommendationsTitle")}</h3>
-            </div>
-            <p className="muted-copy recommendation-context">{recommendationContext}</p>
+      <section className="panel-card">
+        <div className="panel-head home-panel-head">
+          <div>
+            <span className="section-tag">{t("home.recommendations")}</span>
+            <h3>{t("home.recommendationsTitle")}</h3>
           </div>
-          {recommendedItems.length > 0 ? (
-            <div className="recommendation-list home-recommendation-list">
-              {recommendedItems.map(({ item, recommendation }) => (
-                <RecommendationCard
-                  key={recommendation.id}
-                  item={item}
-                  recommendation={recommendation}
-                  onOpen={() => navigate(`/register?item=${item.id}`)}
-                  t={t}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="empty-state">{t("home.recommendationsEmpty")}</div>
-          )}
+          <p className="muted-copy recommendation-context">{recommendationContext}</p>
         </div>
-
-        <div className="panel-card home-overview-panel">
-          <div className="panel-head home-panel-head">
-            <div>
-              <span className="section-tag">{t("nav.home")}</span>
-              <div className="label-with-hint home-heading-with-hint">
-                <h3>{t("home.heroTitle")}</h3>
-                <InfoHint label={t("home.heroTitle")} content={heroHintContent} />
-              </div>
-            </div>
+        {recommendedItems.length > 0 ? (
+          <div className="recommendation-list home-recommendation-list">
+            {recommendedItems.map(({ item, recommendation }) => (
+              <RecommendationCard
+                key={recommendation.id}
+                item={item}
+                recommendation={recommendation}
+                onOpen={() => navigate(`/register?item=${item.id}`)}
+                t={t}
+              />
+            ))}
           </div>
-
-          <div className="home-action-stack">
-            <button
-              className="primary-button"
-              type="button"
-              onClick={() => navigate(latestDraft ? `/register?item=${latestDraft.id}` : "/register")}
-            >
-              {latestDraft ? t("home.quickPrimaryContinue") : t("home.quickPrimaryCapture")}
-            </button>
-            <button className="secondary-button" type="button" onClick={() => navigate("/wardrobe")}>
-              {t("home.quickSecondaryBrowse")}
-            </button>
-            <div className="home-action-note">
-              <span className="section-tag">{t("home.recommendations")}</span>
-              <strong>{recommendedItems[0]?.item.name ?? t("home.recommendationsEmpty")}</strong>
-              <p className="muted-copy">{recommendationContext}</p>
-            </div>
-          </div>
-        </div>
+        ) : (
+          <div className="empty-state">{t("home.recommendationsEmpty")}</div>
+        )}
       </section>
 
-      <section className="panel-card home-recent-panel">
+      <section className="panel-card">
         <div className="panel-head home-panel-head">
           <div>
             <span className="section-tag">{t("home.recent")}</span>

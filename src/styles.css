@@ -954,34 +954,6 @@ button {
   padding: 1.25rem;
 }
 
-.home-focus-grid,
-.home-overview-panel,
-.home-recent-panel {
-  align-items: start;
-}
-
-.home-action-stack,
-.home-action-note {
-  display: grid;
-  gap: 0.85rem;
-}
-
-.home-action-note {
-  padding: 1rem;
-  border-radius: 1.1rem;
-  border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
-  background: color-mix(in srgb, var(--surface-soft) 84%, transparent);
-}
-
-.home-action-note strong {
-  font-family: var(--font-display);
-  letter-spacing: -0.03em;
-}
-
-.home-action-note p {
-  margin: 0;
-}
-
 .home-panel-head {
   align-items: flex-start;
 }

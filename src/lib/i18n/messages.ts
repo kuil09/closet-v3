@@ -16,8 +16,6 @@ export type MessageKey =
   | "app.boot"
   | "app.loadingView"
   | "badge.local"
-  | "home.heroTitle"
-  | "home.heroBody"
   | "home.heroEyebrow"
   | "home.recommendations"
   | "home.recommendationsTitle"
@@ -32,10 +30,7 @@ export type MessageKey =
   | "home.stats.items"
   | "home.stats.favorites"
   | "home.stats.drafts"
-  | "home.quickPrimaryContinue"
   | "home.quickPrimaryCapture"
-  | "home.quickSecondaryBrowse"
-  | "home.heroFootnote"
   | "home.recommendationsEmpty"
   | "home.overviewTitle"
   | "home.overviewBody"
@@ -216,8 +211,6 @@ const base: Catalog = {
   "app.boot": "Building your local wardrobe studio...",
   "app.loadingView": "Loading view...",
   "badge.local": "Local-only storage",
-  "home.heroTitle": "A calmer front door for your wardrobe.",
-  "home.heroBody": "Keep capture, browsing, and explainable daily picks within reach without crowding the screen.",
   "home.heroEyebrow": "Local wardrobe studio",
   "home.recommendations": "Weather Picks",
   "home.recommendationsTitle": "What fits today",
@@ -232,10 +225,7 @@ const base: Catalog = {
   "home.stats.items": "Total Pieces",
   "home.stats.favorites": "Favorites",
   "home.stats.drafts": "Drafts",
-  "home.quickPrimaryContinue": "Continue latest draft",
   "home.quickPrimaryCapture": "Register a new piece",
-  "home.quickSecondaryBrowse": "Open wardrobe",
-  "home.heroFootnote": "Everything stays in this browser. Save as a draft first, then refine when you are ready.",
   "home.recommendationsEmpty": "Save more fit details to unlock stronger rule-based picks.",
   "home.overviewTitle": "Collection snapshot",
   "home.overviewBody": "A quieter read on what the wardrobe already covers.",
@@ -417,8 +407,6 @@ export const messages: Record<Locale, Catalog> = {
     "app.boot": "로컬 옷장 스튜디오를 준비하는 중입니다...",
     "app.loadingView": "화면을 불러오는 중입니다...",
     "badge.local": "브라우저 로컬 저장",
-    "home.heroTitle": "옷장을 위한 더 차분한 첫 화면.",
-    "home.heroBody": "등록, 탐색, 설명 가능한 오늘의 추천까지 한 화면 안에서 조용하게 이어지도록 정리했습니다.",
     "home.heroEyebrow": "로컬 옷장 스튜디오",
     "home.recommendations": "날씨 추천",
     "home.recommendationsTitle": "오늘 어울리는 아이템",
@@ -431,10 +419,7 @@ export const messages: Record<Locale, Catalog> = {
     "home.recentMore": "아이템 더 보기",
     "home.recentLess": "아이템 접기",
     "home.stats.drafts": "드래프트",
-    "home.quickPrimaryContinue": "최근 드래프트 이어서 작업",
     "home.quickPrimaryCapture": "새 아이템 등록",
-    "home.quickSecondaryBrowse": "옷장 열기",
-    "home.heroFootnote": "모든 데이터는 이 브라우저 안에만 남습니다. 우선 드래프트로 저장하고, 준비되면 나중에 다듬으세요.",
     "home.recommendationsEmpty": "착용 온도와 날씨 정보를 더 저장하면 추천 정확도가 높아집니다.",
     "home.overviewTitle": "컬렉션 스냅샷",
     "home.overviewBody": "지금 옷장이 이미 무엇을 커버하고 있는지 조용하게 읽어주는 요약입니다.",

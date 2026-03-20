@@ -9,7 +9,7 @@ describe("i18n catalog", () => {
 
   test("keeps English fallback-compatible keys for all locales", () => {
     for (const locale of Object.keys(messages) as Array<keyof typeof messages>) {
-      expect(messages[locale]["home.heroTitle"]).toBeString();
+      expect(messages[locale]["home.overviewTitle"]).toBeString();
       expect(messages[locale]["settings.title"]).toBeString();
     }
   });

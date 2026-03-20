@@ -230,6 +230,11 @@ describe("app flows", () => {
     await waitFor(() =>
       expect(Array.from(view.container.querySelectorAll(".wardrobe-filter-summary-chip")).some((node) => node.textContent === "Favorites")).toBe(true)
     );
+
+    await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
+    await view.findByRole("button", { name: /Drafts/i });
+    await user.click(view.getByRole("button", { name: /Drafts/i }));
+    await view.findByDisplayValue("Structured Wool Blazer");
   });
 
   test("opens recent items from home in the edit screen", async () => {
@@ -253,26 +258,16 @@ describe("app flows", () => {
     await view.findByDisplayValue(expectedName!);
   });
 
-  test("continues the latest draft from the home hero", async () => {
-    const user = userEvent.setup();
-    const view = renderAt("/");
-
-    await user.click(await view.findByRole("button", { name: /Continue latest draft/i }));
-    await view.findByDisplayValue("Structured Wool Blazer");
-  });
-
-  test("keeps home helper copy hidden until the info hint is opened", async () => {
+  test("keeps the collection snapshot helper copy hidden until the info hint is opened", async () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
     await view.findByRole("button", { name: /Total Pieces/i });
     expect(view.queryByText("Keep capture, browsing, and explainable daily picks within reach without crowding the screen.")).toBeNull();
     expect(view.queryByText("Everything stays in this browser. Save as a draft first, then refine when you are ready.")).toBeNull();
+    expect(view.queryByText("A calmer front door for your wardrobe.")).toBeNull();
+    expect(view.queryByRole("button", { name: /A calmer front door for your wardrobe\.\s·\sShow help/i })).toBeNull();
     expect(view.queryByText("A quieter read on what the wardrobe already covers.")).toBeNull();
-
-    await user.click(view.getByRole("button", { name: /A calmer front door for your wardrobe\.\s·\sShow help/i }));
-    expect(await view.findByText("Keep capture, browsing, and explainable daily picks within reach without crowding the screen.")).toBeTruthy();
-    expect(await view.findByText("Everything stays in this browser. Save as a draft first, then refine when you are ready.")).toBeTruthy();
 
     await user.click(view.getByRole("button", { name: /Collection snapshot\s·\sShow help/i }));
     expect(await view.findByText("A quieter read on what the wardrobe already covers.")).toBeTruthy();
@@ -681,11 +676,12 @@ describe("app flows", () => {
     const view = renderAt("/");
     const activeSeedCount = seedItems.filter((item) => item.status !== "archived").length;
 
-    await view.findByRole("button", { name: /Continue latest draft/i });
+    await view.findByRole("button", { name: /Drafts/i });
     expect(view.getByText(/What fits today/i)).toBeTruthy();
     await view.findByText(/Recent pieces, kept short/i);
-    expect(view.getAllByRole("button", { name: /Total Pieces|Favorites/i }).length).toBe(2);
+    expect(view.getAllByRole("button", { name: /Total Pieces|Favorites|Drafts/i }).length).toBe(3);
     expect(view.getByText(/Collection snapshot/i)).toBeTruthy();
+    expect(view.queryByText(/A calmer front door for your wardrobe\./i)).toBeNull();
     const overviewRows = view.container.querySelectorAll(".home-overview-row");
     expect(overviewRows.length).toBe(4);
     await waitFor(() => expect(overviewRows[0]?.textContent).toMatch(/Leading category.+·\s\d+/));
