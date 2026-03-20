@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
@@ -86,6 +86,37 @@ function splitCommaList(value: string): string[] {
     .filter(Boolean);
 }
 
+function channelToHex(value: number) {
+  return value.toString(16).padStart(2, "0").toUpperCase();
+}
+
+function sampleImageColor(image: HTMLImageElement, clientX: number, clientY: number) {
+  const bounds = image.getBoundingClientRect();
+  if (bounds.width === 0 || bounds.height === 0 || image.naturalWidth === 0 || image.naturalHeight === 0) {
+    return null;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = image.naturalWidth;
+  canvas.height = image.naturalHeight;
+  const context = canvas.getContext("2d");
+  if (!context) {
+    return null;
+  }
+
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  const x = Math.max(0, Math.min(canvas.width - 1, Math.floor(((clientX - bounds.left) / bounds.width) * canvas.width)));
+  const y = Math.max(0, Math.min(canvas.height - 1, Math.floor(((clientY - bounds.top) / bounds.height) * canvas.height)));
+  const [red, green, blue, alpha] = context.getImageData(x, y, 1, 1).data;
+
+  if (alpha === 0) {
+    return null;
+  }
+
+  return `#${channelToHex(red)}${channelToHex(green)}${channelToHex(blue)}`;
+}
+
 export function RegisterPage() {
   const { t } = useI18n();
   const navigate = useNavigate();
@@ -95,6 +126,8 @@ export function RegisterPage() {
   const [draft, setDraft] = useState<DraftState>(createEmptyDraft());
   const [pendingMetaType, setPendingMetaType] = useState<MetaAssetType>("extra");
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [isSamplingPaletteColor, setIsSamplingPaletteColor] = useState(false);
+  const heroImageElementRef = useRef<HTMLImageElement | null>(null);
   const previewUrl = useMemo(() => (draft.heroFile ? URL.createObjectURL(draft.heroFile) : null), [draft.heroFile]);
   const storedUrl = useStoredImageSource(draft.heroImage);
 
@@ -145,6 +178,35 @@ export function RegisterPage() {
       ...current,
       paletteColors: current.paletteColors.map((entry, entryIndex) => (entryIndex === index ? color : entry))
     }));
+  }
+
+  function handleHeroFileChange(file: File | null | undefined) {
+    if (!file) {
+      return;
+    }
+
+    setIsSamplingPaletteColor(false);
+    setDraft((current) => ({ ...current, heroFile: file }));
+  }
+
+  function handleImagePaletteSample(event: MouseEvent<HTMLImageElement>) {
+    if (!isSamplingPaletteColor || !heroImageElementRef.current) {
+      return;
+    }
+
+    const sampledColor = sampleImageColor(heroImageElementRef.current, event.clientX, event.clientY);
+    if (!sampledColor) {
+      setIsSamplingPaletteColor(false);
+      return;
+    }
+
+    setDraft((current) => ({
+      ...current,
+      paletteColors: current.paletteColors.includes(sampledColor)
+        ? current.paletteColors
+        : [...current.paletteColors, sampledColor]
+    }));
+    setIsSamplingPaletteColor(false);
   }
 
   async function persist(status: ClosetItem["status"]) {
@@ -225,29 +287,32 @@ export function RegisterPage() {
 
         <div className="register-primary-grid">
           <div className="image-dropzone">
-            <label className="image-dropzone-action">
-              {heroImageRef ? (
-                <ItemImage imageRef={heroImageRef} alt={draft.name || t("register.heroImage")} className="cover-image" />
-              ) : (
+            {heroImageRef ? (
+              <div className={`image-dropzone-action ${isSamplingPaletteColor ? "is-sampling" : ""}`.trim()}>
+                <ItemImage
+                  imageRef={heroImageRef}
+                  alt={draft.name || t("register.heroImage")}
+                  className="cover-image"
+                  imgRef={heroImageElementRef}
+                  onImageClick={handleImagePaletteSample}
+                />
+                {isSamplingPaletteColor ? <div className="image-sampler-hint">{t("register.pickFromImageActive")}</div> : null}
+              </div>
+            ) : (
+              <label className="image-dropzone-action">
                 <div className="dropzone-copy">
                   <strong>{t("register.heroImage")}</strong>
                   <p>{t("register.heroBody")}</p>
                 </div>
-              )}
-              <input
-                aria-label={t("register.heroImage")}
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (!file) {
-                    return;
-                  }
-                  setDraft((current) => ({ ...current, heroFile: file }));
-                }}
-              />
-            </label>
+                <input
+                  aria-label={t("register.heroImage")}
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(event) => handleHeroFileChange(event.target.files?.[0])}
+                />
+              </label>
+            )}
 
             <div className="button-row image-dropzone-controls">
               <label className="secondary-button">
@@ -257,29 +322,25 @@ export function RegisterPage() {
                   type="file"
                   accept="image/*"
                   hidden
-                  onChange={(event) => {
-                    const file = event.target.files?.[0];
-                    if (!file) {
-                      return;
-                    }
-                    setDraft((current) => ({ ...current, heroFile: file }));
-                  }}
+                  onChange={(event) => handleHeroFileChange(event.target.files?.[0])}
                 />
               </label>
               <button
                 className="secondary-button"
                 disabled={!heroImageRef}
-                onClick={() =>
+                onClick={() => {
+                  setIsSamplingPaletteColor(false);
                   setDraft((current) => ({
                     ...current,
                     heroFile: null,
                     heroImage: null
-                  }))
-                }
+                  }));
+                }}
               >
                 {t("register.removeImage")}
               </button>
             </div>
+            {isSamplingPaletteColor ? <p className="muted-copy">{t("register.pickFromImageActive")}</p> : null}
           </div>
 
           <div className="section-stack">
@@ -466,14 +527,12 @@ export function RegisterPage() {
             ))}
             <button
               className="palette-adder"
+              disabled={!heroImageRef}
               onClick={() =>
-                setDraft((current) => ({
-                  ...current,
-                  paletteColors: [...current.paletteColors, "#ADB3B0"]
-                }))
+                setIsSamplingPaletteColor((current) => (heroImageRef ? !current : current))
               }
             >
-              {t("register.addColor")}
+              {t("register.pickFromImage")}
             </button>
           </div>
         </DisclosureSection>

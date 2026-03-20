@@ -66,6 +66,8 @@ export type MessageKey =
   | "register.metaAssetType"
   | "register.metaAssets"
   | "register.addMetaImage"
+  | "register.pickFromImage"
+  | "register.pickFromImageActive"
   | "register.noMetaAssets"
   | "register.removeAsset"
   | "register.name"
@@ -223,6 +225,8 @@ const base: Catalog = {
   "register.metaAssetType": "Meta asset type",
   "register.metaAssets": "Meta Assets",
   "register.addMetaImage": "Add image",
+  "register.pickFromImage": "Pick from image",
+  "register.pickFromImageActive": "Click inside the uploaded image to sample a color.",
   "register.noMetaAssets": "No meta assets yet.",
   "register.removeAsset": "Remove asset",
   "register.name": "Name",
@@ -378,6 +382,8 @@ export const messages: Record<Locale, Catalog> = {
     "register.metaAssetType": "메타 자산 유형",
     "register.metaAssets": "메타 자산",
     "register.addMetaImage": "이미지 추가",
+    "register.pickFromImage": "이미지에서 추출",
+    "register.pickFromImageActive": "업로드된 이미지 안을 클릭해 색상을 추출하세요.",
     "register.noMetaAssets": "메타 자산이 아직 없습니다.",
     "register.removeAsset": "자산 제거",
     "register.name": "이름",

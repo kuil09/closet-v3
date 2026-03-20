@@ -612,6 +612,28 @@ button {
   border-radius: 1rem;
   overflow: hidden;
   cursor: pointer;
+  position: relative;
+}
+
+.image-dropzone-action.is-sampling {
+  cursor: crosshair;
+}
+
+.image-dropzone-action.is-sampling .cover-image {
+  filter: saturate(1.05) contrast(1.02);
+}
+
+.image-sampler-hint {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-elevated) 78%, transparent);
+  backdrop-filter: blur(14px);
+  color: var(--text);
+  font-size: 0.92rem;
 }
 
 .dropzone-copy {
