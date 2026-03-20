@@ -146,17 +146,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main
-          className="content-area"
-          onTouchStart={handleTouchStart}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-        >
-          {children}
-        </main>
+        <main className="content-area">{children}</main>
       </div>
 
-      <nav className="mobile-nav">
+      <nav className="mobile-nav" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
         {navItems.map((item) => {
           const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
           return (

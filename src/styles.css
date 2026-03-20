@@ -1109,8 +1109,6 @@ button {
 
   .content-area {
     padding: 1rem 1rem 6rem;
-    touch-action: pan-y;
-    overscroll-behavior-x: none;
   }
 
   .topbar {
@@ -1154,6 +1152,7 @@ button {
   .mobile-nav {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
+    gap: 0.35rem;
     position: fixed;
     left: 0;
     right: 0;
@@ -1163,6 +1162,8 @@ button {
     background: color-mix(in srgb, var(--surface) 85%, transparent);
     backdrop-filter: blur(16px);
     border-top: 1px solid var(--border);
+    touch-action: pan-y;
+    overscroll-behavior-x: none;
   }
 
   .mobile-nav-item {

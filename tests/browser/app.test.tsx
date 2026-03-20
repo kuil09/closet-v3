@@ -249,23 +249,23 @@ describe("app flows", () => {
     const view = renderAt("/", 768);
 
     await view.findByText(/Total Pieces/i);
-    const contentArea = document.querySelector(".content-area");
-    if (!(contentArea instanceof HTMLElement)) {
-      throw new Error("Expected content area for swipe navigation");
+    const mobileNav = document.querySelector(".mobile-nav");
+    if (!(mobileNav instanceof HTMLElement)) {
+      throw new Error("Expected mobile navigation for swipe navigation");
     }
 
     await act(async () => {
-      fireEvent.touchStart(contentArea, { touches: [{ clientX: 260, clientY: 180 }] });
-      fireEvent.touchMove(contentArea, { touches: [{ clientX: 100, clientY: 190 }] });
-      fireEvent.touchEnd(contentArea);
+      fireEvent.touchStart(mobileNav, { touches: [{ clientX: 260, clientY: 780 }] });
+      fireEvent.touchMove(mobileNav, { touches: [{ clientX: 100, clientY: 788 }] });
+      fireEvent.touchEnd(mobileNav);
     });
 
     await view.findByText(/Your Digital Sanctuary/i);
 
     await act(async () => {
-      fireEvent.touchStart(contentArea, { touches: [{ clientX: 80, clientY: 180 }] });
-      fireEvent.touchMove(contentArea, { touches: [{ clientX: 260, clientY: 188 }] });
-      fireEvent.touchEnd(contentArea);
+      fireEvent.touchStart(mobileNav, { touches: [{ clientX: 80, clientY: 780 }] });
+      fireEvent.touchMove(mobileNav, { touches: [{ clientX: 260, clientY: 788 }] });
+      fireEvent.touchEnd(mobileNav);
     });
 
     await view.findByText(/Total Pieces/i);
