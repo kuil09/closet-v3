@@ -58,17 +58,21 @@ export function HomePage() {
         <div className="weather-actions" aria-label={t("settings.units")}>
           <button
             type="button"
-            className={`mini-button ${units === "C" ? "is-active" : ""}`}
+            className={`weather-unit-toggle ${units === "C" ? "is-active" : ""}`}
+            aria-label={t("settings.unitsC")}
+            aria-pressed={units === "C"}
             onClick={() => setUnits("C")}
           >
-            {t("settings.unitsC")}
+            C
           </button>
           <button
             type="button"
-            className={`mini-button ${units === "F" ? "is-active" : ""}`}
+            className={`weather-unit-toggle ${units === "F" ? "is-active" : ""}`}
+            aria-label={t("settings.unitsF")}
+            aria-pressed={units === "F"}
             onClick={() => setUnits("F")}
           >
-            {t("settings.unitsF")}
+            F
           </button>
         </div>
       </section>
