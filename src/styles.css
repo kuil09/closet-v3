@@ -740,6 +740,10 @@ button {
   backdrop-filter: blur(14px);
 }
 
+.item-card-media {
+  position: relative;
+}
+
 .item-palette-dots {
   position: absolute;
   top: 0.75rem;
@@ -761,6 +765,15 @@ button {
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--surface-elevated) 82%, var(--text));
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.card-corner-actions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 1;
+  display: inline-flex;
+  gap: 0.4rem;
 }
 
 .recommendation-body,
@@ -811,9 +824,34 @@ button {
   line-height: 1;
 }
 
+.card-corner-button {
+  background: color-mix(in srgb, var(--surface-elevated) 78%, transparent);
+  backdrop-filter: blur(14px);
+}
+
 .card-icon-button.is-active {
   background: var(--primary);
   color: var(--surface);
+}
+
+.card-action-glyph {
+  width: 0.95rem;
+  height: 0.95rem;
+  display: block;
+}
+
+.card-action-glyph-stroke {
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card-action-glyph-fill {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  stroke-linejoin: round;
 }
 
 .mini-button,

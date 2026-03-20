@@ -397,11 +397,31 @@ function WardrobeCard({
 }) {
   return (
     <article className="item-card">
-      <button className="item-image-wrap card-button" onClick={onEdit}>
-        <ItemPaletteDots colors={item.paletteColors} />
-        <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
-        <span className="item-chip">{item.category}</span>
-      </button>
+      <div className="item-card-media">
+        <div className="card-corner-actions">
+          <button
+            className={`card-icon-button card-corner-button ${item.favorite ? "is-active" : ""}`}
+            onClick={onToggleFavorite}
+            aria-label={item.favorite ? t("wardrobe.unfavorite") : t("wardrobe.favorite")}
+            title={item.favorite ? t("wardrobe.unfavorite") : t("wardrobe.favorite")}
+          >
+            <FavoriteGlyph filled={item.favorite} />
+          </button>
+          <button
+            className="card-icon-button card-corner-button"
+            onClick={onToggleArchived}
+            aria-label={item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
+            title={item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
+          >
+            {item.status === "archived" ? <RestoreGlyph /> : <ArchiveGlyph />}
+          </button>
+        </div>
+        <button className="item-image-wrap card-button" onClick={onEdit}>
+          <ItemPaletteDots colors={item.paletteColors} />
+          <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
+          <span className="item-chip">{item.category}</span>
+        </button>
+      </div>
       <div className="item-card-body">
         <div className="item-title-row">
           <strong>{item.name}</strong>
@@ -409,25 +429,47 @@ function WardrobeCard({
       </div>
       <div className="card-actions">
         <button className="card-icon-button" onClick={onEdit} aria-label={t("wardrobe.edit")} title={t("wardrobe.edit")}>
-          <span aria-hidden="true">✎</span>
-        </button>
-        <button
-          className={`card-icon-button ${item.favorite ? "is-active" : ""}`}
-          onClick={onToggleFavorite}
-          aria-label={item.favorite ? t("wardrobe.unfavorite") : t("wardrobe.favorite")}
-          title={item.favorite ? t("wardrobe.unfavorite") : t("wardrobe.favorite")}
-        >
-          <span aria-hidden="true">{item.favorite ? "★" : "☆"}</span>
-        </button>
-        <button
-          className="card-icon-button"
-          onClick={onToggleArchived}
-          aria-label={item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
-          title={item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
-        >
-          <span aria-hidden="true">{item.status === "archived" ? "↺" : "🗃"}</span>
+          <EditGlyph />
         </button>
       </div>
     </article>
+  );
+}
+
+function EditGlyph() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" className="card-action-glyph" fill="none">
+      <path className="card-action-glyph-stroke" d="M4.5 13.8 13.8 4.5l1.7 1.7-9.3 9.3-2.7.9z" />
+      <path className="card-action-glyph-stroke" d="M11.9 4.9 14.8 7.8" />
+    </svg>
+  );
+}
+
+function FavoriteGlyph({ filled }: { filled: boolean }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" className="card-action-glyph" fill="none">
+      <path
+        className={filled ? "card-action-glyph-fill" : "card-action-glyph-stroke"}
+        d="m10 3.7 1.9 3.9 4.3.6-3.1 3 .7 4.2-3.8-2-3.8 2 .7-4.2-3.1-3 4.3-.6z"
+      />
+    </svg>
+  );
+}
+
+function ArchiveGlyph() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" className="card-action-glyph" fill="none">
+      <path className="card-action-glyph-stroke" d="M4.5 6.1h11v8.6h-11z" />
+      <path className="card-action-glyph-stroke" d="M6 6.1V4.7h8v1.4M8 9.2h4" />
+    </svg>
+  );
+}
+
+function RestoreGlyph() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" className="card-action-glyph" fill="none">
+      <path className="card-action-glyph-stroke" d="M6 10a4 4 0 1 0 1.2-2.9" />
+      <path className="card-action-glyph-stroke" d="M6 4.8v2.8h2.8" />
+    </svg>
   );
 }
