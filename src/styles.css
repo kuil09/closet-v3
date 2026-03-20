@@ -319,6 +319,31 @@ button {
   align-items: center;
 }
 
+.wardrobe-filter-panel {
+  display: grid;
+  align-items: stretch;
+  gap: 1rem;
+}
+
+.wardrobe-filter-actions {
+  align-items: stretch;
+}
+
+.wardrobe-filter-actions > * {
+  flex: 1 1 180px;
+}
+
+.wardrobe-filter-actions .chip {
+  flex: 0 0 auto;
+}
+
+.filter-primary-block {
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
 .weather-card h3,
 .panel-head h3,
 .panel-head h2 {
@@ -1103,6 +1128,10 @@ button {
   justify-content: space-between;
   gap: 0.75rem;
   align-items: center;
+}
+
+.wardrobe-filter-notes {
+  justify-content: flex-start;
 }
 
 .secondary-actions .muted-copy {

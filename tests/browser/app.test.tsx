@@ -244,28 +244,18 @@ describe("app flows", () => {
     window.confirm = originalConfirm;
   });
 
-  test("keeps advanced wardrobe filters collapsed by default and remembers expansion", async () => {
-    const user = userEvent.setup();
+  test("shows unified wardrobe filters with palette range by default", async () => {
     const view = renderAt("/wardrobe");
 
     await view.findByText(/Your Digital Sanctuary/i);
-    expect(view.queryByText("Show archived")).toBeNull();
-    await user.click(view.getByRole("button", { name: /Advanced filters/i }));
     await view.findByText("Show archived");
-    await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
-    await view.findByText(/Total Pieces/i);
-    await user.click(view.getAllByRole("link", { name: /My Wardrobe$/ })[0]);
-    await view.findByText("Show archived");
+    await view.findByText("Palette range");
   });
 
   test("filters wardrobe items by the saved palette range", async () => {
-    const user = userEvent.setup();
     const view = renderAt("/wardrobe");
 
     await view.findByText(/Your Digital Sanctuary/i);
-    if (!view.queryByText("Palette range")) {
-      await user.click(view.getByRole("button", { name: /Advanced filters/i }));
-    }
     await view.findByText("Palette range");
     expect(view.container.querySelector(".color-range-summary")).toBeNull();
     expect(view.queryByText("Black side")).toBeNull();

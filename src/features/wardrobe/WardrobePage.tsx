@@ -7,7 +7,6 @@ import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db
 import { temperatureBandLabel, normalizeToken } from "../../lib/utils/format";
 import { buildPaletteTags, itemMatchesPaletteRange } from "../../lib/utils/palette-range";
 import { useI18n } from "../../lib/i18n/i18n";
-import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
 
 type SortKey = "newest" | "favorites" | "name";
@@ -148,23 +147,87 @@ export function WardrobePage() {
     weatherFilter
   ]);
 
-  const advancedFilterCount = [
-    showArchived,
-    materialFilter !== "All",
-    occasionFilter !== "All",
-    temperatureFilter !== "All",
-    weatherFilter !== "All",
-    isColorRangeActive
-  ].filter(Boolean).length;
-
   return (
     <div className="page-stack">
-      <section className="filter-bar">
+      <section className="filter-bar wardrobe-filter-panel">
         <div className="filter-copy">
           <span className="section-tag">{t("nav.wardrobe")}</span>
           <h2>{t("wardrobe.title")}</h2>
         </div>
-        <div className="filter-actions">
+        {colorTags.length > 0 ? (
+          <div className="color-range-filter filter-primary-block">
+            <div className="color-range-head">
+              <span>{t("wardrobe.colorRange")}</span>
+            </div>
+            <div className="color-range-slider-shell">
+              <div className="color-range-slider-track" style={{ background: colorRangeTrack }} />
+              <div
+                className="color-range-slider-selection"
+                style={{
+                  left: `${rangeStartPercent}%`,
+                  right: `${100 - rangeEndPercent}%`
+                }}
+              />
+              <input
+                aria-label={t("wardrobe.colorFrom")}
+                className="color-range-thumb color-range-thumb-start"
+                type="range"
+                min={0}
+                max={maxColorIndex}
+                step={1}
+                value={effectiveColorRangeStart}
+                onChange={(event) => {
+                  const next = Number(event.target.value);
+                  setColorRangeStart(Math.min(next, effectiveColorRangeEnd));
+                }}
+              />
+              <input
+                aria-label={t("wardrobe.colorTo")}
+                className="color-range-thumb color-range-thumb-end"
+                type="range"
+                min={0}
+                max={maxColorIndex}
+                step={1}
+                value={effectiveColorRangeEnd}
+                onChange={(event) => {
+                  const next = Number(event.target.value);
+                  setColorRangeEnd(Math.max(next, effectiveColorRangeStart));
+                }}
+              />
+            </div>
+            <div className="color-range-scale" aria-hidden="true">
+              {darkestColor ? (
+                <span
+                  className="color-range-edge-swatch"
+                  style={{ backgroundColor: darkestColor }}
+                  title={darkestColor}
+                />
+              ) : null}
+              <div className="color-range-stops">
+                {colorTags.map((entry, index) => {
+                  const active = index >= effectiveColorRangeStart && index <= effectiveColorRangeEnd;
+                  return (
+                    <span
+                      key={entry.value}
+                      className={`color-range-stop ${active ? "is-active" : ""}`}
+                      style={{ backgroundColor: entry.value }}
+                      title={entry.value}
+                    />
+                  );
+                })}
+              </div>
+              {lightestColor ? (
+                <span
+                  className="color-range-edge-swatch"
+                  style={{ backgroundColor: lightestColor }}
+                  title={lightestColor}
+                />
+              ) : null}
+            </div>
+            <p className="muted-copy">{t("wardrobe.colorRangeHint")}</p>
+          </div>
+        ) : null}
+        <div className="filter-actions wardrobe-filter-actions">
           <input
             aria-label={t("wardrobe.searchLabel")}
             className="text-input"
@@ -187,22 +250,13 @@ export function WardrobePage() {
             <option value="favorites">{t("wardrobe.sortFavorites")}</option>
             <option value="name">{t("wardrobe.sortName")}</option>
           </select>
+          <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
+            {t("wardrobe.favorites")}
+          </button>
+          <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
+            {t("wardrobe.showArchived")}
+          </button>
         </div>
-      </section>
-
-      <section className="chip-row">
-        <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
-          {t("wardrobe.favorites")}
-        </button>
-      </section>
-
-      <DisclosureSection
-        screenId="wardrobe"
-        sectionId="wardrobe-advanced"
-        title={t("wardrobe.advancedFilters")}
-        summary={advancedFilterCount > 0 ? advancedFilterCount : t("disclosure.open")}
-        defaultOpen={false}
-      >
         <div className="form-grid">
           <label>
             <span>{t("register.materials")}</span>
@@ -254,87 +308,11 @@ export function WardrobePage() {
               <option value="wind">wind</option>
             </select>
           </label>
-          {colorTags.length > 0 ? (
-            <div className="full-width color-range-filter">
-              <div className="color-range-head">
-                <span>{t("wardrobe.colorRange")}</span>
-              </div>
-              <div className="color-range-slider-shell">
-                <div className="color-range-slider-track" style={{ background: colorRangeTrack }} />
-                <div
-                  className="color-range-slider-selection"
-                  style={{
-                    left: `${rangeStartPercent}%`,
-                    right: `${100 - rangeEndPercent}%`
-                  }}
-                />
-                <input
-                  aria-label={t("wardrobe.colorFrom")}
-                  className="color-range-thumb color-range-thumb-start"
-                  type="range"
-                  min={0}
-                  max={maxColorIndex}
-                  step={1}
-                  value={effectiveColorRangeStart}
-                  onChange={(event) => {
-                    const next = Number(event.target.value);
-                    setColorRangeStart(Math.min(next, effectiveColorRangeEnd));
-                  }}
-                />
-                <input
-                  aria-label={t("wardrobe.colorTo")}
-                  className="color-range-thumb color-range-thumb-end"
-                  type="range"
-                  min={0}
-                  max={maxColorIndex}
-                  step={1}
-                  value={effectiveColorRangeEnd}
-                  onChange={(event) => {
-                    const next = Number(event.target.value);
-                    setColorRangeEnd(Math.max(next, effectiveColorRangeStart));
-                  }}
-                />
-              </div>
-              <div className="color-range-scale" aria-hidden="true">
-                {darkestColor ? (
-                  <span
-                    className="color-range-edge-swatch"
-                    style={{ backgroundColor: darkestColor }}
-                    title={darkestColor}
-                  />
-                ) : null}
-                <div className="color-range-stops">
-                  {colorTags.map((entry, index) => {
-                    const active = index >= effectiveColorRangeStart && index <= effectiveColorRangeEnd;
-                    return (
-                      <span
-                        key={entry.value}
-                        className={`color-range-stop ${active ? "is-active" : ""}`}
-                        style={{ backgroundColor: entry.value }}
-                        title={entry.value}
-                      />
-                    );
-                  })}
-                </div>
-                {lightestColor ? (
-                  <span
-                    className="color-range-edge-swatch"
-                    style={{ backgroundColor: lightestColor }}
-                    title={lightestColor}
-                  />
-                ) : null}
-              </div>
-              <p className="muted-copy">{t("wardrobe.colorRangeHint")}</p>
-            </div>
-          ) : null}
         </div>
-        <div className="secondary-actions">
-          <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
-            {t("wardrobe.showArchived")}
-          </button>
+        <div className="secondary-actions wardrobe-filter-notes">
           <p className="muted-copy">{t("wardrobe.advancedHint")}</p>
         </div>
-      </DisclosureSection>
+      </section>
 
       {filtered.length === 0 ? <div className="empty-state">{t("wardrobe.empty")}</div> : null}
 
