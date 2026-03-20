@@ -20,6 +20,7 @@ export function WardrobePage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
+  const [previewItem, setPreviewItem] = useState<ClosetItem | null>(null);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [showFavorites, setShowFavorites] = useState(false);
@@ -365,12 +366,37 @@ export function WardrobePage() {
             key={item.id}
             item={item}
             t={t}
+            onPreview={() => setPreviewItem(item)}
             onEdit={() => navigate(`/register?item=${item.id}`)}
             onToggleFavorite={() => void toggleFavorite(item.id, !item.favorite)}
             onToggleArchived={() => void archiveItem(item.id, item.status !== "archived")}
           />
         ))}
       </section>
+
+      {previewItem ? (
+        <div className="image-lightbox-backdrop" role="presentation" onClick={() => setPreviewItem(null)}>
+          <section
+            className="image-lightbox"
+            role="dialog"
+            aria-modal="true"
+            aria-label={previewItem.name}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="card-icon-button image-lightbox-close"
+              aria-label={t("disclosure.close")}
+              onClick={() => setPreviewItem(null)}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+            <div className="image-lightbox-frame">
+              <ItemImage imageRef={previewItem.heroImage} alt={previewItem.name} className="image-lightbox-image" />
+            </div>
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -378,6 +404,7 @@ export function WardrobePage() {
 function WardrobeCard({
   item,
   t,
+  onPreview,
   onEdit,
   onToggleFavorite,
   onToggleArchived
@@ -391,6 +418,7 @@ function WardrobeCard({
       | "wardrobe.archive"
       | "wardrobe.edit"
   ) => string;
+  onPreview: () => void;
   onEdit: () => void;
   onToggleFavorite: () => void;
   onToggleArchived: () => void;
@@ -416,7 +444,7 @@ function WardrobeCard({
             {item.status === "archived" ? <RestoreGlyph /> : <ArchiveGlyph />}
           </button>
         </div>
-        <button className="item-image-wrap card-button" onClick={onEdit}>
+        <button className="item-image-wrap card-button" onClick={onPreview} aria-label={item.name}>
           <ItemPaletteDots colors={item.paletteColors} />
           <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
           <span className="item-chip">{item.category}</span>

@@ -332,6 +332,25 @@ describe("app flows", () => {
     expect((view.getByLabelText("Lightest color") as HTMLInputElement).value).toBe("0");
   });
 
+  test("opens a full-screen garment preview from wardrobe images", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/wardrobe");
+
+    await view.findByText("Palette range");
+    const firstImageButton = await waitFor(() => {
+      const node = view.container.querySelector<HTMLButtonElement>(".wardrobe-grid .item-image-wrap");
+      expect(node, "wardrobe image button should render").toBeTruthy();
+      return node!;
+    });
+
+    const itemName = firstImageButton.getAttribute("aria-label") ?? "";
+    await user.click(firstImageButton);
+    expect(await view.findByRole("dialog", { name: itemName })).toBeTruthy();
+
+    await user.click(view.getByRole("button", { name: /^Close$/ }));
+    await waitFor(() => expect(view.queryByRole("dialog", { name: itemName })).toBeNull());
+  });
+
   test("opens secondary controls from a mobile sheet launcher", async () => {
     const user = userEvent.setup();
     const view = renderAt("/settings", 768);
