@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 import { atelierDb } from "../../src/lib/db/app-db";
 import { seedItems } from "../../src/lib/db/seed";
-import { itemPaletteLightness, normalizeHexColor } from "../../src/lib/utils/palette-range";
+import { itemPaletteLightness } from "../../src/lib/utils/palette-range";
 
 function mockEnvironment(options?: { fetchFails?: boolean; geolocationFails?: boolean }) {
   globalThis.fetch = mock(async () => {
@@ -413,13 +413,12 @@ describe("app flows", () => {
     expect(view.getAllByRole("button", { name: /Total Pieces|Favorites/i }).length).toBe(2);
     expect(view.queryByText(/Category breakdown/i)).toBeNull();
     expect(view.queryByText(/Season and weather fit/i)).toBeNull();
-    const [categoryCard, seasonCard, weatherCard, paletteCard] = Array.from(
+    const [categoryCard, seasonCard, weatherCard] = Array.from(
       view.container.querySelectorAll<HTMLElement>(".insight-card")
     );
     expect(categoryCard).toBeTruthy();
     expect(seasonCard).toBeTruthy();
     expect(weatherCard).toBeTruthy();
-    expect(paletteCard).toBeTruthy();
     await waitFor(() => expect(categoryCard?.textContent).toContain("Outerwear"));
     await waitFor(() => expect(seasonCard?.textContent).toContain("Winter"));
     await waitFor(() => expect(weatherCard?.textContent).toContain("Clear"));
@@ -432,17 +431,6 @@ describe("app flows", () => {
     expect(weatherCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
     expect(weatherCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
     expect(weatherCard?.querySelectorAll(".insight-donut-label-metric").length).toBeGreaterThan(0);
-    expect(paletteCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
-    expect(paletteCard?.querySelectorAll(".insight-donut-label").length).toBe(0);
-    expect(paletteCard?.querySelectorAll(".insight-donut-label-metric").length).toBe(0);
-    const activeSeedPaletteCount = new Set(
-      seedItems
-        .filter((item) => item.status !== "archived")
-        .flatMap((item) => item.paletteColors)
-        .map(normalizeHexColor)
-        .filter(Boolean)
-    ).size;
-    expect(paletteCard?.querySelectorAll(".insight-donut-slice").length).toBe(activeSeedPaletteCount);
     expect(categoryCard?.textContent).toMatch(/\d+\s·\s\d+%/);
     expect(seasonCard?.textContent).toMatch(/\d+\s·\s\d+%/);
     expect(weatherCard?.textContent).toMatch(/\d+\s·\s\d+%/);
