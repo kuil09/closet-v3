@@ -319,8 +319,15 @@ button {
 
 .wardrobe-filter-panel {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   align-items: stretch;
   gap: 1rem;
+}
+
+.wardrobe-filter-panel > .filter-copy,
+.wardrobe-filter-panel > .color-range-filter,
+.wardrobe-filter-panel > .wardrobe-hidden-filters {
+  grid-column: 1 / -1;
 }
 
 .wardrobe-filter-actions {
