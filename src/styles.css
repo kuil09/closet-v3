@@ -580,6 +580,21 @@ button {
   gap: 0.75rem;
 }
 
+.item-card-button {
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.item-card-button:hover,
+.item-card-button:focus-visible {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  background: color-mix(in srgb, var(--surface-elevated) 84%, var(--primary-soft));
+}
+
 .item-image-wrap {
   aspect-ratio: 3 / 4;
   min-height: 280px;

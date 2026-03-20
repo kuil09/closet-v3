@@ -126,7 +126,12 @@ export function HomePage() {
         </div>
         <div className="wardrobe-grid">
           {visibleRecentItems.map((item) => (
-            <article key={item.id} className="item-card">
+            <button
+              key={item.id}
+              type="button"
+              className="item-card item-card-button"
+              onClick={() => navigate(`/register?item=${item.id}`)}
+            >
               <div className="item-image-wrap">
                 <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
                 <span className="item-chip">{item.category}</span>
@@ -137,7 +142,7 @@ export function HomePage() {
                   <span>{item.materials.join(" · ")}</span>
                 </div>
               </div>
-            </article>
+            </button>
           ))}
         </div>
         {recentItems.length > 4 ? (

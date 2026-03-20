@@ -103,6 +103,15 @@ describe("app flows", () => {
     expect(view.getByRole("button", { name: /^Favorites$/ }).className).toContain("is-active");
   });
 
+  test("opens recent items from home in the edit screen", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/");
+
+    await view.findByText(/Fresh additions and drafts/i);
+    await user.click(view.getByRole("button", { name: /Over-Sized Cashmere Coat/i }));
+    await view.findByDisplayValue("Over-Sized Cashmere Coat");
+  });
+
   test("creates a draft item without uploading an image", async () => {
     const user = userEvent.setup();
     const view = renderAt("/register");
