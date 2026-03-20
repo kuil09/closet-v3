@@ -9,8 +9,7 @@ import type { WeatherCondition } from "../lib/db/types";
 const navItems = [
   { to: "/", key: "nav.home" as const, icon: "⌂" },
   { to: "/wardrobe", key: "nav.wardrobe" as const, icon: "▦" },
-  { to: "/register", key: "nav.register" as const, icon: "+" },
-  { to: "/settings", key: "nav.settings" as const, icon: "⚙" }
+  { to: "/register", key: "nav.register" as const, icon: "+" }
 ];
 
 function WeatherGlyph({ condition, loading }: { condition?: WeatherCondition; loading: boolean }) {
@@ -120,40 +119,40 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="app-main">
         <header className="topbar">
-          <div className="topbar-controls">
-            <div className="topbar-weather" aria-label={t("home.weatherTitle")}>
-              <span className="topbar-weather-icon" aria-hidden="true">
-                <WeatherGlyph condition={context?.condition} loading={loading} />
-              </span>
-              <div className="topbar-weather-copy">
-                <strong>
-                  {loading && t("home.weatherRefreshing")}
-                  {!loading && context && formatTemperature(context.temperatureC, units)}
-                  {!loading && !context && t("home.weatherUnavailable")}
-                </strong>
-                <span>{context ? context.condition : error ? error : t("home.weatherUnavailable")}</span>
-              </div>
-              <div className="weather-actions topbar-weather-actions" aria-label={t("settings.units")}>
-                <button
-                  type="button"
-                  className={`weather-unit-toggle ${units === "C" ? "is-active" : ""}`}
-                  aria-label={t("settings.unitsC")}
-                  aria-pressed={units === "C"}
-                  onClick={() => setUnits("C")}
-                >
-                  C
-                </button>
-                <button
-                  type="button"
-                  className={`weather-unit-toggle ${units === "F" ? "is-active" : ""}`}
-                  aria-label={t("settings.unitsF")}
-                  aria-pressed={units === "F"}
-                  onClick={() => setUnits("F")}
-                >
-                  F
-                </button>
-              </div>
+          <div className="topbar-weather" aria-label={t("home.weatherTitle")}>
+            <span className="topbar-weather-icon" aria-hidden="true">
+              <WeatherGlyph condition={context?.condition} loading={loading} />
+            </span>
+            <div className="topbar-weather-copy">
+              <strong>
+                {loading && t("home.weatherRefreshing")}
+                {!loading && context && formatTemperature(context.temperatureC, units)}
+                {!loading && !context && t("home.weatherUnavailable")}
+              </strong>
+              <span>{context ? context.condition : error ? error : t("home.weatherUnavailable")}</span>
             </div>
+            <div className="weather-actions topbar-weather-actions" aria-label={t("settings.units")}>
+              <button
+                type="button"
+                className={`weather-unit-toggle ${units === "C" ? "is-active" : ""}`}
+                aria-label={t("settings.unitsC")}
+                aria-pressed={units === "C"}
+                onClick={() => setUnits("C")}
+              >
+                C
+              </button>
+              <button
+                type="button"
+                className={`weather-unit-toggle ${units === "F" ? "is-active" : ""}`}
+                aria-label={t("settings.unitsF")}
+                aria-pressed={units === "F"}
+                onClick={() => setUnits("F")}
+              >
+                F
+              </button>
+            </div>
+          </div>
+          <div className="topbar-controls">
             <select
               aria-label={t("settings.language")}
               className="control-select shell-language-select"
@@ -175,6 +174,9 @@ export function AppShell({ children }: { children: ReactNode }) {
             >
               <span aria-hidden="true">{theme === "light" ? "◐" : "◑"}</span>
             </button>
+            <NavLink to="/settings" className="shell-topbar-link" aria-label={t("nav.settings")} title={t("nav.settings")}>
+              <span className="shell-topbar-icon" aria-hidden="true">⚙</span>
+            </NavLink>
           </div>
         </header>
 

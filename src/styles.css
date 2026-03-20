@@ -171,7 +171,7 @@ button {
   z-index: 3;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 1rem;
   padding: 1.2rem 2rem;
   background: color-mix(in srgb, var(--surface) 82%, transparent);
@@ -195,6 +195,11 @@ button {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+.topbar-controls {
+  justify-content: flex-end;
+  margin-left: auto;
 }
 
 .page-title {
@@ -1400,6 +1405,30 @@ button {
   background: color-mix(in srgb, var(--surface-elevated) 82%, transparent);
 }
 
+.shell-topbar-link {
+  min-width: 2.9rem;
+  width: 2.9rem;
+  height: 2.9rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-elevated) 82%, transparent);
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.shell-topbar-link.is-active {
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow);
+}
+
+.shell-topbar-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
 .mobile-nav {
   display: none;
 }
@@ -1441,8 +1470,13 @@ button {
     gap: 0.55rem;
   }
 
+  .topbar {
+    gap: 0.75rem;
+  }
+
   .topbar-weather {
     padding: 0.32rem 0.38rem 0.32rem 0.62rem;
+    min-width: 0;
   }
 
   .topbar-weather-icon {
@@ -1492,7 +1526,7 @@ button {
 
   .mobile-nav {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     position: fixed;
     left: 0;
     right: 0;
