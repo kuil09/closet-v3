@@ -74,9 +74,6 @@ export type MessageKey =
   | "register.category"
   | "register.materials"
   | "register.storageLocation"
-  | "register.purchaseDate"
-  | "register.price"
-  | "register.currency"
   | "register.occasionTags"
   | "register.styleNotes"
   | "register.temperature"
@@ -93,7 +90,6 @@ export type MessageKey =
   | "register.weatherSection"
   | "register.paletteSection"
   | "register.metaSection"
-  | "register.purchaseSection"
   | "lookbook.title"
   | "lookbook.save"
   | "lookbook.export"
@@ -238,9 +234,6 @@ const base: Catalog = {
   "register.category": "Category",
   "register.materials": "Materials",
   "register.storageLocation": "Storage location",
-  "register.purchaseDate": "Purchase date",
-  "register.price": "Price",
-  "register.currency": "Currency",
   "register.occasionTags": "Occasion / tags",
   "register.styleNotes": "Style notes",
   "register.temperature": "Temperature",
@@ -257,7 +250,6 @@ const base: Catalog = {
   "register.weatherSection": "Weather and temperature fit",
   "register.paletteSection": "Color palette",
   "register.metaSection": "Meta assets",
-  "register.purchaseSection": "Purchase information",
   "lookbook.title": "Lookbook Maker",
   "lookbook.save": "Save lookbook",
   "lookbook.export": "Export PNG",
@@ -400,9 +392,6 @@ export const messages: Record<Locale, Catalog> = {
     "register.category": "카테고리",
     "register.materials": "소재",
     "register.storageLocation": "보관 위치",
-    "register.purchaseDate": "구매일",
-    "register.price": "가격",
-    "register.currency": "통화",
     "register.occasionTags": "상황 / 태그",
     "register.styleNotes": "스타일 노트",
     "register.temperature": "온도",
@@ -419,7 +408,6 @@ export const messages: Record<Locale, Catalog> = {
     "register.weatherSection": "날씨와 온도 적합도",
     "register.paletteSection": "색상 팔레트",
     "register.metaSection": "메타 자산",
-    "register.purchaseSection": "구매 정보",
     "lookbook.title": "룩북 메이커",
     "lookbook.save": "룩북 저장",
     "lookbook.export": "PNG 내보내기",

@@ -201,13 +201,6 @@ export function RegisterPage() {
     const count = draft.existingMetaAssets.length + draft.metaFiles.length;
     return count > 0 ? count : "—";
   }, [draft.existingMetaAssets.length, draft.metaFiles.length]);
-  const purchaseSummary = useMemo(() => {
-    if (draft.price) {
-      return `${draft.currency} ${draft.price}`;
-    }
-
-    return draft.purchaseDate || "—";
-  }, [draft.currency, draft.price, draft.purchaseDate]);
 
   function setPaletteColor(index: number, color: string) {
     setDraft((current) => ({
@@ -672,44 +665,6 @@ export function RegisterPage() {
           </div>
         </DisclosureSection>
 
-        <DisclosureSection
-          screenId="register"
-          sectionId="register-purchase"
-          title={t("register.purchaseSection")}
-          summary={purchaseSummary}
-        >
-          <div className="form-grid">
-            <label>
-              <span>{t("register.purchaseDate")}</span>
-              <input
-                aria-label={t("register.purchaseDate")}
-                className="text-input"
-                type="date"
-                value={draft.purchaseDate}
-                onChange={(event) => setDraft((current) => ({ ...current, purchaseDate: event.target.value }))}
-              />
-            </label>
-            <label>
-              <span>{t("register.price")}</span>
-              <input
-                aria-label={t("register.price")}
-                className="text-input"
-                type="number"
-                value={draft.price}
-                onChange={(event) => setDraft((current) => ({ ...current, price: event.target.value }))}
-              />
-            </label>
-            <label>
-              <span>{t("register.currency")}</span>
-              <input
-                aria-label={t("register.currency")}
-                className="text-input"
-                value={draft.currency}
-                onChange={(event) => setDraft((current) => ({ ...current, currency: event.target.value.toUpperCase() }))}
-              />
-            </label>
-          </div>
-        </DisclosureSection>
       </aside>
     </div>
   );
