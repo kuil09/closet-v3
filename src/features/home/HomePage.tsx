@@ -27,15 +27,6 @@ export function HomePage() {
 
   return (
     <div className="page-stack">
-      <section className="hero-card">
-        <div className="hero-copy">
-          <span className="section-tag">{t("home.heroEyebrow")}</span>
-          <h2>{t("home.heroTitle")}</h2>
-          <p>{t("home.heroBody")}</p>
-        </div>
-        <div className="hero-orb" />
-      </section>
-
       <section className="stats-grid">
         <div className="stat-card">
           <span>{t("home.stats.items")}</span>

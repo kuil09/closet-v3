@@ -74,7 +74,7 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
-    await view.findByText(/Curating your digital closet/i);
+    await view.findByText(/Total Pieces/i);
     await user.selectOptions(view.getByLabelText("Language"), "ko");
     await waitFor(() => expect(view.getAllByText("홈").length).toBeGreaterThan(0));
 
@@ -179,7 +179,7 @@ describe("app flows", () => {
     await user.click(view.getByRole("button", { name: /Advanced filters/i }));
     await view.findByText("Show archived");
     await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
-    await view.findByText(/Curating your digital closet/i);
+    await view.findByText(/Total Pieces/i);
     await user.click(view.getAllByRole("link", { name: /My Wardrobe$/ })[0]);
     await view.findByText("Show archived");
   });
