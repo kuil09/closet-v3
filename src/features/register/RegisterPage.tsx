@@ -133,6 +133,21 @@ function temperatureMessageKey(band: TemperatureBand) {
   }
 }
 
+function weatherIcon(condition: WeatherCondition) {
+  switch (condition) {
+    case "clear":
+      return "☀";
+    case "cloudy":
+      return "☁";
+    case "rain":
+      return "☂";
+    case "snow":
+      return "❄";
+    case "wind":
+      return "〰";
+  }
+}
+
 export function RegisterPage() {
   const { t } = useI18n();
   const navigate = useNavigate();
@@ -175,7 +190,10 @@ export function RegisterPage() {
     [draft.occasionTags, draft.styleNotes]
   );
   const weatherSummary = useMemo(
-    () => [t(temperatureMessageKey(selectedTemperature)), ...draft.weatherTags].slice(0, 3).join(" · ") || "—",
+    () =>
+      [t(temperatureMessageKey(selectedTemperature)), ...draft.weatherTags.map((tag) => `${weatherIcon(tag)} ${tag}`)]
+        .slice(0, 3)
+        .join(" · ") || "—",
     [draft.weatherTags, selectedTemperature, t]
   );
   const paletteSummary = useMemo(() => draft.paletteColors.slice(0, 2).join(" · ") || "—", [draft.paletteColors]);
@@ -521,7 +539,8 @@ export function RegisterPage() {
                         }))
                       }
                     >
-                      {option}
+                      <span aria-hidden="true">{weatherIcon(option)}</span>
+                      <span>{option}</span>
                     </button>
                   );
                 })}

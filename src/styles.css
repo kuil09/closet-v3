@@ -535,6 +535,13 @@ button {
   color: inherit;
 }
 
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
 .mini-button.is-active,
 .chip.is-active,
 .primary-button {
