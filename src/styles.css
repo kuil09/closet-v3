@@ -891,6 +891,10 @@ button {
   position: relative;
   min-height: 2.25rem;
   align-items: center;
+  touch-action: none;
+  overscroll-behavior: contain;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .color-range-slider-track,
@@ -924,6 +928,7 @@ button {
   margin: 0;
   background: transparent;
   pointer-events: none;
+  touch-action: none;
 }
 
 .color-range-thumb::-webkit-slider-runnable-track {
