@@ -87,6 +87,8 @@ describe("app flows", () => {
     const view = renderAt("/register");
 
     await view.findByText(/Capture a new piece/i);
+    expect((view.getByLabelText("Materials") as HTMLInputElement).value).toBe("");
+    expect(view.getAllByText("Not set").length).toBeGreaterThan(0);
     await user.type(view.getByLabelText("Name"), "Test Trench");
     await user.type(view.getByLabelText("Materials"), "Cotton, Linen");
     await user.type(view.getByLabelText("Storage location"), "Entry Closet");

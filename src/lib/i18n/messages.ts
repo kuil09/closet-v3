@@ -88,6 +88,7 @@ export type MessageKey =
   | "register.tempWarm"
   | "register.tempHot"
   | "register.weather"
+  | "register.unset"
   | "register.validationName"
   | "register.clearError"
   | "register.primaryTitle"
@@ -240,6 +241,7 @@ const base: Catalog = {
   "register.tempWarm": "Warm",
   "register.tempHot": "Hot",
   "register.weather": "Weather",
+  "register.unset": "Not set",
   "register.validationName": "A saved item needs a name.",
   "register.clearError": "Dismiss validation message",
   "register.primaryTitle": "Core garment details",
@@ -390,6 +392,7 @@ export const messages: Record<Locale, Catalog> = {
     "register.tempWarm": "따뜻함",
     "register.tempHot": "더움",
     "register.weather": "날씨",
+    "register.unset": "미설정",
     "register.validationName": "저장된 아이템에는 이름이 필요합니다.",
     "register.clearError": "검증 메시지 닫기",
     "register.primaryTitle": "핵심 의류 정보",

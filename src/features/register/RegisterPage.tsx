@@ -46,11 +46,11 @@ function createEmptyDraft(): DraftState {
     price: "",
     currency: "USD",
     storageLocation: "",
-    paletteColors: ["#5F5E5E", "#ECEFEC"],
+    paletteColors: [],
     occasionTags: "",
     styleNotes: "",
-    temperatureBand: ["mild"],
-    weatherTags: ["clear"],
+    temperatureBand: [],
+    weatherTags: [],
     heroImage: null,
     heroFile: null,
     metaFiles: [],
@@ -179,8 +179,8 @@ export function RegisterPage() {
   }, [previewUrl]);
 
   const heroImageRef = previewUrl ?? storedUrl ?? draft.heroImage;
-  const selectedTemperature = draft.temperatureBand[0] ?? "mild";
-  const selectedTemperatureIndex = Math.max(0, temperatureOptions.indexOf(selectedTemperature));
+  const selectedTemperature = draft.temperatureBand[0] ?? null;
+  const selectedTemperatureIndex = selectedTemperature ? Math.max(0, temperatureOptions.indexOf(selectedTemperature)) : 2;
   const draftTitle = useMemo(
     () => (draft.id ? `${t("register.editingTitle")} ${draft.name || t("register.title")}` : t("register.captureTitle")),
     [draft.id, draft.name, t]
@@ -191,12 +191,15 @@ export function RegisterPage() {
   );
   const weatherSummary = useMemo(
     () =>
-      [t(temperatureMessageKey(selectedTemperature)), ...draft.weatherTags.map((tag) => `${weatherIcon(tag)} ${tag}`)]
+      [
+        ...(selectedTemperature ? [t(temperatureMessageKey(selectedTemperature))] : []),
+        ...draft.weatherTags.map((tag) => `${weatherIcon(tag)} ${tag}`)
+      ]
         .slice(0, 3)
-        .join(" · ") || "—",
+        .join(" · ") || t("register.unset"),
     [draft.weatherTags, selectedTemperature, t]
   );
-  const paletteSummary = useMemo(() => draft.paletteColors.slice(0, 2).join(" · ") || "—", [draft.paletteColors]);
+  const paletteSummary = useMemo(() => draft.paletteColors.slice(0, 2).join(" · ") || t("register.unset"), [draft.paletteColors, t]);
   const metaSummary = useMemo(() => {
     const count = draft.existingMetaAssets.length + draft.metaFiles.length;
     return count > 0 ? count : "—";
@@ -413,7 +416,6 @@ export function RegisterPage() {
                   <input
                     aria-label={t("register.materials")}
                     className="text-input"
-                    placeholder="Linen, Wool, Leather"
                     value={draft.materials}
                     onChange={(event) => setDraft((current) => ({ ...current, materials: event.target.value }))}
                   />
@@ -484,8 +486,8 @@ export function RegisterPage() {
               <span className="section-tag">{t("register.temperature")}</span>
               <div className="temperature-slider-group">
                 <div className="temperature-slider-meta">
-                  <strong>{t(temperatureMessageKey(selectedTemperature))}</strong>
-                  <span>{temperatureBandLabel(selectedTemperature)}</span>
+                  <strong>{selectedTemperature ? t(temperatureMessageKey(selectedTemperature)) : t("register.unset")}</strong>
+                  <span>{selectedTemperature ? temperatureBandLabel(selectedTemperature) : "—"}</span>
                 </div>
                 <input
                   aria-label={t("register.temperature")}
@@ -572,6 +574,17 @@ export function RegisterPage() {
                 </button>
               </div>
             ))}
+            <button
+              className="palette-adder"
+              onClick={() =>
+                setDraft((current) => ({
+                  ...current,
+                  paletteColors: [...current.paletteColors, "#808080"]
+                }))
+              }
+            >
+              {t("register.addColor")}
+            </button>
             <button
               className="palette-adder"
               disabled={!heroImageRef}
