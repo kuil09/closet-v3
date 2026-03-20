@@ -5,7 +5,7 @@ import { atelierDb } from "../../lib/db/app-db";
 import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
 import { categoryMessageKey } from "../../lib/i18n/label-keys";
-import { normalizeHexColor } from "../../lib/utils/palette-range";
+import { colorLightness, normalizeHexColor } from "../../lib/utils/palette-range";
 import { ItemImage } from "../shared/ItemImage";
 import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
@@ -286,7 +286,7 @@ function InsightDonutChart({
   showLabels?: boolean;
 }) {
   return (
-    <div className={`insight-pie-wrap ${showLabels ? "" : "insight-pie-wrap-minimal"}`.trim()}>
+    <div className="insight-pie-wrap">
       <svg className="insight-donut-svg" viewBox={`0 0 ${DONUT_WIDTH} ${DONUT_HEIGHT}`} aria-label={label} role="img">
         {slices.map((slice) => (
           <path key={slice.key} d={slice.path} className="insight-donut-slice" style={{ fill: slice.color }} />
@@ -389,11 +389,17 @@ export function HomePage() {
     }
 
     return Array.from(counts.entries())
-      .sort((left, right) => right[1] - left[1])
-      .slice(0, 5)
       .map(([color, count]) => ({
         key: color,
         label: color,
+        count,
+        color,
+        lightness: colorLightness(color)
+      }))
+      .sort((left, right) => left.lightness - right.lightness || right.count - left.count)
+      .map(({ key, label, count, color }) => ({
+        key,
+        label,
         count,
         color
       }));

@@ -364,18 +364,10 @@ button {
   min-height: 17rem;
 }
 
-.insight-pie-wrap-minimal {
-  min-height: 15rem;
-}
-
 .insight-donut-svg {
   width: 100%;
   height: auto;
   overflow: visible;
-}
-
-.insight-pie-wrap-minimal .insight-donut-svg {
-  max-width: 18rem;
 }
 
 .insight-donut-slice {

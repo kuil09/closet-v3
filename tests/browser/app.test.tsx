@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 import { atelierDb } from "../../src/lib/db/app-db";
 import { seedItems } from "../../src/lib/db/seed";
-import { itemPaletteLightness } from "../../src/lib/utils/palette-range";
+import { itemPaletteLightness, normalizeHexColor } from "../../src/lib/utils/palette-range";
 
 function mockEnvironment(options?: { fetchFails?: boolean; geolocationFails?: boolean }) {
   globalThis.fetch = mock(async () => {
@@ -431,6 +431,14 @@ describe("app flows", () => {
     expect(weatherCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
     expect(paletteCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
     expect(paletteCard?.querySelectorAll(".insight-donut-label").length).toBe(0);
+    const activeSeedPaletteCount = new Set(
+      seedItems
+        .filter((item) => item.status !== "archived")
+        .flatMap((item) => item.paletteColors)
+        .map(normalizeHexColor)
+        .filter(Boolean)
+    ).size;
+    expect(paletteCard?.querySelectorAll(".insight-donut-slice").length).toBe(activeSeedPaletteCount);
     expect(view.getByText(String(activeSeedCount))).toBeTruthy();
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
