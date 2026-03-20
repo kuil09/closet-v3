@@ -545,6 +545,12 @@ button {
   display: block;
 }
 
+.garment-card-image {
+  object-fit: contain;
+  object-position: center;
+  padding: 0.9rem;
+}
+
 .image-fallback {
   background: linear-gradient(145deg, var(--surface-muted), var(--surface-soft));
 }

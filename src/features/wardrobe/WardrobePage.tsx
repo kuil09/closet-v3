@@ -379,7 +379,7 @@ function WardrobeCard({
   return (
     <article className="item-card">
       <button className="item-image-wrap card-button" onClick={onEdit}>
-        <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image" />
+        <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
         <span className="item-chip">{item.category}</span>
       </button>
       <div className="item-card-body">

@@ -546,7 +546,7 @@ function ItemPreview({ item }: { item: ClosetItem }) {
   return (
     <>
       <div className="drawer-thumb">
-        <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image" />
+        <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
       </div>
       <div className="drawer-meta">
         <strong>{item.name}</strong>

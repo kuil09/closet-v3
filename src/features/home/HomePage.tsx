@@ -107,7 +107,7 @@ export function HomePage() {
           {visibleRecentItems.map((item) => (
             <article key={item.id} className="item-card">
               <div className="item-image-wrap">
-                <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image" />
+                <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
                 <span className="item-chip">{item.category}</span>
               </div>
               <div className="item-card-body">
