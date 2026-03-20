@@ -378,6 +378,20 @@ button {
   background: color-mix(in srgb, var(--surface-elevated) 82%, transparent);
 }
 
+.topbar-weather-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.45rem;
+  height: 1.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-soft) 86%, transparent);
+  color: var(--text);
+  font-size: 0.88rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 .topbar-weather-copy {
   display: grid;
   gap: 0.08rem;
@@ -1238,6 +1252,12 @@ button {
 
   .topbar-weather {
     padding: 0.32rem 0.38rem 0.32rem 0.62rem;
+  }
+
+  .topbar-weather-icon {
+    width: 1.3rem;
+    height: 1.3rem;
+    font-size: 0.8rem;
   }
 
   .topbar-weather-copy span {

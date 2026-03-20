@@ -4,6 +4,7 @@ import { useI18n } from "../lib/i18n/i18n";
 import { usePreferencesStore } from "../lib/state/preferences-store";
 import { useWeather } from "../lib/weather/use-weather";
 import { formatTemperature } from "../lib/utils/format";
+import type { WeatherCondition } from "../lib/db/types";
 
 const navItems = [
   { to: "/", key: "nav.home" as const, icon: "⌂" },
@@ -12,6 +13,14 @@ const navItems = [
   { to: "/lookbook", key: "nav.lookbook" as const, icon: "✦" },
   { to: "/settings", key: "nav.settings" as const, icon: "⚙" }
 ];
+
+const weatherIcons: Record<WeatherCondition, string> = {
+  clear: "☀",
+  cloudy: "☁",
+  rain: "☂",
+  snow: "❄",
+  wind: "≋"
+};
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -26,6 +35,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const activeLabel =
     navItems.find((item) => (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)))?.key ?? "nav.home";
+  const weatherIcon = context ? weatherIcons[context.condition] : loading ? "◌" : "·";
 
   return (
     <div className="app-shell">
@@ -55,6 +65,9 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div className="topbar-controls">
             <div className="topbar-weather" aria-label={t("home.weatherTitle")}>
+              <span className="topbar-weather-icon" aria-hidden="true">
+                {weatherIcon}
+              </span>
               <div className="topbar-weather-copy">
                 <strong>
                   {loading && t("home.weatherRefreshing")}
