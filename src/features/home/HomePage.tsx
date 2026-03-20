@@ -502,7 +502,7 @@ export function HomePage() {
               label={t("home.insightsPaletteTitle")}
               slices={paletteSlices}
               renderGlyph={() => <PaletteGlyphPaths />}
-              showPrimaryLabel={false}
+              showLabels={false}
             />
           </div>
         </article>

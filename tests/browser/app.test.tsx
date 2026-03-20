@@ -433,8 +433,8 @@ describe("app flows", () => {
     expect(weatherCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
     expect(weatherCard?.querySelectorAll(".insight-donut-label-metric").length).toBeGreaterThan(0);
     expect(paletteCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
-    expect(paletteCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
-    expect(paletteCard?.querySelectorAll(".insight-donut-label-metric").length).toBeGreaterThan(0);
+    expect(paletteCard?.querySelectorAll(".insight-donut-label").length).toBe(0);
+    expect(paletteCard?.querySelectorAll(".insight-donut-label-metric").length).toBe(0);
     const activeSeedPaletteCount = new Set(
       seedItems
         .filter((item) => item.status !== "archived")
@@ -446,7 +446,6 @@ describe("app flows", () => {
     expect(categoryCard?.textContent).toMatch(/\d+\s·\s\d+%/);
     expect(seasonCard?.textContent).toMatch(/\d+\s·\s\d+%/);
     expect(weatherCard?.textContent).toMatch(/\d+\s·\s\d+%/);
-    expect(paletteCard?.textContent).toMatch(/\d+\s·\s\d+%/);
     expect(view.getByText(String(activeSeedCount))).toBeTruthy();
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
