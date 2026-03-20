@@ -142,7 +142,6 @@ describe("app flows", () => {
 
     await view.findByText(/Capture a new piece/i);
     expect((view.getByLabelText("Materials") as HTMLInputElement).value).toBe("");
-    expect(view.getAllByText("Not set").length).toBeGreaterThan(0);
     await user.type(view.getByLabelText("Name"), "Test Trench");
     await user.type(view.getByLabelText("Materials"), "Cotton, Linen");
     await user.type(view.getByLabelText("Storage location"), "Entry Closet");
@@ -167,6 +166,22 @@ describe("app flows", () => {
 
     await user.click(view.getByText("Remove asset"));
     await waitFor(() => expect(view.queryByText(/receipt\.png/i)).toBeNull());
+  });
+
+  test("limits palette colors to three in the register flow", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/register");
+
+    await view.findByText(/Capture a new piece/i);
+    await user.click(view.getByRole("button", { name: /Color palette/i }));
+
+    const addColorButton = view.getByRole("button", { name: /^Add color$/ });
+    await user.click(addColorButton);
+    await user.click(addColorButton);
+    await user.click(addColorButton);
+
+    expect(view.container.querySelectorAll(".palette-editor").length).toBe(3);
+    expect((view.getByRole("button", { name: /^Add color$/ }) as HTMLButtonElement).disabled).toBe(true);
   });
 
   test("re-edits an existing item and saves changes", async () => {

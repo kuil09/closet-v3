@@ -202,7 +202,8 @@ export function RegisterPage() {
         .join(" · ") || t("register.unset"),
     [draft.weatherTags, selectedTemperature, t]
   );
-  const paletteSummary = useMemo(() => draft.paletteColors.slice(0, 2).join(" · ") || t("register.unset"), [draft.paletteColors, t]);
+  const paletteSummary = useMemo(() => draft.paletteColors.slice(0, 3).join(" · ") || t("register.unset"), [draft.paletteColors, t]);
+  const isPaletteLimitReached = draft.paletteColors.length >= 3;
   const metaSummary = useMemo(() => {
     const count = draft.existingMetaAssets.length + draft.metaFiles.length;
     return count > 0 ? count : "—";
@@ -237,7 +238,7 @@ export function RegisterPage() {
 
     setDraft((current) => ({
       ...current,
-      paletteColors: current.paletteColors.includes(sampledColor)
+      paletteColors: current.paletteColors.includes(sampledColor) || current.paletteColors.length >= 3
         ? current.paletteColors
         : [...current.paletteColors, sampledColor]
     }));
@@ -470,8 +471,8 @@ export function RegisterPage() {
           screenId="register"
           sectionId="register-style"
           title={t("register.styleSection")}
-          summary={styleSummary}
         >
+          <div className="register-section-summary">{styleSummary}</div>
           <div className="form-grid">
             <label className="full-width">
               <span>{t("register.occasionTags")}</span>
@@ -500,8 +501,8 @@ export function RegisterPage() {
           screenId="register"
           sectionId="register-weather"
           title={t("register.weatherSection")}
-          summary={weatherSummary}
         >
+          <div className="register-section-summary">{weatherSummary}</div>
           <div className="selector-group">
             <div>
               <span className="section-tag">{t("register.temperature")}</span>
@@ -569,8 +570,8 @@ export function RegisterPage() {
           screenId="register"
           sectionId="register-palette"
           title={t("register.paletteSection")}
-          summary={paletteSummary}
         >
+          <div className="register-section-summary">{paletteSummary}</div>
           <div className="palette-row">
             {draft.paletteColors.map((color, index) => (
               <div key={`${color}-${index}`} className="palette-editor">
@@ -597,10 +598,11 @@ export function RegisterPage() {
             ))}
             <button
               className="palette-adder"
+              disabled={isPaletteLimitReached}
               onClick={() =>
                 setDraft((current) => ({
                   ...current,
-                  paletteColors: [...current.paletteColors, "#808080"]
+                  paletteColors: current.paletteColors.length >= 3 ? current.paletteColors : [...current.paletteColors, "#808080"]
                 }))
               }
             >
@@ -608,7 +610,7 @@ export function RegisterPage() {
             </button>
             <button
               className="palette-adder"
-              disabled={!heroImageRef}
+              disabled={!heroImageRef || isPaletteLimitReached}
               onClick={() =>
                 setIsSamplingPaletteColor((current) => (heroImageRef ? !current : current))
               }
@@ -627,8 +629,8 @@ export function RegisterPage() {
           screenId="register"
           sectionId="register-meta"
           title={t("register.metaSection")}
-          summary={metaSummary}
         >
+          <div className="register-section-summary">{metaSummary}</div>
           <div className="detail-stack">
             <div className="meta-upload-row">
               <select

@@ -623,6 +623,12 @@ button {
   gap: 1rem;
 }
 
+.register-section-summary {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
 .sheet-backdrop {
   position: fixed;
   inset: 0;
