@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { useI18n } from "../../lib/i18n/i18n";
 import { ItemImage } from "../shared/ItemImage";
+import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
 export function HomePage() {
   const { t } = useI18n();
@@ -44,6 +45,7 @@ export function HomePage() {
               onClick={() => navigate(`/register?item=${item.id}`)}
             >
               <div className="item-image-wrap">
+                <ItemPaletteDots colors={item.paletteColors} />
                 <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
                 <span className="item-chip">{item.category}</span>
               </div>

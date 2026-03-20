@@ -10,6 +10,7 @@ import { useI18n } from "../../lib/i18n/i18n";
 import { InfoHint } from "../shared/InfoHint";
 import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
+import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
 type SortField = "updated" | "name" | "color";
 type SortDirection = "asc" | "desc";
@@ -398,6 +399,7 @@ function WardrobeCard({
   return (
     <article className="item-card">
       <button className="item-image-wrap card-button" onClick={onEdit}>
+        <ItemPaletteDots colors={item.paletteColors} />
         <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
         <span className="item-chip">{item.category}</span>
       </button>

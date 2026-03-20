@@ -337,5 +337,8 @@ describe("app flows", () => {
 
     await view.findByText(/Fresh additions and drafts/i);
     expect(view.getAllByRole("button", { name: /Total Pieces|Favorites/i }).length).toBe(2);
+    const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
+    expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
+    expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeLessThanOrEqual(3);
   });
 });

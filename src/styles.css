@@ -737,6 +737,29 @@ button {
   backdrop-filter: blur(14px);
 }
 
+.item-palette-dots {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.38rem 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-elevated) 78%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.item-palette-dot {
+  display: block;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--surface-elevated) 82%, var(--text));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 8%, transparent);
+}
+
 .recommendation-body,
 .item-card-body,
 .item-meta {
