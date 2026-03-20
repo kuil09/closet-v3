@@ -3,9 +3,10 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { archiveItem, toggleFavorite } from "../../lib/db/repository";
-import type { ClosetItem } from "../../lib/db/types";
+import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { temperatureBandLabel, normalizeToken } from "../../lib/utils/format";
 import { useI18n } from "../../lib/i18n/i18n";
+import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
 
 type SortKey = "newest" | "favorites" | "name";
@@ -19,10 +20,22 @@ export function WardrobePage() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [sort, setSort] = useState<SortKey>("newest");
+  const [materialFilter, setMaterialFilter] = useState("All");
+  const [occasionFilter, setOccasionFilter] = useState("All");
+  const [temperatureFilter, setTemperatureFilter] = useState<TemperatureBand | "All">("All");
+  const [weatherFilter, setWeatherFilter] = useState<WeatherCondition | "All">("All");
   const deferredSearch = useDeferredValue(search);
 
   const categories = useMemo(
     () => ["All", ...Array.from(new Set(items.map((item) => item.category)))],
+    [items]
+  );
+  const materials = useMemo(
+    () => ["All", ...Array.from(new Set(items.flatMap((item) => item.materials).filter(Boolean)))],
+    [items]
+  );
+  const occasions = useMemo(
+    () => ["All", ...Array.from(new Set(items.flatMap((item) => item.occasionTags).filter(Boolean)))],
     [items]
   );
 
@@ -36,6 +49,18 @@ export function WardrobePage() {
         return false;
       }
       if (category !== "All" && item.category !== category) {
+        return false;
+      }
+      if (materialFilter !== "All" && !item.materials.includes(materialFilter)) {
+        return false;
+      }
+      if (occasionFilter !== "All" && !item.occasionTags.includes(occasionFilter)) {
+        return false;
+      }
+      if (temperatureFilter !== "All" && !item.temperatureBand.includes(temperatureFilter)) {
+        return false;
+      }
+      if (weatherFilter !== "All" && !item.weatherTags.includes(weatherFilter)) {
         return false;
       }
       if (!token) {
@@ -64,7 +89,9 @@ export function WardrobePage() {
 
       return right.updatedAt.localeCompare(left.updatedAt);
     });
-  }, [category, deferredSearch, items, showArchived, showFavorites, sort]);
+  }, [category, deferredSearch, items, materialFilter, occasionFilter, showArchived, showFavorites, sort, temperatureFilter, weatherFilter]);
+
+  const advancedFilterCount = [showArchived, materialFilter !== "All", occasionFilter !== "All", temperatureFilter !== "All", weatherFilter !== "All"].filter(Boolean).length;
 
   return (
     <div className="page-stack">
@@ -103,10 +130,74 @@ export function WardrobePage() {
         <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
           {t("wardrobe.favorites")}
         </button>
-        <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
-          {t("wardrobe.showArchived")}
-        </button>
       </section>
+
+      <DisclosureSection
+        screenId="wardrobe"
+        sectionId="wardrobe-advanced"
+        title={t("wardrobe.advancedFilters")}
+        summary={advancedFilterCount > 0 ? advancedFilterCount : t("disclosure.open")}
+        defaultOpen={false}
+      >
+        <div className="form-grid">
+          <label>
+            <span>{t("register.materials")}</span>
+            <select className="control-select" value={materialFilter} onChange={(event) => setMaterialFilter(event.target.value)}>
+              {materials.map((entry) => (
+                <option key={entry} value={entry}>
+                  {entry}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>{t("register.occasionTags")}</span>
+            <select className="control-select" value={occasionFilter} onChange={(event) => setOccasionFilter(event.target.value)}>
+              {occasions.map((entry) => (
+                <option key={entry} value={entry}>
+                  {entry}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>{t("register.temperature")}</span>
+            <select
+              className="control-select"
+              value={temperatureFilter}
+              onChange={(event) => setTemperatureFilter(event.target.value as TemperatureBand | "All")}
+            >
+              <option value="All">All</option>
+              <option value="freezing">freezing</option>
+              <option value="cold">cold</option>
+              <option value="mild">mild</option>
+              <option value="warm">warm</option>
+              <option value="hot">hot</option>
+            </select>
+          </label>
+          <label>
+            <span>{t("register.weather")}</span>
+            <select
+              className="control-select"
+              value={weatherFilter}
+              onChange={(event) => setWeatherFilter(event.target.value as WeatherCondition | "All")}
+            >
+              <option value="All">All</option>
+              <option value="clear">clear</option>
+              <option value="cloudy">cloudy</option>
+              <option value="rain">rain</option>
+              <option value="snow">snow</option>
+              <option value="wind">wind</option>
+            </select>
+          </label>
+        </div>
+        <div className="secondary-actions">
+          <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
+            {t("wardrobe.showArchived")}
+          </button>
+          <p className="muted-copy">{t("wardrobe.advancedHint")}</p>
+        </div>
+      </DisclosureSection>
 
       {filtered.length === 0 ? <div className="empty-state">{t("wardrobe.empty")}</div> : null}
 
@@ -134,7 +225,15 @@ function WardrobeCard({
   onToggleArchived
 }: {
   item: ClosetItem;
-  t: (key: "wardrobe.materialUnknown" | "wardrobe.unfavorite" | "wardrobe.favorite" | "wardrobe.restore" | "wardrobe.archive") => string;
+  t: (
+    key:
+      | "wardrobe.materialUnknown"
+      | "wardrobe.unfavorite"
+      | "wardrobe.favorite"
+      | "wardrobe.restore"
+      | "wardrobe.archive"
+      | "wardrobe.edit"
+  ) => string;
   onEdit: () => void;
   onToggleFavorite: () => void;
   onToggleArchived: () => void;
@@ -148,11 +247,14 @@ function WardrobeCard({
       <div className="item-meta">
         <div>
           <strong>{item.name}</strong>
-                <span>{item.materials.join(" · ") || t("wardrobe.materialUnknown")}</span>
-              </div>
-              <span>{item.temperatureBand.map(temperatureBandLabel).join(", ")}</span>
+          <span>{item.materials.join(" · ") || t("wardrobe.materialUnknown")}</span>
+        </div>
+        <span>{item.temperatureBand.map(temperatureBandLabel).join(", ")}</span>
       </div>
       <div className="card-actions">
+        <button className="primary-button" onClick={onEdit}>
+          {t("wardrobe.edit")}
+        </button>
         <button className={`mini-button ${item.favorite ? "is-active" : ""}`} onClick={onToggleFavorite}>
           {item.favorite ? `★ ${t("wardrobe.unfavorite")}` : `☆ ${t("wardrobe.favorite")}`}
         </button>

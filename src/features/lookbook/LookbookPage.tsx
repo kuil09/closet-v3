@@ -9,6 +9,7 @@ import type { ClosetItem, Lookbook, LookbookElement } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
 import { useStoredImageSource } from "../../lib/media/images";
 import { makeId } from "../../lib/utils/id";
+import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
 
 const backgroundMap = {
@@ -322,13 +323,14 @@ export function LookbookPage() {
       </section>
 
       <aside className="lookbook-sidebar">
-        <section className="panel-card">
-          <div className="panel-head">
-            <div>
-              <span className="section-tag">{t("lookbook.inspector")}</span>
-              <h3>{selectedElement ? elementLabel(selectedElement) : t("lookbook.selectElement")}</h3>
-            </div>
-          </div>
+        <DisclosureSection
+          screenId="lookbook"
+          sectionId="lookbook-inspector"
+          title={t("lookbook.inspector")}
+          summary={selectedElement ? elementLabel(selectedElement) : t("lookbook.selectElement")}
+          defaultOpen
+          mobileBehavior="sheet"
+        >
           {selectedElement ? (
             <div className="inspector-grid">
               {(selectedElement.type === "headline" || selectedElement.type === "bodyText") && (
@@ -343,61 +345,7 @@ export function LookbookPage() {
                   />
                 </label>
               )}
-              <label>
-                <span>{t("lookbook.width")}</span>
-                <input
-                  aria-label={t("lookbook.width")}
-                  className="text-input"
-                  type="number"
-                  value={selectedElement.size.width}
-                  onChange={(event) =>
-                    upsertElement({
-                      ...selectedElement,
-                      size: { ...selectedElement.size, width: Number(event.target.value) || 0 }
-                    })
-                  }
-                />
-              </label>
-              <label>
-                <span>{t("lookbook.height")}</span>
-                <input
-                  aria-label={t("lookbook.height")}
-                  className="text-input"
-                  type="number"
-                  value={selectedElement.size.height}
-                  onChange={(event) =>
-                    upsertElement({
-                      ...selectedElement,
-                      size: { ...selectedElement.size, height: Number(event.target.value) || 0 }
-                    })
-                  }
-                />
-              </label>
-              <label>
-                <span>{t("lookbook.rotation")}</span>
-                <input
-                  aria-label={t("lookbook.rotation")}
-                  className="text-input"
-                  type="number"
-                  value={selectedElement.rotation}
-                  onChange={(event) =>
-                    upsertElement({ ...selectedElement, rotation: Number(event.target.value) || 0 })
-                  }
-                />
-              </label>
-              <label>
-                <span>{t("lookbook.layer")}</span>
-                <input
-                  aria-label={t("lookbook.layer")}
-                  className="text-input"
-                  type="number"
-                  value={selectedElement.zIndex}
-                  onChange={(event) =>
-                    upsertElement({ ...selectedElement, zIndex: Number(event.target.value) || 0 })
-                  }
-                />
-              </label>
-              <div className="button-row full-width">
+              <div className="inspector-actions full-width">
                 <button className="secondary-button" onClick={() => moveSelected("backward")}>
                   {t("lookbook.backward")}
                 </button>
@@ -414,19 +362,86 @@ export function LookbookPage() {
                   {t("lookbook.delete")}
                 </button>
               </div>
+              <DisclosureSection
+                screenId="lookbook"
+                sectionId="lookbook-transform"
+                title={t("lookbook.transform")}
+                summary={`z${selectedElement.zIndex}`}
+                defaultOpen={false}
+                mobileBehavior="inline"
+                variant="soft"
+                className="full-width"
+              >
+                <div className="form-grid">
+                  <label>
+                    <span>{t("lookbook.width")}</span>
+                    <input
+                      aria-label={t("lookbook.width")}
+                      className="text-input"
+                      type="number"
+                      value={selectedElement.size.width}
+                      onChange={(event) =>
+                        upsertElement({
+                          ...selectedElement,
+                          size: { ...selectedElement.size, width: Number(event.target.value) || 0 }
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    <span>{t("lookbook.height")}</span>
+                    <input
+                      aria-label={t("lookbook.height")}
+                      className="text-input"
+                      type="number"
+                      value={selectedElement.size.height}
+                      onChange={(event) =>
+                        upsertElement({
+                          ...selectedElement,
+                          size: { ...selectedElement.size, height: Number(event.target.value) || 0 }
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    <span>{t("lookbook.rotation")}</span>
+                    <input
+                      aria-label={t("lookbook.rotation")}
+                      className="text-input"
+                      type="number"
+                      value={selectedElement.rotation}
+                      onChange={(event) =>
+                        upsertElement({ ...selectedElement, rotation: Number(event.target.value) || 0 })
+                      }
+                    />
+                  </label>
+                  <label>
+                    <span>{t("lookbook.layer")}</span>
+                    <input
+                      aria-label={t("lookbook.layer")}
+                      className="text-input"
+                      type="number"
+                      value={selectedElement.zIndex}
+                      onChange={(event) =>
+                        upsertElement({ ...selectedElement, zIndex: Number(event.target.value) || 0 })
+                      }
+                    />
+                  </label>
+                </div>
+              </DisclosureSection>
             </div>
           ) : (
             <p className="muted-copy">{t("lookbook.selectElement")}</p>
           )}
-        </section>
+        </DisclosureSection>
 
-        <section className="panel-card">
-          <div className="panel-head">
-            <div>
-              <span className="section-tag">{t("lookbook.drawer")}</span>
-              <h3>{t("lookbook.drawerTitle")}</h3>
-            </div>
-          </div>
+        <DisclosureSection
+          screenId="lookbook"
+          sectionId="lookbook-drawer"
+          title={t("lookbook.drawer")}
+          summary={items.length}
+          mobileBehavior="sheet"
+        >
           <div className="closet-drawer-grid">
             {items.map((item) => (
               <button key={item.id} className="drawer-card" onClick={() => addItem(item)}>
@@ -434,15 +449,15 @@ export function LookbookPage() {
               </button>
             ))}
           </div>
-        </section>
+        </DisclosureSection>
 
-        <section className="panel-card">
-          <div className="panel-head">
-            <div>
-              <span className="section-tag">{t("lookbook.savedBoards")}</span>
-              <h3>{t("lookbook.savedBoardsTitle")}</h3>
-            </div>
-          </div>
+        <DisclosureSection
+          screenId="lookbook"
+          sectionId="lookbook-saved"
+          title={t("lookbook.savedBoards")}
+          summary={lookbooks.length}
+          mobileBehavior="sheet"
+        >
           <div className="saved-lookbook-list">
             {lookbooks.length === 0 ? <p className="muted-copy">{t("lookbook.noBoards")}</p> : null}
             {lookbooks.map((lookbook) => (
@@ -452,15 +467,15 @@ export function LookbookPage() {
               </button>
             ))}
           </div>
-        </section>
+        </DisclosureSection>
 
-        <section className="panel-card">
-          <div className="panel-head">
-            <div>
-              <span className="section-tag">{t("lookbook.inspector")}</span>
-              <h3>{`${current.elements.length} ${t("lookbook.layers")}`}</h3>
-            </div>
-          </div>
+        <DisclosureSection
+          screenId="lookbook"
+          sectionId="lookbook-layers"
+          title={t("lookbook.layers")}
+          summary={current.elements.length}
+          mobileBehavior="sheet"
+        >
           <div className="saved-lookbook-list">
             {[...current.elements]
               .sort((left, right) => left.zIndex - right.zIndex)
@@ -475,7 +490,7 @@ export function LookbookPage() {
                 </button>
               ))}
           </div>
-        </section>
+        </DisclosureSection>
       </aside>
     </div>
   );

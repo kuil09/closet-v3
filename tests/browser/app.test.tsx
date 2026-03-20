@@ -37,8 +37,18 @@ function mockEnvironment() {
   });
 }
 
-function renderAt(path: string) {
+function setViewportWidth(width: number) {
+  Object.defineProperty(window, "innerWidth", {
+    configurable: true,
+    writable: true,
+    value: width
+  });
+  window.dispatchEvent(new Event("resize"));
+}
+
+function renderAt(path: string, width = 1280) {
   mockEnvironment();
+  setViewportWidth(width);
   window.history.replaceState({}, "", `http://localhost${path}`);
   return render(<App />);
 }
@@ -76,6 +86,7 @@ describe("app flows", () => {
     const file = new File(["meta"], "receipt.png", { type: "image/png" });
 
     await view.findByText(/Capture a new piece/i);
+    await user.click(view.getByRole("button", { name: /Meta assets/i }));
     await user.upload(view.getByLabelText("Add image"), file);
     expect(await view.findByText(/receipt\.png/i)).toBeTruthy();
 
@@ -101,6 +112,7 @@ describe("app flows", () => {
     const view = renderAt("/settings");
 
     await view.findByText("Product controls");
+    await user.click(view.getByRole("button", { name: /Weather settings/i }));
     await user.selectOptions(view.getByDisplayValue("Auto"), "manual");
     await user.clear(view.getByLabelText("Manual temperature"));
     await user.type(view.getByLabelText("Manual temperature"), "24");
@@ -122,8 +134,8 @@ describe("app flows", () => {
     await user.type(titleInput, "Studio Test");
     await user.click(view.getByText("Add note"));
     await user.click(view.getByText("Save lookbook"));
-
-    await waitFor(() => expect(view.getByText("Studio Test")).toBeTruthy());
+    await user.click(view.getByRole("button", { name: /Saved boards/i }));
+    await waitFor(() => expect(view.getAllByText("Studio Test").length).toBeGreaterThan(0));
   });
 
   test("clears local data after confirmation", async () => {
@@ -133,11 +145,36 @@ describe("app flows", () => {
     const view = renderAt("/settings");
 
     await view.findByText("Product controls");
-    await user.click(view.getByText("Clear local data"));
-    await view.findByText("Local wardrobe data cleared.");
+    await user.click(view.getByRole("button", { name: /Local data management/i }));
+    await user.click(view.getByRole("button", { name: /^Clear local data$/ }));
+    await waitFor(() => expect(view.getAllByText("Local wardrobe data cleared.").length).toBeGreaterThan(0));
     await user.click(view.getAllByRole("link", { name: /My Wardrobe$/ })[0]);
     await view.findByText("No pieces match this combination yet.");
 
     window.confirm = originalConfirm;
+  });
+
+  test("keeps advanced wardrobe filters collapsed by default and remembers expansion", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/wardrobe");
+
+    await view.findByText(/Your Digital Sanctuary/i);
+    expect(view.queryByText("Show archived")).toBeNull();
+    await user.click(view.getByRole("button", { name: /Advanced filters/i }));
+    await view.findByText("Show archived");
+    await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
+    await view.findByText(/Curating your digital closet/i);
+    await user.click(view.getAllByRole("link", { name: /My Wardrobe$/ })[0]);
+    await view.findByText("Show archived");
+  });
+
+  test("opens secondary controls from a mobile sheet launcher", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/settings", 768);
+
+    await view.findByText("Product controls");
+    expect(view.queryByLabelText("Manual temperature")).toBeNull();
+    await user.click(view.getByRole("button", { name: /Weather settings/i }));
+    await view.findByLabelText("Manual temperature");
   });
 });

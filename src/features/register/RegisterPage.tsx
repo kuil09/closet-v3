@@ -7,6 +7,7 @@ import type { ClosetItem, MetaAssetType, TemperatureBand, WeatherCondition } fro
 import { useI18n } from "../../lib/i18n/i18n";
 import { ingestImage, useStoredImageSource } from "../../lib/media/images";
 import { makeId } from "../../lib/utils/id";
+import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
 
 const categories = ["Outerwear", "Tops", "Bottoms", "Shoes", "Accessories"];
@@ -118,6 +119,26 @@ export function RegisterPage() {
     () => (draft.id ? `${t("register.editingTitle")} ${draft.name || t("register.title")}` : t("register.captureTitle")),
     [draft.id, draft.name, t]
   );
+  const styleSummary = useMemo(
+    () => splitCommaList(draft.occasionTags)[0] || draft.styleNotes.trim().slice(0, 24) || "—",
+    [draft.occasionTags, draft.styleNotes]
+  );
+  const weatherSummary = useMemo(
+    () => [...draft.temperatureBand, ...draft.weatherTags].slice(0, 3).join(" · ") || "—",
+    [draft.temperatureBand, draft.weatherTags]
+  );
+  const paletteSummary = useMemo(() => draft.paletteColors.slice(0, 2).join(" · ") || "—", [draft.paletteColors]);
+  const metaSummary = useMemo(() => {
+    const count = draft.existingMetaAssets.length + draft.metaFiles.length;
+    return count > 0 ? count : "—";
+  }, [draft.existingMetaAssets.length, draft.metaFiles.length]);
+  const purchaseSummary = useMemo(() => {
+    if (draft.price) {
+      return `${draft.currency} ${draft.price}`;
+    }
+
+    return draft.purchaseDate || "—";
+  }, [draft.currency, draft.price, draft.purchaseDate]);
 
   function setPaletteColor(index: number, color: string) {
     setDraft((current) => ({
@@ -193,7 +214,16 @@ export function RegisterPage() {
           </div>
         </div>
 
-        <div className="register-preview">
+        {validationError ? (
+          <div className="inline-error">
+            <span>{validationError}</span>
+            <button className="mini-button" onClick={() => setValidationError(null)}>
+              {t("register.clearError")}
+            </button>
+          </div>
+        ) : null}
+
+        <div className="register-primary-grid">
           <div className="image-dropzone">
             <label className="image-dropzone-action">
               {heroImageRef ? (
@@ -252,46 +282,209 @@ export function RegisterPage() {
             </div>
           </div>
 
-          <div className="preview-card">
-            <span className="section-tag">{t("register.palette")}</span>
-            <div className="palette-row">
-              {draft.paletteColors.map((color, index) => (
-                <div key={`${color}-${index}`} className="palette-editor">
-                  <button className="palette-dot" style={{ backgroundColor: color }} aria-label={color} />
+          <div className="section-stack">
+            <div className="subtle-card">
+              <span className="section-tag">{t("register.primaryTitle")}</span>
+              <div className="form-grid">
+                <label>
+                  <span>{t("register.name")}</span>
                   <input
-                    aria-label={`${t("register.palette")} ${index + 1}`}
-                    type="color"
-                    value={color}
-                    onChange={(event) => setPaletteColor(index, event.target.value)}
+                    aria-label={t("register.name")}
+                    className="text-input"
+                    value={draft.name}
+                    onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))}
                   />
-                  <button
-                    className="mini-button"
-                    disabled={draft.paletteColors.length <= 1}
-                    onClick={() =>
-                      setDraft((current) => ({
-                        ...current,
-                        paletteColors: current.paletteColors.filter((_, entryIndex) => entryIndex !== index)
-                      }))
-                    }
+                </label>
+                <label>
+                  <span>{t("register.category")}</span>
+                  <select
+                    aria-label={t("register.category")}
+                    className="control-select"
+                    value={draft.category}
+                    onChange={(event) => setDraft((current) => ({ ...current, category: event.target.value }))}
                   >
-                    ×
-                  </button>
-                </div>
-              ))}
-              <button
-                className="palette-adder"
-                onClick={() =>
-                  setDraft((current) => ({
-                    ...current,
-                    paletteColors: [...current.paletteColors, "#ADB3B0"]
-                  }))
-                }
-              >
-                {t("register.addColor")}
-              </button>
+                    {categories.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>{t("register.materials")}</span>
+                  <input
+                    aria-label={t("register.materials")}
+                    className="text-input"
+                    placeholder="Linen, Wool, Leather"
+                    value={draft.materials}
+                    onChange={(event) => setDraft((current) => ({ ...current, materials: event.target.value }))}
+                  />
+                </label>
+                <label>
+                  <span>{t("register.storageLocation")}</span>
+                  <input
+                    aria-label={t("register.storageLocation")}
+                    className="text-input"
+                    value={draft.storageLocation}
+                    onChange={(event) => setDraft((current) => ({ ...current, storageLocation: event.target.value }))}
+                  />
+                </label>
+              </div>
             </div>
 
-            <span className="section-tag">{t("register.metaAssets")}</span>
+            <div className="button-row">
+              <button className="secondary-button" onClick={() => void persist("draft")}>
+                {t("register.saveDraft")}
+              </button>
+              <button className="primary-button" onClick={() => void persist("saved")}>
+                {t("register.saveItem")}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside className="register-sidebar">
+        <DisclosureSection
+          screenId="register"
+          sectionId="register-style"
+          title={t("register.styleSection")}
+          summary={styleSummary}
+        >
+          <div className="form-grid">
+            <label className="full-width">
+              <span>{t("register.occasionTags")}</span>
+              <input
+                aria-label={t("register.occasionTags")}
+                className="text-input"
+                placeholder="Summer, Daily, Workwear"
+                value={draft.occasionTags}
+                onChange={(event) => setDraft((current) => ({ ...current, occasionTags: event.target.value }))}
+              />
+            </label>
+            <label className="full-width">
+              <span>{t("register.styleNotes")}</span>
+              <textarea
+                aria-label={t("register.styleNotes")}
+                className="text-area"
+                rows={4}
+                value={draft.styleNotes}
+                onChange={(event) => setDraft((current) => ({ ...current, styleNotes: event.target.value }))}
+              />
+            </label>
+          </div>
+        </DisclosureSection>
+
+        <DisclosureSection
+          screenId="register"
+          sectionId="register-weather"
+          title={t("register.weatherSection")}
+          summary={weatherSummary}
+        >
+          <div className="selector-group">
+            <div>
+              <span className="section-tag">{t("register.temperature")}</span>
+              <div className="chip-row">
+                {temperatureOptions.map((option) => {
+                  const active = draft.temperatureBand.includes(option);
+                  return (
+                    <button
+                      key={option}
+                      className={`chip ${active ? "is-active" : ""}`}
+                      onClick={() =>
+                        setDraft((current) => ({
+                          ...current,
+                          temperatureBand: active
+                            ? current.temperatureBand.filter((entry) => entry !== option)
+                            : [...current.temperatureBand, option]
+                        }))
+                      }
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div>
+              <span className="section-tag">{t("register.weather")}</span>
+              <div className="chip-row">
+                {weatherOptions.map((option) => {
+                  const active = draft.weatherTags.includes(option);
+                  return (
+                    <button
+                      key={option}
+                      className={`chip ${active ? "is-active" : ""}`}
+                      onClick={() =>
+                        setDraft((current) => ({
+                          ...current,
+                          weatherTags: active
+                            ? current.weatherTags.filter((entry) => entry !== option)
+                            : [...current.weatherTags, option]
+                        }))
+                      }
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </DisclosureSection>
+
+        <DisclosureSection
+          screenId="register"
+          sectionId="register-palette"
+          title={t("register.paletteSection")}
+          summary={paletteSummary}
+        >
+          <div className="palette-row">
+            {draft.paletteColors.map((color, index) => (
+              <div key={`${color}-${index}`} className="palette-editor">
+                <button className="palette-dot" style={{ backgroundColor: color }} aria-label={color} />
+                <input
+                  aria-label={`${t("register.palette")} ${index + 1}`}
+                  type="color"
+                  value={color}
+                  onChange={(event) => setPaletteColor(index, event.target.value)}
+                />
+                <button
+                  className="mini-button"
+                  disabled={draft.paletteColors.length <= 1}
+                  onClick={() =>
+                    setDraft((current) => ({
+                      ...current,
+                      paletteColors: current.paletteColors.filter((_, entryIndex) => entryIndex !== index)
+                    }))
+                  }
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            <button
+              className="palette-adder"
+              onClick={() =>
+                setDraft((current) => ({
+                  ...current,
+                  paletteColors: [...current.paletteColors, "#ADB3B0"]
+                }))
+              }
+            >
+              {t("register.addColor")}
+            </button>
+          </div>
+        </DisclosureSection>
+
+        <DisclosureSection
+          screenId="register"
+          sectionId="register-meta"
+          title={t("register.metaSection")}
+          summary={metaSummary}
+        >
+          <div className="detail-stack">
             <div className="meta-upload-row">
               <select
                 aria-label={t("register.metaAssetType")}
@@ -364,166 +557,47 @@ export function RegisterPage() {
               ) : null}
             </ul>
           </div>
-        </div>
-      </section>
+        </DisclosureSection>
 
-      <section className="panel-card register-form-card">
-        {validationError ? (
-          <div className="inline-error">
-            <span>{validationError}</span>
-            <button className="mini-button" onClick={() => setValidationError(null)}>
-              {t("register.clearError")}
-            </button>
+        <DisclosureSection
+          screenId="register"
+          sectionId="register-purchase"
+          title={t("register.purchaseSection")}
+          summary={purchaseSummary}
+        >
+          <div className="form-grid">
+            <label>
+              <span>{t("register.purchaseDate")}</span>
+              <input
+                aria-label={t("register.purchaseDate")}
+                className="text-input"
+                type="date"
+                value={draft.purchaseDate}
+                onChange={(event) => setDraft((current) => ({ ...current, purchaseDate: event.target.value }))}
+              />
+            </label>
+            <label>
+              <span>{t("register.price")}</span>
+              <input
+                aria-label={t("register.price")}
+                className="text-input"
+                type="number"
+                value={draft.price}
+                onChange={(event) => setDraft((current) => ({ ...current, price: event.target.value }))}
+              />
+            </label>
+            <label>
+              <span>{t("register.currency")}</span>
+              <input
+                aria-label={t("register.currency")}
+                className="text-input"
+                value={draft.currency}
+                onChange={(event) => setDraft((current) => ({ ...current, currency: event.target.value.toUpperCase() }))}
+              />
+            </label>
           </div>
-        ) : null}
-
-        <div className="form-grid">
-          <label>
-            <span>{t("register.name")}</span>
-            <input
-              aria-label={t("register.name")}
-              className="text-input"
-              value={draft.name}
-              onChange={(event) => setDraft((current) => ({ ...current, name: event.target.value }))}
-            />
-          </label>
-          <label>
-            <span>{t("register.category")}</span>
-            <select
-              aria-label={t("register.category")}
-              className="control-select"
-              value={draft.category}
-              onChange={(event) => setDraft((current) => ({ ...current, category: event.target.value }))}
-            >
-              {categories.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>{t("register.materials")}</span>
-            <input
-              aria-label={t("register.materials")}
-              className="text-input"
-              placeholder="Linen, Wool, Leather"
-              value={draft.materials}
-              onChange={(event) => setDraft((current) => ({ ...current, materials: event.target.value }))}
-            />
-          </label>
-          <label>
-            <span>{t("register.storageLocation")}</span>
-            <input
-              aria-label={t("register.storageLocation")}
-              className="text-input"
-              value={draft.storageLocation}
-              onChange={(event) => setDraft((current) => ({ ...current, storageLocation: event.target.value }))}
-            />
-          </label>
-          <label>
-            <span>{t("register.purchaseDate")}</span>
-            <input
-              aria-label={t("register.purchaseDate")}
-              className="text-input"
-              type="date"
-              value={draft.purchaseDate}
-              onChange={(event) => setDraft((current) => ({ ...current, purchaseDate: event.target.value }))}
-            />
-          </label>
-          <label>
-            <span>{t("register.price")}</span>
-            <input
-              aria-label={t("register.price")}
-              className="text-input"
-              type="number"
-              value={draft.price}
-              onChange={(event) => setDraft((current) => ({ ...current, price: event.target.value }))}
-            />
-          </label>
-          <label className="full-width">
-            <span>{t("register.occasionTags")}</span>
-            <input
-              aria-label={t("register.occasionTags")}
-              className="text-input"
-              placeholder="Summer, Daily, Workwear"
-              value={draft.occasionTags}
-              onChange={(event) => setDraft((current) => ({ ...current, occasionTags: event.target.value }))}
-            />
-          </label>
-          <label className="full-width">
-            <span>{t("register.styleNotes")}</span>
-            <textarea
-              aria-label={t("register.styleNotes")}
-              className="text-area"
-              rows={4}
-              value={draft.styleNotes}
-              onChange={(event) => setDraft((current) => ({ ...current, styleNotes: event.target.value }))}
-            />
-          </label>
-        </div>
-
-        <div className="selector-group">
-          <div>
-            <span className="section-tag">{t("register.temperature")}</span>
-            <div className="chip-row">
-              {temperatureOptions.map((option) => {
-                const active = draft.temperatureBand.includes(option);
-                return (
-                  <button
-                    key={option}
-                    className={`chip ${active ? "is-active" : ""}`}
-                    onClick={() =>
-                      setDraft((current) => ({
-                        ...current,
-                        temperatureBand: active
-                          ? current.temperatureBand.filter((entry) => entry !== option)
-                          : [...current.temperatureBand, option]
-                      }))
-                    }
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div>
-            <span className="section-tag">{t("register.weather")}</span>
-            <div className="chip-row">
-              {weatherOptions.map((option) => {
-                const active = draft.weatherTags.includes(option);
-                return (
-                  <button
-                    key={option}
-                    className={`chip ${active ? "is-active" : ""}`}
-                    onClick={() =>
-                      setDraft((current) => ({
-                        ...current,
-                        weatherTags: active
-                          ? current.weatherTags.filter((entry) => entry !== option)
-                          : [...current.weatherTags, option]
-                      }))
-                    }
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="button-row">
-          <button className="secondary-button" onClick={() => void persist("draft")}>
-            {t("register.saveDraft")}
-          </button>
-          <button className="primary-button" onClick={() => void persist("saved")}>
-            {t("register.saveItem")}
-          </button>
-        </div>
-      </section>
+        </DisclosureSection>
+      </aside>
     </div>
   );
 }

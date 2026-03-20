@@ -4,6 +4,7 @@ import { usePreferencesStore } from "../../lib/state/preferences-store";
 import { presetCities } from "../../lib/weather/open-meteo";
 import { useI18n } from "../../lib/i18n/i18n";
 import { useState } from "react";
+import { DisclosureSection } from "../shared/DisclosureSection";
 
 export function SettingsPage() {
   const { t } = useI18n();
@@ -20,6 +21,10 @@ export function SettingsPage() {
   const setManualWeather = usePreferencesStore((state) => state.setManualWeather);
   const setMotion = usePreferencesStore((state) => state.setMotion);
   const [feedback, setFeedback] = useState("");
+  const weatherSummary =
+    weatherMode === "auto"
+      ? t("settings.weatherAuto")
+      : `${t("settings.weatherManual")} · ${manualWeather.locationName} · ${manualWeather.temperatureC}C`;
 
   async function handleReset() {
     if (!window.confirm(t("settings.resetConfirm"))) {
@@ -71,6 +76,17 @@ export function SettingsPage() {
               <option value="F">{t("settings.unitsF")}</option>
             </select>
           </label>
+        </div>
+      </section>
+
+      <DisclosureSection
+        screenId="settings"
+        sectionId="settings-weather"
+        title={t("settings.weatherSection")}
+        summary={weatherSummary}
+        defaultOpen={false}
+      >
+        <div className="settings-grid">
           <label>
             <span>{t("settings.weather")}</span>
             <select
@@ -104,6 +120,7 @@ export function SettingsPage() {
           <label>
             <span>{t("settings.manualTemperature")}</span>
             <input
+              aria-label={t("settings.manualTemperature")}
               className="text-input"
               type="number"
               value={manualWeather.temperatureC}
@@ -118,6 +135,7 @@ export function SettingsPage() {
           <label>
             <span>{t("settings.manualCondition")}</span>
             <select
+              aria-label={t("settings.manualCondition")}
               className="control-select"
               value={manualWeather.condition}
               onChange={(event) =>
@@ -137,6 +155,7 @@ export function SettingsPage() {
           <label>
             <span>{t("settings.manualWind")}</span>
             <input
+              aria-label={t("settings.manualWind")}
               className="text-input"
               type="number"
               value={manualWeather.windKph}
@@ -148,6 +167,17 @@ export function SettingsPage() {
               }
             />
           </label>
+        </div>
+      </DisclosureSection>
+
+      <DisclosureSection
+        screenId="settings"
+        sectionId="settings-motion"
+        title={t("settings.motionSection")}
+        summary={motion === "full" ? t("settings.motionFull") : t("settings.motionReduced")}
+        defaultOpen={false}
+      >
+        <div className="settings-grid">
           <label>
             <span>{t("settings.motion")}</span>
             <select
@@ -160,21 +190,21 @@ export function SettingsPage() {
             </select>
           </label>
         </div>
-      </section>
+      </DisclosureSection>
 
-      <section className="panel-card">
-        <div className="panel-head">
-          <div>
-            <span className="section-tag">{t("settings.title")}</span>
-            <h3>{t("settings.resetTitle")}</h3>
-          </div>
-        </div>
+      <DisclosureSection
+        screenId="settings"
+        sectionId="settings-local-data"
+        title={t("settings.localDataSection")}
+        summary={feedback || t("settings.resetAction")}
+        defaultOpen={false}
+      >
         <p className="muted-copy">{t("settings.resetBody")}</p>
         <button className="secondary-button" onClick={() => void handleReset()}>
           {t("settings.resetAction")}
         </button>
         {feedback ? <p className="muted-copy">{feedback}</p> : null}
-      </section>
+      </DisclosureSection>
     </div>
   );
 }

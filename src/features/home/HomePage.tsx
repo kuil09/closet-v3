@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { atelierDb } from "../../lib/db/app-db";
 import { buildRecommendations } from "../../lib/recommendation/engine";
@@ -6,6 +6,7 @@ import { useWeather } from "../../lib/weather/use-weather";
 import { useI18n } from "../../lib/i18n/i18n";
 import { usePreferencesStore } from "../../lib/state/preferences-store";
 import { formatTemperature } from "../../lib/utils/format";
+import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
 
 export function HomePage() {
@@ -14,9 +15,11 @@ export function HomePage() {
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
   const lookbooks = useLiveQuery(() => atelierDb.lookbooks.toArray(), [], []);
   const { context, loading, error, refresh } = useWeather();
+  const [showAllRecent, setShowAllRecent] = useState(false);
 
   const activeItems = items.filter((item) => item.status !== "archived");
-  const recentItems = [...activeItems].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 4);
+  const recentItems = [...activeItems].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const visibleRecentItems = showAllRecent ? recentItems : recentItems.slice(0, 4);
   const recommendations = useMemo(
     () => buildRecommendations(activeItems, lookbooks, context).slice(0, 4),
     [activeItems, context, lookbooks]
@@ -56,10 +59,23 @@ export function HomePage() {
             {loading && t("home.weatherRefreshing")}
             {!loading && context && `${formatTemperature(context.temperatureC, units)} · ${context.locationName}`}
           </h3>
-          <p>
-            {context ? `${context.condition} · ${Math.round(context.windKph)} kph wind` : t("home.weatherUnavailable")}
-          </p>
-          {error ? <small>{`${error}. ${t("home.weatherFallback")}`}</small> : null}
+          <div className="weather-meta">
+            <p>{context ? `${context.condition} · ${Math.round(context.windKph)} kph wind` : t("home.weatherUnavailable")}</p>
+            <DisclosureSection
+              screenId="home"
+              sectionId="home-weather-details"
+              title={t("home.weatherDetails")}
+              summary={context?.source === "manual" ? t("settings.weatherManual") : t("settings.weatherAuto")}
+              defaultOpen={false}
+              mobileBehavior="inline"
+              variant="soft"
+            >
+              <p className="muted-copy">
+                {context ? `${context.locationName} · ${context.source}` : t("home.weatherUnavailable")}
+              </p>
+              {error ? <small>{`${error}. ${t("home.weatherFallback")}`}</small> : null}
+            </DisclosureSection>
+          </div>
         </div>
         <button className="secondary-button" onClick={() => void refresh()}>
           {t("home.weatherRefresh")}
@@ -124,7 +140,7 @@ export function HomePage() {
           </div>
         </div>
         <div className="wardrobe-grid">
-          {recentItems.map((item) => (
+          {visibleRecentItems.map((item) => (
             <article key={item.id} className="item-card">
               <div className="item-image-wrap">
                 <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image" />
@@ -137,6 +153,11 @@ export function HomePage() {
             </article>
           ))}
         </div>
+        {recentItems.length > 4 ? (
+          <button className="secondary-button" onClick={() => setShowAllRecent((current) => !current)}>
+            {showAllRecent ? t("home.recentLess") : t("home.recentMore")}
+          </button>
+        ) : null}
       </section>
     </div>
   );

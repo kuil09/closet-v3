@@ -1,6 +1,10 @@
 import type { Locale } from "../db/types";
 
 export type MessageKey =
+  | "disclosure.open"
+  | "disclosure.close"
+  | "disclosure.showMore"
+  | "disclosure.showLess"
   | "nav.home"
   | "nav.wardrobe"
   | "nav.register"
@@ -25,6 +29,9 @@ export type MessageKey =
   | "home.weatherUnavailable"
   | "home.weatherFallback"
   | "home.weatherRefresh"
+  | "home.weatherDetails"
+  | "home.recentMore"
+  | "home.recentLess"
   | "home.stats.items"
   | "home.stats.lookbooks"
   | "home.stats.favorites"
@@ -42,6 +49,9 @@ export type MessageKey =
   | "wardrobe.archive"
   | "wardrobe.restore"
   | "wardrobe.materialUnknown"
+  | "wardrobe.advancedFilters"
+  | "wardrobe.edit"
+  | "wardrobe.advancedHint"
   | "register.title"
   | "register.captureTitle"
   | "register.editingTitle"
@@ -64,12 +74,19 @@ export type MessageKey =
   | "register.storageLocation"
   | "register.purchaseDate"
   | "register.price"
+  | "register.currency"
   | "register.occasionTags"
   | "register.styleNotes"
   | "register.temperature"
   | "register.weather"
   | "register.validationName"
   | "register.clearError"
+  | "register.primaryTitle"
+  | "register.styleSection"
+  | "register.weatherSection"
+  | "register.paletteSection"
+  | "register.metaSection"
+  | "register.purchaseSection"
   | "lookbook.title"
   | "lookbook.save"
   | "lookbook.export"
@@ -103,6 +120,7 @@ export type MessageKey =
   | "lookbook.backgroundMist"
   | "lookbook.backgroundSand"
   | "lookbook.backgroundOlive"
+  | "lookbook.transform"
   | "settings.title"
   | "settings.productControls"
   | "settings.localOnly"
@@ -132,11 +150,18 @@ export type MessageKey =
   | "settings.resetBody"
   | "settings.resetAction"
   | "settings.resetConfirm"
-  | "settings.resetDone";
+  | "settings.resetDone"
+  | "settings.weatherSection"
+  | "settings.motionSection"
+  | "settings.localDataSection";
 
 type Catalog = Record<MessageKey, string>;
 
 const base: Catalog = {
+  "disclosure.open": "Open",
+  "disclosure.close": "Close",
+  "disclosure.showMore": "Show more",
+  "disclosure.showLess": "Show less",
   "nav.home": "Home",
   "nav.wardrobe": "My Wardrobe",
   "nav.register": "Register Item",
@@ -161,6 +186,9 @@ const base: Catalog = {
   "home.weatherUnavailable": "Weather unavailable",
   "home.weatherFallback": "Manual fallback applied.",
   "home.weatherRefresh": "Refresh",
+  "home.weatherDetails": "Weather details",
+  "home.recentMore": "Show more pieces",
+  "home.recentLess": "Show fewer pieces",
   "home.stats.items": "Total Pieces",
   "home.stats.lookbooks": "Lookbooks",
   "home.stats.favorites": "Favorites",
@@ -178,6 +206,9 @@ const base: Catalog = {
   "wardrobe.archive": "Archive",
   "wardrobe.restore": "Restore",
   "wardrobe.materialUnknown": "Unspecified material",
+  "wardrobe.advancedFilters": "Advanced filters",
+  "wardrobe.edit": "Edit",
+  "wardrobe.advancedHint": "Archive and fit filters stay tucked away until you need them.",
   "register.title": "Register Item",
   "register.captureTitle": "Capture a new piece",
   "register.editingTitle": "Editing",
@@ -200,12 +231,19 @@ const base: Catalog = {
   "register.storageLocation": "Storage location",
   "register.purchaseDate": "Purchase date",
   "register.price": "Price",
+  "register.currency": "Currency",
   "register.occasionTags": "Occasion / tags",
   "register.styleNotes": "Style notes",
   "register.temperature": "Temperature",
   "register.weather": "Weather",
   "register.validationName": "A saved item needs a name.",
   "register.clearError": "Dismiss validation message",
+  "register.primaryTitle": "Core garment details",
+  "register.styleSection": "Style information",
+  "register.weatherSection": "Weather and temperature fit",
+  "register.paletteSection": "Color palette",
+  "register.metaSection": "Meta assets",
+  "register.purchaseSection": "Purchase information",
   "lookbook.title": "Lookbook Maker",
   "lookbook.save": "Save lookbook",
   "lookbook.export": "Export PNG",
@@ -239,6 +277,7 @@ const base: Catalog = {
   "lookbook.backgroundMist": "mist",
   "lookbook.backgroundSand": "sand",
   "lookbook.backgroundOlive": "olive",
+  "lookbook.transform": "Transform details",
   "settings.title": "Settings",
   "settings.productControls": "Product controls",
   "settings.localOnly": "All data stays in this browser profile. Cloud sync and backup are intentionally disabled.",
@@ -268,13 +307,20 @@ const base: Catalog = {
   "settings.resetBody": "Clears wardrobe items, lookbooks, cached weather, and uploaded images from this browser.",
   "settings.resetAction": "Clear local data",
   "settings.resetConfirm": "Clear all local wardrobe data from this browser?",
-  "settings.resetDone": "Local wardrobe data cleared."
+  "settings.resetDone": "Local wardrobe data cleared.",
+  "settings.weatherSection": "Weather settings",
+  "settings.motionSection": "Motion settings",
+  "settings.localDataSection": "Local data management"
 };
 
 export const messages: Record<Locale, Catalog> = {
   en: base,
   ko: {
     ...base,
+    "disclosure.open": "열기",
+    "disclosure.close": "닫기",
+    "disclosure.showMore": "더 보기",
+    "disclosure.showLess": "접기",
     "nav.home": "홈",
     "nav.wardrobe": "나의 옷장",
     "nav.register": "아이템 등록",
@@ -298,6 +344,9 @@ export const messages: Record<Locale, Catalog> = {
     "home.weatherUnavailable": "날씨 정보를 불러올 수 없습니다",
     "home.weatherFallback": "수동 설정으로 대체했습니다.",
     "home.weatherRefresh": "새로고침",
+    "home.weatherDetails": "날씨 세부 정보",
+    "home.recentMore": "아이템 더 보기",
+    "home.recentLess": "아이템 접기",
     "wardrobe.title": "당신의 디지털 생추어리",
     "wardrobe.search": "컬렉션 검색...",
     "wardrobe.searchLabel": "옷장 검색",
@@ -312,6 +361,9 @@ export const messages: Record<Locale, Catalog> = {
     "wardrobe.archive": "보관",
     "wardrobe.restore": "복원",
     "wardrobe.materialUnknown": "소재 미지정",
+    "wardrobe.advancedFilters": "고급 필터",
+    "wardrobe.edit": "편집",
+    "wardrobe.advancedHint": "보관 표시와 착장 적합도 필터는 필요할 때만 펼쳐집니다.",
     "register.title": "아이템 등록",
     "register.captureTitle": "새 아이템 등록",
     "register.editingTitle": "편집 중",
@@ -334,12 +386,19 @@ export const messages: Record<Locale, Catalog> = {
     "register.storageLocation": "보관 위치",
     "register.purchaseDate": "구매일",
     "register.price": "가격",
+    "register.currency": "통화",
     "register.occasionTags": "상황 / 태그",
     "register.styleNotes": "스타일 노트",
     "register.temperature": "온도",
     "register.weather": "날씨",
     "register.validationName": "저장된 아이템에는 이름이 필요합니다.",
     "register.clearError": "검증 메시지 닫기",
+    "register.primaryTitle": "핵심 의류 정보",
+    "register.styleSection": "스타일 정보",
+    "register.weatherSection": "날씨와 온도 적합도",
+    "register.paletteSection": "색상 팔레트",
+    "register.metaSection": "메타 자산",
+    "register.purchaseSection": "구매 정보",
     "lookbook.title": "룩북 메이커",
     "lookbook.save": "룩북 저장",
     "lookbook.export": "PNG 내보내기",
@@ -373,6 +432,7 @@ export const messages: Record<Locale, Catalog> = {
     "lookbook.backgroundMist": "미스트",
     "lookbook.backgroundSand": "샌드",
     "lookbook.backgroundOlive": "올리브",
+    "lookbook.transform": "변형 세부 조정",
     "settings.title": "설정",
     "settings.productControls": "제품 설정",
     "settings.localOnly": "모든 데이터는 현재 브라우저 프로필에만 저장됩니다. 클라우드 동기화와 백업은 제공하지 않습니다.",
@@ -402,7 +462,10 @@ export const messages: Record<Locale, Catalog> = {
     "settings.resetBody": "현재 브라우저의 옷장 아이템, 룩북, 캐시된 날씨, 업로드 이미지를 삭제합니다.",
     "settings.resetAction": "로컬 데이터 삭제",
     "settings.resetConfirm": "이 브라우저의 로컬 옷장 데이터를 모두 삭제할까요?",
-    "settings.resetDone": "로컬 옷장 데이터를 삭제했습니다."
+    "settings.resetDone": "로컬 옷장 데이터를 삭제했습니다.",
+    "settings.weatherSection": "날씨 설정",
+    "settings.motionSection": "모션 설정",
+    "settings.localDataSection": "로컬 데이터 관리"
   },
   ja: {
     ...base,

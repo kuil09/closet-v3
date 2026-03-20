@@ -178,7 +178,10 @@ button {
 .card-actions,
 .chip-row,
 .palette-row,
-.meta-upload-row {
+.meta-upload-row,
+.disclosure-meta,
+.sheet-launcher-meta,
+.inspector-actions {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
@@ -196,6 +199,12 @@ button {
 
 .page-stack {
   gap: 1.25rem;
+}
+
+.section-stack,
+.detail-stack {
+  display: grid;
+  gap: 1rem;
 }
 
 .hero-card,
@@ -304,6 +313,109 @@ button {
 
 .panel-card {
   padding: 1.25rem;
+}
+
+.disclosure-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.disclosure-card-soft {
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
+.disclosure-toggle,
+.sheet-launcher {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+}
+
+.sheet-launcher {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.disclosure-toggle,
+.sheet-launcher,
+.sheet-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.disclosure-copy,
+.sheet-launcher-copy {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.disclosure-copy strong,
+.sheet-launcher-copy strong {
+  font-family: "Manrope", sans-serif;
+  font-size: 1.08rem;
+  letter-spacing: -0.03em;
+}
+
+.section-summary,
+.disclosure-action,
+.sheet-launcher-action {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.disclosure-meta,
+.sheet-launcher-meta {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.disclosure-body,
+.sheet-panel-body {
+  display: grid;
+  gap: 1rem;
+}
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(18, 21, 20, 0.42);
+}
+
+.sheet-panel {
+  width: min(720px, 100%);
+  max-height: 86vh;
+  overflow: auto;
+  padding: 1.25rem;
+  border-radius: 1.5rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.sheet-panel-head {
+  margin-bottom: 1rem;
+}
+
+.sheet-panel-head h3 {
+  margin: 0.3rem 0 0;
+  font-family: "Manrope", sans-serif;
+  font-size: 1.2rem;
 }
 
 .panel-head {
@@ -461,9 +573,16 @@ button {
 .register-preview,
 .lookbook-sidebar,
 .register-form-card,
-.inspector-grid {
+.inspector-grid,
+.register-sidebar,
+.register-primary-grid {
   display: grid;
   gap: 1rem;
+}
+
+.register-primary-grid {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
 }
 
 .selector-group,
@@ -590,6 +709,10 @@ button {
   align-content: start;
 }
 
+.lookbook-mobile-tools {
+  display: none;
+}
+
 .drawer-card,
 .saved-lookbook-item {
   text-align: left;
@@ -614,6 +737,29 @@ button {
 .empty-state {
   padding: 2rem;
   text-align: center;
+}
+
+.weather-meta {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.subtle-card {
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+}
+
+.secondary-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.secondary-actions .muted-copy {
+  flex: 1;
 }
 
 .local-pill {
@@ -657,8 +803,15 @@ button {
   }
 
   .stats-grid,
-  .form-grid {
+  .form-grid,
+  .settings-grid {
     grid-template-columns: 1fr;
+  }
+
+  .lookbook-mobile-tools {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 
   .mobile-nav {
