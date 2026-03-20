@@ -168,7 +168,7 @@ button {
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 8;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -327,9 +327,21 @@ button {
   grid-template-columns: minmax(0, 1fr);
   position: sticky;
   top: 6.25rem;
-  z-index: 2;
+  z-index: 7;
   align-items: stretch;
   gap: 1rem;
+  isolation: isolate;
+}
+
+.wardrobe-filter-panel::before {
+  content: "";
+  position: absolute;
+  inset: -0.35rem;
+  z-index: -1;
+  border-radius: 1.75rem;
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--border) 72%, transparent);
+  backdrop-filter: blur(18px);
 }
 
 .wardrobe-filter-panel > .filter-copy,
@@ -783,7 +795,7 @@ button {
   right: 0.75rem;
   z-index: 1;
   display: inline-flex;
-  gap: 0.4rem;
+  gap: 0.2rem;
 }
 
 .recommendation-body,
@@ -853,13 +865,28 @@ button {
 }
 
 .card-corner-button {
-  background: color-mix(in srgb, var(--surface-elevated) 78%, transparent);
-  backdrop-filter: blur(14px);
+  width: 1.65rem;
+  height: 1.65rem;
+  border: 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--text) 60%, var(--muted));
+  box-shadow: none;
 }
 
 .card-icon-button.is-active {
   background: var(--primary);
   color: var(--surface);
+}
+
+.card-corner-button.is-active {
+  background: transparent;
+  color: var(--primary);
+}
+
+.card-corner-button:hover,
+.card-corner-button:focus-visible {
+  background: color-mix(in srgb, var(--surface-elevated) 86%, transparent);
+  color: var(--text);
 }
 
 .card-action-glyph {
