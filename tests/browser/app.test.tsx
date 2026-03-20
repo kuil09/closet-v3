@@ -107,9 +107,16 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
-    await view.findByText(/Fresh additions and drafts/i);
-    await user.click(view.getByRole("button", { name: /Over-Sized Cashmere Coat/i }));
-    await view.findByDisplayValue("Over-Sized Cashmere Coat");
+    const recentHeading = await view.findByText(/Fresh additions and drafts/i);
+    const recentSection = recentHeading.closest("section");
+    const firstRecentCard = recentSection?.querySelector<HTMLButtonElement>(".item-card-button");
+    const expectedName = firstRecentCard?.querySelector("strong")?.textContent;
+
+    expect(firstRecentCard).toBeTruthy();
+    expect(expectedName).toBeTruthy();
+
+    await user.click(firstRecentCard!);
+    await view.findByDisplayValue(expectedName!);
   });
 
   test("creates a draft item without uploading an image", async () => {
