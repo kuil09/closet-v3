@@ -3,9 +3,13 @@ import { render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 
-function mockEnvironment() {
-  globalThis.fetch = mock(async () =>
-    new Response(
+function mockEnvironment(options?: { fetchFails?: boolean; geolocationFails?: boolean }) {
+  globalThis.fetch = mock(async () => {
+    if (options?.fetchFails) {
+      return new Response(null, { status: 500 });
+    }
+
+    return new Response(
       JSON.stringify({
         current: {
           temperature_2m: 18,
@@ -13,13 +17,24 @@ function mockEnvironment() {
           wind_speed_10m: 7
         }
       })
-    )
-  ) as unknown as typeof fetch;
+    );
+  }) as unknown as typeof fetch;
 
   Object.defineProperty(globalThis.navigator, "geolocation", {
     configurable: true,
     value: {
-      getCurrentPosition(success: (position: GeolocationPosition) => void) {
+      getCurrentPosition(success: (position: GeolocationPosition) => void, reject?: (reason?: GeolocationPositionError) => void) {
+        if (options?.geolocationFails) {
+          reject?.({
+            code: 1,
+            message: "Permission denied",
+            PERMISSION_DENIED: 1,
+            POSITION_UNAVAILABLE: 2,
+            TIMEOUT: 3
+          } as GeolocationPositionError);
+          return;
+        }
+
         success({
           coords: {
             latitude: 37.56,
@@ -46,8 +61,8 @@ function setViewportWidth(width: number) {
   window.dispatchEvent(new Event("resize"));
 }
 
-function renderAt(path: string, width = 1280) {
-  mockEnvironment();
+function renderAt(path: string, width = 1280, options?: { fetchFails?: boolean; geolocationFails?: boolean }) {
+  mockEnvironment(options);
   setViewportWidth(width);
   window.history.replaceState({}, "", `http://localhost${path}`);
   return render(<App />);
@@ -107,20 +122,13 @@ describe("app flows", () => {
     await view.findByText("Edited Coat");
   });
 
-  test("supports manual weather override from settings", async () => {
+  test("shows an unavailable state when automatic weather cannot be loaded", async () => {
     const user = userEvent.setup();
-    const view = renderAt("/settings");
+    const view = renderAt("/", 1280, { geolocationFails: true });
 
-    await view.findByText("Product controls");
-    await user.click(view.getByRole("button", { name: /Weather settings/i }));
-    await user.selectOptions(view.getByDisplayValue("Auto"), "manual");
-    await user.clear(view.getByLabelText("Manual temperature"));
-    await user.type(view.getByLabelText("Manual temperature"), "24");
-    await user.selectOptions(view.getByLabelText("Manual condition"), "rain");
-    await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
-
-    await view.findByText(/24C/i);
-    expect(view.getByText(/rain · 8 kph wind/i)).toBeTruthy();
+    await waitFor(() => expect(view.getAllByText("Weather unavailable").length).toBeGreaterThan(0));
+    await user.click(view.getByRole("button", { name: /Weather details/i }));
+    expect(await view.findByText(/Permission denied/i)).toBeTruthy();
   });
 
   test("saves a new lookbook composition and shows it in saved boards", async () => {
@@ -173,8 +181,8 @@ describe("app flows", () => {
     const view = renderAt("/settings", 768);
 
     await view.findByText("Product controls");
-    expect(view.queryByLabelText("Manual temperature")).toBeNull();
+    expect(view.queryByText(/automatic only/i)).toBeNull();
     await user.click(view.getByRole("button", { name: /Weather settings/i }));
-    await view.findByLabelText("Manual temperature");
+    await view.findByText(/automatic only/i);
   });
 });

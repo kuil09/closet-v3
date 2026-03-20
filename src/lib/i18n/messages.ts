@@ -132,6 +132,7 @@ export type MessageKey =
   | "settings.units"
   | "settings.weather"
   | "settings.motion"
+  | "settings.weatherAutoOnlyBody"
   | "settings.manualCity"
   | "settings.manualTemperature"
   | "settings.manualCondition"
@@ -187,7 +188,7 @@ const base: Catalog = {
   "home.weatherTitle": "Live weather",
   "home.weatherRefreshing": "Refreshing conditions...",
   "home.weatherUnavailable": "Weather unavailable",
-  "home.weatherFallback": "Manual fallback applied.",
+  "home.weatherFallback": "Automatic weather could not be loaded. Check location permission or network access.",
   "home.weatherRefresh": "Refresh",
   "home.weatherDetails": "Weather details",
   "home.recentMore": "Show more pieces",
@@ -292,6 +293,7 @@ const base: Catalog = {
   "settings.units": "Units",
   "settings.weather": "Weather mode",
   "settings.motion": "Motion",
+  "settings.weatherAutoOnlyBody": "Weather is automatic only. If location access or the weather service is unavailable, the app will show that the current weather could not be loaded.",
   "settings.manualCity": "Manual city",
   "settings.manualTemperature": "Manual temperature",
   "settings.manualCondition": "Manual condition",
@@ -348,7 +350,7 @@ export const messages: Record<Locale, Catalog> = {
     "home.weatherTitle": "현재 날씨",
     "home.weatherRefreshing": "날씨를 새로고침하는 중...",
     "home.weatherUnavailable": "날씨 정보를 불러올 수 없습니다",
-    "home.weatherFallback": "수동 설정으로 대체했습니다.",
+    "home.weatherFallback": "자동 날씨를 불러오지 못했습니다. 위치 권한이나 네트워크 상태를 확인하세요.",
     "home.weatherRefresh": "새로고침",
     "home.weatherDetails": "날씨 세부 정보",
     "home.recentMore": "아이템 더 보기",
@@ -450,6 +452,7 @@ export const messages: Record<Locale, Catalog> = {
     "settings.units": "단위",
     "settings.weather": "날씨 모드",
     "settings.motion": "모션",
+    "settings.weatherAutoOnlyBody": "날씨는 자동 조회만 사용합니다. 위치 권한이나 날씨 서비스에 접근할 수 없으면 현재 날씨를 불러오지 못한 상태로 표시됩니다.",
     "settings.manualCity": "수동 도시",
     "settings.manualTemperature": "수동 온도",
     "settings.manualCondition": "수동 날씨",

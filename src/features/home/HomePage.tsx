@@ -58,6 +58,7 @@ export function HomePage() {
           <h3>
             {loading && t("home.weatherRefreshing")}
             {!loading && context && `${formatTemperature(context.temperatureC, units)} · ${context.locationName}`}
+            {!loading && !context && t("home.weatherUnavailable")}
           </h3>
           <div className="weather-meta">
             <p>{context ? `${context.condition} · ${Math.round(context.windKph)} kph wind` : t("home.weatherUnavailable")}</p>
@@ -65,7 +66,7 @@ export function HomePage() {
               screenId="home"
               sectionId="home-weather-details"
               title={t("home.weatherDetails")}
-              summary={context?.source === "manual" ? t("settings.weatherManual") : t("settings.weatherAuto")}
+              summary={context ? t("settings.weatherAuto") : t("home.weatherUnavailable")}
               defaultOpen={false}
               mobileBehavior="inline"
               variant="soft"

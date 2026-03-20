@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { atelierDb } from "../db/app-db";
 import { saveWeatherContext } from "../db/repository";
 import type { WeatherContext } from "../db/types";
-import { usePreferencesStore } from "../state/preferences-store";
-import { contextFromManualWeather, fetchWeatherForCoords, getCurrentPosition } from "./open-meteo";
+import { fetchWeatherForCoords, getCurrentPosition } from "./open-meteo";
 
 interface WeatherState {
   context: WeatherContext | null;
@@ -13,9 +12,22 @@ interface WeatherState {
   refresh: () => Promise<void>;
 }
 
+function toWeatherErrorMessage(reason: unknown): string {
+  if (reason instanceof Error) {
+    return reason.message;
+  }
+
+  if (typeof reason === "object" && reason && "message" in reason) {
+    const message = reason.message;
+    if (typeof message === "string" && message.trim().length > 0) {
+      return message;
+    }
+  }
+
+  return "Weather unavailable";
+}
+
 export function useWeather(): WeatherState {
-  const weatherMode = usePreferencesStore((state) => state.weatherMode);
-  const manualWeather = usePreferencesStore((state) => state.manualWeather);
   const cached = useLiveQuery(() => atelierDb.weatherCache.get("current"), []);
   const [context, setContext] = useState<WeatherContext | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,13 +44,6 @@ export function useWeather(): WeatherState {
     setLoading(true);
     setError(null);
     try {
-      if (weatherMode === "manual") {
-        const manualContext = contextFromManualWeather(manualWeather);
-        await saveWeatherContext(manualContext);
-        setContext(manualContext);
-        return;
-      }
-
       const position = await getCurrentPosition();
       const fetched = await fetchWeatherForCoords({
         latitude: position.coords.latitude,
@@ -48,10 +53,8 @@ export function useWeather(): WeatherState {
       await saveWeatherContext(fetched);
       setContext(fetched);
     } catch (reason) {
-      const fallback = contextFromManualWeather(manualWeather);
-      await saveWeatherContext(fallback);
-      setContext(fallback);
-      setError(reason instanceof Error ? reason.message : "Weather unavailable");
+      setContext(null);
+      setError(toWeatherErrorMessage(reason));
     } finally {
       setLoading(false);
     }
@@ -59,7 +62,7 @@ export function useWeather(): WeatherState {
 
   useEffect(() => {
     void refresh();
-  }, [manualWeather, weatherMode]);
+  }, []);
 
   return { context, loading, error, refresh };
 }
