@@ -98,9 +98,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   const setUnits = usePreferencesStore((state) => state.setUnits);
   const { context, loading, error } = useWeather();
 
-  const activeLabel =
-    navItems.find((item) => (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)))?.key ?? "nav.home";
-
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -112,11 +109,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             <NavLink
               key={item.to}
               to={item.to}
-              aria-label={t(item.key)}
-              title={t(item.key)}
               className={({ isActive }) => `nav-item ${isActive ? "is-active" : ""}`}
             >
               <span className="nav-icon">{item.icon}</span>
+              <span>{t(item.key)}</span>
             </NavLink>
           ))}
         </nav>
@@ -124,10 +120,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="app-main">
         <header className="topbar">
-          <div>
-            <div className="eyebrow">{t("app.title")}</div>
-            <h1 className="page-title">{t(activeLabel)}</h1>
-          </div>
           <div className="topbar-controls">
             <div className="topbar-weather" aria-label={t("home.weatherTitle")}>
               <span className="topbar-weather-icon" aria-hidden="true">
@@ -196,11 +188,10 @@ export function AppShell({ children }: { children: ReactNode }) {
             <NavLink
               key={item.to}
               to={item.to}
-              aria-label={t(item.key)}
-              title={t(item.key)}
               className={`mobile-nav-item ${isActive ? "is-active" : ""}`}
             >
               <span className="nav-icon">{item.icon}</span>
+              <span>{t(item.key)}</span>
             </NavLink>
           );
         })}
