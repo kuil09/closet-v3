@@ -107,11 +107,9 @@ button {
   letter-spacing: -0.04em;
 }
 
-.brand-caption,
 .eyebrow,
 .section-tag,
-.item-chip,
-.local-pill {
+.item-chip {
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-size: 0.72rem;

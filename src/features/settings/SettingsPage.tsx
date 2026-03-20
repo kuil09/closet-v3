@@ -35,7 +35,6 @@ export function SettingsPage() {
             <h2>{t("settings.productControls")}</h2>
           </div>
         </div>
-        <p className="muted-copy">{t("settings.localOnly")}</p>
         <div className="settings-grid">
           <label>
             <span>{t("settings.theme")}</span>

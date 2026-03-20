@@ -27,7 +27,6 @@ export function AppShell({ children }: { children: ReactNode }) {
       <aside className="sidebar">
         <div className="brand-block">
           <div className="brand-mark">The Atelier</div>
-          <div className="brand-caption">{t("badge.local")}</div>
         </div>
         <nav className="nav-list">
           {navItems.map((item) => (
@@ -50,7 +49,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             <h1 className="page-title">{t(activeLabel)}</h1>
           </div>
           <div className="topbar-controls">
-            <span className="local-pill">{t("badge.local")}</span>
             <select
               aria-label={t("settings.language")}
               className="control-select shell-language-select"
