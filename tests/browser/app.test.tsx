@@ -160,8 +160,8 @@ describe("app flows", () => {
     const file = new File(["meta"], "receipt.png", { type: "image/png" });
 
     await view.findByText(/Capture a new piece/i);
-    await user.click(view.getByRole("button", { name: /Meta assets/i }));
-    await user.upload(view.getByLabelText("Add image"), file);
+    await user.click(view.getByRole("button", { name: /Reference images/i }));
+    await user.upload(view.getByLabelText("Add reference image"), file);
     expect(await view.findByText(/receipt\.png/i)).toBeTruthy();
 
     await user.click(view.getByText("Remove asset"));
@@ -225,7 +225,7 @@ describe("app flows", () => {
     const view = renderAt("/register?item=item_coat");
 
     await view.findByDisplayValue("Over-Sized Cashmere Coat");
-    await user.click(view.getByRole("button", { name: /Meta assets/i }));
+    await user.click(view.getByRole("button", { name: /Reference images/i }));
     expect(await view.findByText("Care label")).toBeTruthy();
     expect(view.container.querySelectorAll(".meta-asset-thumb").length).toBeGreaterThan(0);
   });

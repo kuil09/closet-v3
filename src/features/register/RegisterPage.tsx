@@ -16,7 +16,6 @@ import { ItemImage } from "../shared/ItemImage";
 const categories = ["Outerwear", "Tops", "Bottoms", "Shoes", "Accessories"];
 const temperatureOptions: TemperatureBand[] = ["freezing", "cold", "mild", "warm", "hot"];
 const weatherOptions: WeatherCondition[] = ["clear", "cloudy", "rain", "snow", "wind"];
-const metaAssetTypes: MetaAssetType[] = ["care", "price_tag", "receipt", "extra"];
 
 interface DraftState {
   id: string | null;
@@ -142,7 +141,6 @@ export function RegisterPage() {
   const itemId = params.get("item");
   const editingItem = useLiveQuery(() => (itemId ? atelierDb.items.get(itemId) : undefined), [itemId]);
   const [draft, setDraft] = useState<DraftState>(createEmptyDraft());
-  const [pendingMetaType, setPendingMetaType] = useState<MetaAssetType>("extra");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isSamplingPaletteColor, setIsSamplingPaletteColor] = useState(false);
   const heroImageElementRef = useRef<HTMLImageElement | null>(null);
@@ -173,14 +171,6 @@ export function RegisterPage() {
       categories.map((category) => ({
         value: category,
         label: categoryMessageKey(category) ? t(categoryMessageKey(category)!) : category
-      })),
-    [t]
-  );
-  const localizedMetaAssetTypes = useMemo(
-    () =>
-      metaAssetTypes.map((type) => ({
-        value: type,
-        label: t(metaAssetTypeMessageKey(type))
       })),
     [t]
   );
@@ -632,19 +622,8 @@ export function RegisterPage() {
         >
           <div className="register-section-summary">{metaSummary}</div>
           <div className="detail-stack">
+            <p className="register-section-description">{t("register.metaSectionBody")}</p>
             <div className="meta-upload-row">
-              <select
-                aria-label={t("register.metaAssetType")}
-                className="control-select"
-                value={pendingMetaType}
-                onChange={(event) => setPendingMetaType(event.target.value as MetaAssetType)}
-              >
-                {localizedMetaAssetTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
               <label className="secondary-button">
                 {t("register.addMetaImage")}
                 <input
@@ -659,7 +638,7 @@ export function RegisterPage() {
                     }
                     setDraft((current) => ({
                       ...current,
-                      metaFiles: [...current.metaFiles, { id: makeId("meta"), file, type: pendingMetaType }]
+                      metaFiles: [...current.metaFiles, { id: makeId("meta"), file, type: "extra" }]
                     }));
                   }}
                 />

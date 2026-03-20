@@ -672,6 +672,13 @@ button {
   line-height: 1.45;
 }
 
+.register-section-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .sheet-backdrop {
   position: fixed;
   inset: 0;

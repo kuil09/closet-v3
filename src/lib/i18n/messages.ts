@@ -84,9 +84,9 @@ export type MessageKey =
   | "register.removeImage"
   | "register.palette"
   | "register.addColor"
-  | "register.metaAssetType"
   | "register.metaAssets"
   | "register.addMetaImage"
+  | "register.metaSectionBody"
   | "register.pickFromImage"
   | "register.pickFromImageActive"
   | "register.noMetaAssets"
@@ -228,12 +228,12 @@ const base: Catalog = {
   "register.removeImage": "Remove image",
   "register.palette": "Palette",
   "register.addColor": "Add color",
-  "register.metaAssetType": "Meta asset type",
-  "register.metaAssets": "Meta Assets",
-  "register.addMetaImage": "Add image",
+  "register.metaAssets": "Reference images",
+  "register.addMetaImage": "Add reference image",
+  "register.metaSectionBody": "Add care labels, price tags, receipts, or any extra detail shots you want to keep with this item.",
   "register.pickFromImage": "Pick from image",
   "register.pickFromImageActive": "Click inside the uploaded image to sample a color.",
-  "register.noMetaAssets": "No meta assets yet.",
+  "register.noMetaAssets": "No reference images yet.",
   "register.removeAsset": "Remove asset",
   "register.name": "Name",
   "register.category": "Category",
@@ -261,7 +261,7 @@ const base: Catalog = {
   "register.styleSection": "Style information",
   "register.weatherSection": "Weather and temperature fit",
   "register.paletteSection": "Color palette",
-  "register.metaSection": "Meta assets",
+  "register.metaSection": "Reference images",
   "register.metaTypeCare": "Care",
   "register.metaTypePriceTag": "Price tag",
   "register.metaTypeReceipt": "Receipt",
@@ -371,12 +371,12 @@ export const messages: Record<Locale, Catalog> = {
     "register.removeImage": "이미지 제거",
     "register.palette": "팔레트",
     "register.addColor": "색상 추가",
-    "register.metaAssetType": "메타 자산 유형",
-    "register.metaAssets": "메타 자산",
-    "register.addMetaImage": "이미지 추가",
+    "register.metaAssets": "참고 이미지",
+    "register.addMetaImage": "참고 이미지 추가",
+    "register.metaSectionBody": "케어 라벨, 가격표, 영수증, 디테일 컷처럼 이 아이템과 함께 보관하고 싶은 이미지를 추가하세요.",
     "register.pickFromImage": "이미지에서 추출",
     "register.pickFromImageActive": "업로드된 이미지 안을 클릭해 색상을 추출하세요.",
-    "register.noMetaAssets": "메타 자산이 아직 없습니다.",
+    "register.noMetaAssets": "참고 이미지가 아직 없습니다.",
     "register.removeAsset": "자산 제거",
     "register.name": "이름",
     "register.category": "카테고리",
@@ -404,7 +404,7 @@ export const messages: Record<Locale, Catalog> = {
     "register.styleSection": "스타일 정보",
     "register.weatherSection": "날씨와 온도 적합도",
     "register.paletteSection": "색상 팔레트",
-    "register.metaSection": "메타 자산",
+    "register.metaSection": "참고 이미지",
     "register.metaTypeCare": "케어",
     "register.metaTypePriceTag": "가격표",
     "register.metaTypeReceipt": "영수증",
