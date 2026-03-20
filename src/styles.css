@@ -628,7 +628,8 @@ button {
 
 .color-range-filter,
 .color-range-head,
-.color-range-grid {
+.color-range-scale,
+.color-range-slider-shell {
   display: grid;
   gap: 0.75rem;
 }
@@ -639,15 +640,107 @@ button {
   letter-spacing: -0.03em;
 }
 
-.color-range-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.color-range-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.color-range-summary-swatch {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--text) 16%, transparent);
+  flex: 0 0 auto;
+}
+
+.color-range-summary-bar {
+  flex: 1;
+  min-width: 4rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
 }
 
 .color-range-scale {
-  display: grid;
   gap: 0.65rem;
   color: var(--muted);
   font-size: 0.88rem;
+}
+
+.color-range-slider-shell {
+  position: relative;
+  min-height: 2.25rem;
+  align-items: center;
+}
+
+.color-range-slider-track,
+.color-range-slider-selection {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 999px;
+}
+
+.color-range-slider-track {
+  height: 1rem;
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+.color-range-slider-selection {
+  height: 1.3rem;
+  border: 2px solid color-mix(in srgb, var(--surface-elevated) 88%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 18%, transparent);
+  pointer-events: none;
+}
+
+.color-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.color-range-thumb::-webkit-slider-runnable-track {
+  height: 2.25rem;
+  background: transparent;
+}
+
+.color-range-thumb::-moz-range-track {
+  height: 2.25rem;
+  background: transparent;
+  border: 0;
+}
+
+.color-range-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.575rem;
+  border-radius: 999px;
+  border: 2px solid var(--surface-elevated);
+  background: var(--text);
+  box-shadow: 0 10px 18px color-mix(in srgb, var(--text) 18%, transparent);
+  pointer-events: auto;
+  cursor: ew-resize;
+}
+
+.color-range-thumb::-moz-range-thumb {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  border: 2px solid var(--surface-elevated);
+  background: var(--text);
+  box-shadow: 0 10px 18px color-mix(in srgb, var(--text) 18%, transparent);
+  pointer-events: auto;
+  cursor: ew-resize;
 }
 
 .color-range-stops {
@@ -948,8 +1041,7 @@ button {
 
   .stats-grid,
   .form-grid,
-  .settings-grid,
-  .color-range-grid {
+  .settings-grid {
     grid-template-columns: 1fr;
   }
 

@@ -48,6 +48,23 @@ export function WardrobePage() {
   const effectiveColorRangeEnd = Math.min(Math.max(colorRangeEnd, effectiveColorRangeStart), maxColorIndex);
   const selectedColorTags = colorTags.slice(effectiveColorRangeStart, effectiveColorRangeEnd + 1);
   const isColorRangeActive = colorTags.length > 0 && (effectiveColorRangeStart > 0 || effectiveColorRangeEnd < maxColorIndex);
+  const selectedColorStart = selectedColorTags[0]?.value;
+  const selectedColorEnd = selectedColorTags[selectedColorTags.length - 1]?.value;
+  const colorRangeTrack = useMemo(() => {
+    if (colorTags.length === 0) {
+      return "linear-gradient(90deg, #1B1B1B 0%, #F5F5F5 100%)";
+    }
+
+    if (colorTags.length === 1) {
+      return colorTags[0].value;
+    }
+
+    return `linear-gradient(90deg, ${colorTags
+      .map((entry, index) => `${entry.value} ${(index / maxColorIndex) * 100}%`)
+      .join(", ")})`;
+  }, [colorTags, maxColorIndex]);
+  const rangeStartPercent = maxColorIndex === 0 ? 0 : (effectiveColorRangeStart / maxColorIndex) * 100;
+  const rangeEndPercent = maxColorIndex === 0 ? 100 : (effectiveColorRangeEnd / maxColorIndex) * 100;
   const colorRangeSummary = useMemo(() => {
     if (!colorTags.length || !selectedColorTags.length) {
       return t("wardrobe.colorRangeAll");
@@ -244,41 +261,47 @@ export function WardrobePage() {
             <div className="full-width color-range-filter">
               <div className="color-range-head">
                 <span>{t("wardrobe.colorRange")}</span>
-                <strong>{colorRangeSummary}</strong>
+                <div className="color-range-summary" aria-label={colorRangeSummary} title={colorRangeSummary}>
+                  {selectedColorStart ? <span className="color-range-summary-swatch" style={{ backgroundColor: selectedColorStart }} /> : null}
+                  <span className="color-range-summary-bar" style={{ background: colorRangeTrack }} />
+                  {selectedColorEnd ? <span className="color-range-summary-swatch" style={{ backgroundColor: selectedColorEnd }} /> : null}
+                </div>
               </div>
-              <div className="color-range-grid">
-                <label>
-                  <span>{t("wardrobe.colorFrom")}</span>
-                  <input
-                    aria-label={t("wardrobe.colorFrom")}
-                    className="temperature-slider"
-                    type="range"
-                    min={0}
-                    max={maxColorIndex}
-                    step={1}
-                    value={effectiveColorRangeStart}
-                    onChange={(event) => {
-                      const next = Number(event.target.value);
-                      setColorRangeStart(Math.min(next, effectiveColorRangeEnd));
-                    }}
-                  />
-                </label>
-                <label>
-                  <span>{t("wardrobe.colorTo")}</span>
-                  <input
-                    aria-label={t("wardrobe.colorTo")}
-                    className="temperature-slider"
-                    type="range"
-                    min={0}
-                    max={maxColorIndex}
-                    step={1}
-                    value={effectiveColorRangeEnd}
-                    onChange={(event) => {
-                      const next = Number(event.target.value);
-                      setColorRangeEnd(Math.max(next, effectiveColorRangeStart));
-                    }}
-                  />
-                </label>
+              <div className="color-range-slider-shell">
+                <div className="color-range-slider-track" style={{ background: colorRangeTrack }} />
+                <div
+                  className="color-range-slider-selection"
+                  style={{
+                    left: `${rangeStartPercent}%`,
+                    right: `${100 - rangeEndPercent}%`
+                  }}
+                />
+                <input
+                  aria-label={t("wardrobe.colorFrom")}
+                  className="color-range-thumb color-range-thumb-start"
+                  type="range"
+                  min={0}
+                  max={maxColorIndex}
+                  step={1}
+                  value={effectiveColorRangeStart}
+                  onChange={(event) => {
+                    const next = Number(event.target.value);
+                    setColorRangeStart(Math.min(next, effectiveColorRangeEnd));
+                  }}
+                />
+                <input
+                  aria-label={t("wardrobe.colorTo")}
+                  className="color-range-thumb color-range-thumb-end"
+                  type="range"
+                  min={0}
+                  max={maxColorIndex}
+                  step={1}
+                  value={effectiveColorRangeEnd}
+                  onChange={(event) => {
+                    const next = Number(event.target.value);
+                    setColorRangeEnd(Math.max(next, effectiveColorRangeStart));
+                  }}
+                />
               </div>
               <div className="color-range-scale" aria-hidden="true">
                 <span>{t("wardrobe.colorRangeDark")}</span>
