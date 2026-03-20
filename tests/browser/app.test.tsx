@@ -3,6 +3,7 @@ import { fireEvent, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 import { atelierDb } from "../../src/lib/db/app-db";
+import { seedItems, seedLookbooks } from "../../src/lib/db/seed";
 
 function mockEnvironment(options?: { fetchFails?: boolean; geolocationFails?: boolean }) {
   globalThis.fetch = mock(async () => {
@@ -159,6 +160,16 @@ describe("app flows", () => {
     expect(await view.findByText(/Permission denied/i)).toBeTruthy();
   });
 
+  test("switches weather units directly from the home card", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/");
+
+    await view.findByText(/Live weather/i);
+    expect(await view.findByRole("heading", { name: /^18C$/i })).toBeTruthy();
+    await user.click(view.getByRole("button", { name: /^Fahrenheit$/ }));
+    await view.findByRole("heading", { name: /^64F$/i });
+  });
+
   test("saves a new lookbook composition and shows it in saved boards", async () => {
     const user = userEvent.setup();
     const view = renderAt("/lookbook");
@@ -197,8 +208,7 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/settings");
 
-    await view.findByText("Product controls");
-    await user.click(view.getByRole("button", { name: /Local data management/i }));
+    await user.click(await view.findByRole("button", { name: /Local data management/i }));
     await user.click(view.getByRole("button", { name: /^Clear local data$/ }));
     await waitFor(() => expect(view.getAllByText("Local wardrobe data cleared.").length).toBeGreaterThan(0));
     await user.click(view.getAllByRole("link", { name: /My Wardrobe$/ })[0]);
@@ -239,14 +249,15 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/settings", 768);
 
-    await view.findByText("Product controls");
     expect(view.queryByRole("button", { name: /^Clear local data$/ })).toBeNull();
-    await user.click(view.getByRole("button", { name: /Local data management/i }));
+    await user.click(await view.findByRole("button", { name: /Local data management/i }));
     await view.findByRole("button", { name: /^Clear local data$/ });
   });
 
   test("opens a saved lookbook from the home gallery", async () => {
     const user = userEvent.setup();
+    await atelierDb.items.bulkPut(seedItems);
+    await atelierDb.lookbooks.bulkPut(seedLookbooks);
     const view = renderAt("/");
 
     await user.click(await view.findByRole("button", { name: /Autumn Redaction/i }));

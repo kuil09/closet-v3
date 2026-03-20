@@ -12,6 +12,7 @@ export function HomePage() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const units = usePreferencesStore((state) => state.units);
+  const setUnits = usePreferencesStore((state) => state.setUnits);
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
   const lookbooks = useLiveQuery(() => atelierDb.lookbooks.toArray(), [], []);
   const { context, loading, error } = useWeather();
@@ -46,13 +47,29 @@ export function HomePage() {
           <span className="section-tag">{t("home.weatherTitle")}</span>
           <h3>
             {loading && t("home.weatherRefreshing")}
-            {!loading && context && `${formatTemperature(context.temperatureC, units)} · ${context.locationName}`}
+            {!loading && context && formatTemperature(context.temperatureC, units)}
             {!loading && !context && t("home.weatherUnavailable")}
           </h3>
           <div className="weather-meta">
             <p>{context ? `${context.condition} · ${Math.round(context.windKph)} kph wind` : t("home.weatherUnavailable")}</p>
             {error ? <small>{`${error}. ${t("home.weatherFallback")}`}</small> : null}
           </div>
+        </div>
+        <div className="weather-actions" aria-label={t("settings.units")}>
+          <button
+            type="button"
+            className={`mini-button ${units === "C" ? "is-active" : ""}`}
+            onClick={() => setUnits("C")}
+          >
+            {t("settings.unitsC")}
+          </button>
+          <button
+            type="button"
+            className={`mini-button ${units === "F" ? "is-active" : ""}`}
+            onClick={() => setUnits("F")}
+          >
+            {t("settings.unitsF")}
+          </button>
         </div>
       </section>
 
