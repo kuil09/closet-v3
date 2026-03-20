@@ -201,8 +201,8 @@ describe("app flows", () => {
     const view = renderAt("/settings", 768);
 
     await view.findByText("Product controls");
-    expect(view.queryByText(/automatic only/i)).toBeNull();
-    await user.click(view.getByRole("button", { name: /Weather settings/i }));
-    await view.findByText(/automatic only/i);
+    expect(view.queryByLabelText("Motion")).toBeNull();
+    await user.click(view.getByRole("button", { name: /Motion settings/i }));
+    await view.findByLabelText("Motion");
   });
 });

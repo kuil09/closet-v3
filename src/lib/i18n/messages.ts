@@ -135,32 +135,18 @@ export type MessageKey =
   | "settings.theme"
   | "settings.language"
   | "settings.units"
-  | "settings.weather"
   | "settings.motion"
-  | "settings.weatherAutoOnlyBody"
-  | "settings.manualCity"
-  | "settings.manualTemperature"
-  | "settings.manualCondition"
-  | "settings.manualWind"
   | "settings.themeLight"
   | "settings.themeDark"
   | "settings.unitsC"
   | "settings.unitsF"
-  | "settings.weatherAuto"
-  | "settings.weatherManual"
   | "settings.motionFull"
   | "settings.motionReduced"
-  | "settings.conditionClear"
-  | "settings.conditionCloudy"
-  | "settings.conditionRain"
-  | "settings.conditionSnow"
-  | "settings.conditionWind"
   | "settings.resetTitle"
   | "settings.resetBody"
   | "settings.resetAction"
   | "settings.resetConfirm"
   | "settings.resetDone"
-  | "settings.weatherSection"
   | "settings.motionSection"
   | "settings.localDataSection";
 
@@ -301,32 +287,18 @@ const base: Catalog = {
   "settings.theme": "Theme",
   "settings.language": "Language",
   "settings.units": "Units",
-  "settings.weather": "Weather mode",
   "settings.motion": "Motion",
-  "settings.weatherAutoOnlyBody": "Weather is automatic only. If location access or the weather service is unavailable, the app will show that the current weather could not be loaded.",
-  "settings.manualCity": "Manual city",
-  "settings.manualTemperature": "Manual temperature",
-  "settings.manualCondition": "Manual condition",
-  "settings.manualWind": "Manual wind",
   "settings.themeLight": "Light",
   "settings.themeDark": "Dark",
   "settings.unitsC": "Celsius",
   "settings.unitsF": "Fahrenheit",
-  "settings.weatherAuto": "Auto",
-  "settings.weatherManual": "Manual",
   "settings.motionFull": "Full",
   "settings.motionReduced": "Reduced",
-  "settings.conditionClear": "Clear",
-  "settings.conditionCloudy": "Cloudy",
-  "settings.conditionRain": "Rain",
-  "settings.conditionSnow": "Snow",
-  "settings.conditionWind": "Wind",
   "settings.resetTitle": "Reset local product data",
   "settings.resetBody": "Clears wardrobe items, lookbooks, cached weather, and uploaded images from this device.",
   "settings.resetAction": "Clear local data",
   "settings.resetConfirm": "Clear all wardrobe data stored on this device?",
   "settings.resetDone": "Local wardrobe data cleared.",
-  "settings.weatherSection": "Weather settings",
   "settings.motionSection": "Motion settings",
   "settings.localDataSection": "Local data management"
 };
@@ -465,32 +437,18 @@ export const messages: Record<Locale, Catalog> = {
     "settings.theme": "테마",
     "settings.language": "언어",
     "settings.units": "단위",
-    "settings.weather": "날씨 모드",
     "settings.motion": "모션",
-    "settings.weatherAutoOnlyBody": "날씨는 자동 조회만 사용합니다. 위치 권한이나 날씨 서비스에 접근할 수 없으면 현재 날씨를 불러오지 못한 상태로 표시됩니다.",
-    "settings.manualCity": "수동 도시",
-    "settings.manualTemperature": "수동 온도",
-    "settings.manualCondition": "수동 날씨",
-    "settings.manualWind": "수동 풍속",
     "settings.themeLight": "라이트",
     "settings.themeDark": "다크",
     "settings.unitsC": "섭씨",
     "settings.unitsF": "화씨",
-    "settings.weatherAuto": "자동",
-    "settings.weatherManual": "수동",
     "settings.motionFull": "전체",
     "settings.motionReduced": "축소",
-    "settings.conditionClear": "맑음",
-    "settings.conditionCloudy": "흐림",
-    "settings.conditionRain": "비",
-    "settings.conditionSnow": "눈",
-    "settings.conditionWind": "바람",
     "settings.resetTitle": "로컬 제품 데이터 초기화",
     "settings.resetBody": "이 기기에 저장된 옷장 아이템, 룩북, 캐시된 날씨, 업로드 이미지를 삭제합니다.",
     "settings.resetAction": "로컬 데이터 삭제",
     "settings.resetConfirm": "이 기기에 저장된 옷장 데이터를 모두 삭제할까요?",
     "settings.resetDone": "로컬 옷장 데이터를 삭제했습니다.",
-    "settings.weatherSection": "날씨 설정",
     "settings.motionSection": "모션 설정",
     "settings.localDataSection": "로컬 데이터 관리"
   },

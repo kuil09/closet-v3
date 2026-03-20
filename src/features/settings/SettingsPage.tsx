@@ -1,5 +1,5 @@
 import { clearAllProductData } from "../../lib/db/app-db";
-import type { Locale, Units } from "../../lib/db/types";
+import type { Units } from "../../lib/db/types";
 import { usePreferencesStore } from "../../lib/state/preferences-store";
 import { useI18n } from "../../lib/i18n/i18n";
 import { useState } from "react";
@@ -7,12 +7,8 @@ import { DisclosureSection } from "../shared/DisclosureSection";
 
 export function SettingsPage() {
   const { t } = useI18n();
-  const theme = usePreferencesStore((state) => state.theme);
-  const language = usePreferencesStore((state) => state.language);
   const units = usePreferencesStore((state) => state.units);
   const motion = usePreferencesStore((state) => state.motion);
-  const setTheme = usePreferencesStore((state) => state.setTheme);
-  const setLanguage = usePreferencesStore((state) => state.setLanguage);
   const setUnits = usePreferencesStore((state) => state.setUnits);
   const setMotion = usePreferencesStore((state) => state.setMotion);
   const [feedback, setFeedback] = useState("");
@@ -37,29 +33,6 @@ export function SettingsPage() {
         </div>
         <div className="settings-grid">
           <label>
-            <span>{t("settings.theme")}</span>
-            <select className="control-select" value={theme} onChange={(event) => setTheme(event.target.value as typeof theme)}>
-              <option value="light">{t("settings.themeLight")}</option>
-              <option value="dark">{t("settings.themeDark")}</option>
-            </select>
-          </label>
-          <label>
-            <span>{t("settings.language")}</span>
-            <select
-              className="control-select"
-              value={language}
-              onChange={(event) => setLanguage(event.target.value as Locale)}
-            >
-              <option value="en">English</option>
-              <option value="ko">한국어</option>
-              <option value="ja">日本語</option>
-              <option value="fr">Français</option>
-              <option value="es">Español</option>
-              <option value="de">Deutsch</option>
-              <option value="zh-CN">中文</option>
-            </select>
-          </label>
-          <label>
             <span>{t("settings.units")}</span>
             <select className="control-select" value={units} onChange={(event) => setUnits(event.target.value as Units)}>
               <option value="C">{t("settings.unitsC")}</option>
@@ -68,16 +41,6 @@ export function SettingsPage() {
           </label>
         </div>
       </section>
-
-      <DisclosureSection
-        screenId="settings"
-        sectionId="settings-weather"
-        title={t("settings.weatherSection")}
-        summary={t("settings.weatherAuto")}
-        defaultOpen={false}
-      >
-        <p className="muted-copy">{t("settings.weatherAutoOnlyBody")}</p>
-      </DisclosureSection>
 
       <DisclosureSection
         screenId="settings"
