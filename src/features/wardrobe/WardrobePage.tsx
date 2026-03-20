@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { archiveItem, toggleFavorite } from "../../lib/db/repository";
 import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
-import { temperatureBandLabel, normalizeToken } from "../../lib/utils/format";
+import { normalizeToken } from "../../lib/utils/format";
 import { buildPaletteTags, itemMatchesPaletteRange, itemPaletteLightness } from "../../lib/utils/palette-range";
 import { useI18n } from "../../lib/i18n/i18n";
 import { InfoHint } from "../shared/InfoHint";
@@ -385,7 +385,6 @@ function WardrobeCard({
   item: ClosetItem;
   t: (
     key:
-      | "wardrobe.materialUnknown"
       | "wardrobe.unfavorite"
       | "wardrobe.favorite"
       | "wardrobe.restore"
@@ -407,20 +406,26 @@ function WardrobeCard({
         <div className="item-title-row">
           <strong>{item.name}</strong>
         </div>
-        <div className="item-detail-scroll">
-          <span>{item.materials.join(" · ") || t("wardrobe.materialUnknown")}</span>
-          <span>{item.temperatureBand.map(temperatureBandLabel).join(", ")}</span>
-        </div>
       </div>
       <div className="card-actions">
-        <button className="primary-button" onClick={onEdit}>
-          {t("wardrobe.edit")}
+        <button className="card-icon-button" onClick={onEdit} aria-label={t("wardrobe.edit")} title={t("wardrobe.edit")}>
+          <span aria-hidden="true">✎</span>
         </button>
-        <button className={`mini-button ${item.favorite ? "is-active" : ""}`} onClick={onToggleFavorite}>
-          {item.favorite ? `★ ${t("wardrobe.unfavorite")}` : `☆ ${t("wardrobe.favorite")}`}
+        <button
+          className={`card-icon-button ${item.favorite ? "is-active" : ""}`}
+          onClick={onToggleFavorite}
+          aria-label={item.favorite ? t("wardrobe.unfavorite") : t("wardrobe.favorite")}
+          title={item.favorite ? t("wardrobe.unfavorite") : t("wardrobe.favorite")}
+        >
+          <span aria-hidden="true">{item.favorite ? "★" : "☆"}</span>
         </button>
-        <button className="mini-button" onClick={onToggleArchived}>
-          {item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
+        <button
+          className="card-icon-button"
+          onClick={onToggleArchived}
+          aria-label={item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
+          title={item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
+        >
+          <span aria-hidden="true">{item.status === "archived" ? "↺" : "🗃"}</span>
         </button>
       </div>
     </article>

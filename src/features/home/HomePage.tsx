@@ -51,9 +51,6 @@ export function HomePage() {
               </div>
               <div className="item-card-body">
                 <strong>{item.name}</strong>
-                <div className="item-detail-scroll">
-                  <span>{item.materials.join(" · ")}</span>
-                </div>
               </div>
             </button>
           ))}
