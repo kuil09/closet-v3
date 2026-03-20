@@ -1767,6 +1767,12 @@ button {
   filter: saturate(1.05) contrast(1.02);
 }
 
+.register-preview-image {
+  object-fit: contain;
+  object-position: center;
+  background: var(--surface-muted);
+}
+
 .dropzone-copy {
   text-align: center;
   max-width: 260px;

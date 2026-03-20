@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
@@ -6,6 +6,7 @@ import { deleteClosetItem, saveClosetItem, saveStoredImage } from "../../lib/db/
 import type { ClosetItem, MetaAssetType, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
 import { categoryMessageKey, metaAssetTypeMessageKey, temperatureMessageKey, weatherMessageKey } from "../../lib/i18n/label-keys";
+import { sampleImageColor } from "../../lib/media/color-sampling";
 import { ingestImage, useStoredImageSource } from "../../lib/media/images";
 import { temperatureBandLabel } from "../../lib/utils/format";
 import { makeId } from "../../lib/utils/id";
@@ -86,37 +87,6 @@ function splitCommaList(value: string): string[] {
     .split(",")
     .map((entry) => entry.trim())
     .filter(Boolean);
-}
-
-function channelToHex(value: number) {
-  return value.toString(16).padStart(2, "0").toUpperCase();
-}
-
-function sampleImageColor(image: HTMLImageElement, clientX: number, clientY: number) {
-  const bounds = image.getBoundingClientRect();
-  if (bounds.width === 0 || bounds.height === 0 || image.naturalWidth === 0 || image.naturalHeight === 0) {
-    return null;
-  }
-
-  const canvas = document.createElement("canvas");
-  canvas.width = image.naturalWidth;
-  canvas.height = image.naturalHeight;
-  const context = canvas.getContext("2d");
-  if (!context) {
-    return null;
-  }
-
-  context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-  const x = Math.max(0, Math.min(canvas.width - 1, Math.floor(((clientX - bounds.left) / bounds.width) * canvas.width)));
-  const y = Math.max(0, Math.min(canvas.height - 1, Math.floor(((clientY - bounds.top) / bounds.height) * canvas.height)));
-  const [red, green, blue, alpha] = context.getImageData(x, y, 1, 1).data;
-
-  if (alpha === 0) {
-    return null;
-  }
-
-  return `#${channelToHex(red)}${channelToHex(green)}${channelToHex(blue)}`;
 }
 
 function weatherIcon(condition: WeatherCondition) {
@@ -260,14 +230,15 @@ export function RegisterPage() {
     setDraft((current) => ({ ...current, heroFile: file }));
   }
 
-  function handleImagePaletteSample(event: MouseEvent<HTMLImageElement>) {
+  function handleImagePaletteSample(event: PointerEvent<HTMLImageElement>) {
     if (!isSamplingPaletteColor || !heroImageElementRef.current) {
       return;
     }
 
+    event.preventDefault();
+
     const sampledColor = sampleImageColor(heroImageElementRef.current, event.clientX, event.clientY);
     if (!sampledColor) {
-      setIsSamplingPaletteColor(false);
       return;
     }
 
@@ -419,9 +390,9 @@ export function RegisterPage() {
                 <ItemImage
                   imageRef={heroImageRef}
                   alt={draft.name || t("register.heroImage")}
-                  className="cover-image"
+                  className="cover-image register-preview-image"
                   imgRef={heroImageElementRef}
-                  onImageClick={handleImagePaletteSample}
+                  onImagePointerDown={handleImagePaletteSample}
                 />
               </div>
             ) : (
@@ -640,7 +611,6 @@ export function RegisterPage() {
                 />
                 <button
                   className="mini-button"
-                  disabled={draft.paletteColors.length <= 1}
                   onClick={() =>
                     setDraft((current) => ({
                       ...current,

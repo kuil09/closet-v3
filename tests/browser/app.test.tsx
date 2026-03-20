@@ -269,6 +269,20 @@ describe("app flows", () => {
     expect((view.getByRole("button", { name: /^Add color$/ }) as HTMLButtonElement).disabled).toBe(true);
   });
 
+  test("allows removing the last palette color in the register flow", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/register");
+
+    await view.findByText(/Capture a new piece/i);
+    await user.click(view.getByRole("button", { name: /Color palette/i }));
+    await user.click(view.getByRole("button", { name: /^Add color$/ }));
+
+    expect(view.container.querySelectorAll(".palette-editor").length).toBe(1);
+    await user.click(view.getByRole("button", { name: "×" }));
+
+    await waitFor(() => expect(view.container.querySelectorAll(".palette-editor").length).toBe(0));
+  });
+
   test("re-edits an existing item and saves changes", async () => {
     const user = userEvent.setup();
     const view = renderAt("/register?item=item_coat");
