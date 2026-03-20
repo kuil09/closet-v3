@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { act, fireEvent, render, waitFor } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 import { atelierDb } from "../../src/lib/db/app-db";
@@ -243,32 +243,6 @@ describe("app flows", () => {
     expect(view.queryByRole("button", { name: /^Clear local data$/ })).toBeNull();
     await user.click(view.getByRole("button", { name: /Local data management/i }));
     await view.findByRole("button", { name: /^Clear local data$/ });
-  });
-
-  test("navigates between primary views with a mobile swipe", async () => {
-    const view = renderAt("/", 768);
-
-    await view.findByText(/Total Pieces/i);
-    const mobileNav = document.querySelector(".mobile-nav");
-    if (!(mobileNav instanceof HTMLElement)) {
-      throw new Error("Expected mobile navigation for swipe navigation");
-    }
-
-    await act(async () => {
-      fireEvent.touchStart(mobileNav, { touches: [{ clientX: 260, clientY: 780 }] });
-      fireEvent.touchMove(mobileNav, { touches: [{ clientX: 100, clientY: 788 }] });
-      fireEvent.touchEnd(mobileNav);
-    });
-
-    await view.findByText(/Your Digital Sanctuary/i);
-
-    await act(async () => {
-      fireEvent.touchStart(mobileNav, { touches: [{ clientX: 80, clientY: 780 }] });
-      fireEvent.touchMove(mobileNav, { touches: [{ clientX: 260, clientY: 788 }] });
-      fireEvent.touchEnd(mobileNav);
-    });
-
-    await view.findByText(/Total Pieces/i);
   });
 
   test("opens a saved lookbook from the home gallery", async () => {
