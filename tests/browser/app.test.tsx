@@ -186,6 +186,16 @@ describe("app flows", () => {
     });
   });
 
+  test("shows seeded meta assets with thumbnails on sample items", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/register?item=item_coat");
+
+    await view.findByDisplayValue("Over-Sized Cashmere Coat");
+    await user.click(view.getByRole("button", { name: /Meta assets/i }));
+    expect(await view.findByText("Care label")).toBeTruthy();
+    expect(view.container.querySelectorAll(".meta-asset-thumb").length).toBeGreaterThan(0);
+  });
+
   test("shows an unavailable state when automatic weather cannot be loaded", async () => {
     const view = renderAt("/", 1280, { geolocationFails: true });
 

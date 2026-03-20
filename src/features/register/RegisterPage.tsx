@@ -647,7 +647,13 @@ export function RegisterPage() {
             <ul className="meta-list">
               {draft.existingMetaAssets.map((asset) => (
                 <li key={asset.id}>
-                  <span>{`${asset.type} · ${asset.label}`}</span>
+                  <div className="meta-asset-row">
+                    <ItemImage imageRef={asset.imageId} alt={asset.label} className="meta-asset-thumb" />
+                    <div className="meta-asset-copy">
+                      <strong>{asset.label}</strong>
+                      <span>{asset.type}</span>
+                    </div>
+                  </div>
                   <button
                     className="mini-button"
                     onClick={() =>
@@ -663,7 +669,13 @@ export function RegisterPage() {
               ))}
               {draft.metaFiles.map((asset) => (
                 <li key={asset.id}>
-                  <span>{`${asset.type} · ${asset.file.name}`}</span>
+                  <div className="meta-asset-row">
+                    <div className="image-fallback meta-asset-thumb" aria-label={asset.file.name} />
+                    <div className="meta-asset-copy">
+                      <strong>{asset.file.name}</strong>
+                      <span>{asset.type}</span>
+                    </div>
+                  </div>
                   <button
                     className="mini-button"
                     onClick={() =>

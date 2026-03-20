@@ -2,6 +2,21 @@ import type { ClosetItem } from "./types";
 
 const now = new Date().toISOString();
 
+function makeMetaAssetSvg(title: string, subtitle: string, accent: string) {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="480" height="320" viewBox="0 0 480 320">
+      <rect width="480" height="320" rx="28" fill="#F6F3EE" />
+      <rect x="26" y="26" width="428" height="268" rx="22" fill="white" stroke="#D7D0C6" />
+      <rect x="54" y="58" width="120" height="18" rx="9" fill="${accent}" opacity="0.86" />
+      <rect x="54" y="96" width="220" height="12" rx="6" fill="#D9D4CC" />
+      <rect x="54" y="118" width="184" height="12" rx="6" fill="#E5E0D8" />
+      <rect x="54" y="170" width="372" height="74" rx="18" fill="#FAF8F4" stroke="#E2DCD3" stroke-dasharray="6 6" />
+      <text x="54" y="146" fill="#2D3432" font-family="Arial, sans-serif" font-size="30" font-weight="700">${title}</text>
+      <text x="54" y="271" fill="#6B716F" font-family="Arial, sans-serif" font-size="22">${subtitle}</text>
+    </svg>
+  `)}`;
+}
+
 export const seedItems: ClosetItem[] = [
   {
     id: "item_coat",
@@ -23,7 +38,24 @@ export const seedItems: ClosetItem[] = [
     usageFrequency: "often",
     favorite: true,
     styleNotes: "Strong outer layer for sharp editorial silhouettes.",
-    metaAssets: [],
+    metaAssets: [
+      {
+        id: "asset_coat_care",
+        itemId: "item_coat",
+        type: "care",
+        imageId: makeMetaAssetSvg("Care Label", "Dry clean only · Wool blend", "#B1946B"),
+        label: "Care label",
+        createdAt: now
+      },
+      {
+        id: "asset_coat_receipt",
+        itemId: "item_coat",
+        type: "receipt",
+        imageId: makeMetaAssetSvg("Store Receipt", "October 2, 2024 · Main Street Atelier", "#8A7B62"),
+        label: "Store receipt",
+        createdAt: now
+      }
+    ],
     createdAt: now,
     updatedAt: now,
     lastWornAt: now
@@ -48,7 +80,16 @@ export const seedItems: ClosetItem[] = [
     usageFrequency: "regularly",
     favorite: false,
     styleNotes: "Reliable base layer for soft tailoring and weather picks.",
-    metaAssets: [],
+    metaAssets: [
+      {
+        id: "asset_blazer_swatches",
+        itemId: "item_blazer",
+        type: "extra",
+        imageId: makeMetaAssetSvg("Fabric Swatch", "Charcoal wool suiting", "#4B4D52"),
+        label: "Fabric swatch",
+        createdAt: now
+      }
+    ],
     createdAt: now,
     updatedAt: now
   },
