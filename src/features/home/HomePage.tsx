@@ -5,6 +5,7 @@ import { atelierDb } from "../../lib/db/app-db";
 import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
 import { categoryMessageKey } from "../../lib/i18n/label-keys";
+import { normalizeHexColor } from "../../lib/utils/palette-range";
 import { ItemImage } from "../shared/ItemImage";
 import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
@@ -261,6 +262,18 @@ function WeatherIcon({ condition }: { condition: WeatherCondition }) {
   );
 }
 
+function PaletteGlyphPaths() {
+  return (
+    <>
+      <circle cx="10" cy="10" r="5.2" />
+      <circle cx="7" cy="8" r="0.9" />
+      <circle cx="11.5" cy="6.8" r="0.9" />
+      <circle cx="13.2" cy="10.5" r="0.9" />
+      <path d="M8.8 12.4c.8 1.6-.2 3-1.8 3-1.6 0-3-1.2-3-3.2C4 7.8 6.9 4.8 10.3 4.8" />
+    </>
+  );
+}
+
 function InsightDonutChart({
   label,
   slices,
@@ -363,6 +376,24 @@ export function HomePage() {
         .filter((entry) => entry.count > 0),
     [activeItems, t]
   );
+  const paletteStats = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const item of activeItems) {
+      for (const color of item.paletteColors.map(normalizeHexColor).filter(Boolean)) {
+        counts.set(color, (counts.get(color) ?? 0) + 1);
+      }
+    }
+
+    return Array.from(counts.entries())
+      .sort((left, right) => right[1] - left[1])
+      .slice(0, 5)
+      .map(([color, count]) => ({
+        key: color,
+        label: color,
+        count,
+        color
+      }));
+  }, [activeItems]);
   const categorySlices = useMemo(
     () =>
       buildDonutLayout(categoryStats.map((entry, index) => ({
@@ -393,6 +424,7 @@ export function HomePage() {
       }))),
     [weatherStats]
   );
+  const paletteSlices = useMemo(() => buildDonutLayout(paletteStats), [paletteStats]);
 
   return (
     <div className="page-stack">
@@ -434,6 +466,16 @@ export function HomePage() {
               label={t("home.insightsWeather")}
               slices={weatherSlices}
               renderGlyph={(key) => <WeatherGlyphPaths condition={key as WeatherCondition} />}
+            />
+          </div>
+        </article>
+
+        <article className="panel-card insight-card insight-card-single">
+          <div className="insight-chart-panel">
+            <InsightDonutChart
+              label={t("home.insightsPaletteTitle")}
+              slices={paletteSlices}
+              renderGlyph={() => <PaletteGlyphPaths />}
             />
           </div>
         </article>

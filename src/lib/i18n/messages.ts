@@ -35,6 +35,8 @@ export type MessageKey =
   | "home.insightsCategoryTitle"
   | "home.insightsCondition"
   | "home.insightsConditionTitle"
+  | "home.insightsPalette"
+  | "home.insightsPaletteTitle"
   | "home.insightsSeason"
   | "home.insightsWeather"
   | "home.seasonWinter"
@@ -179,6 +181,8 @@ const base: Catalog = {
   "home.insightsCategoryTitle": "Category breakdown",
   "home.insightsCondition": "Wear conditions",
   "home.insightsConditionTitle": "Season and weather fit",
+  "home.insightsPalette": "Palette",
+  "home.insightsPaletteTitle": "Color distribution",
   "home.insightsSeason": "Season",
   "home.insightsWeather": "Weather",
   "home.seasonWinter": "Winter",
@@ -322,6 +326,8 @@ export const messages: Record<Locale, Catalog> = {
     "home.insightsCategoryTitle": "카테고리 분포",
     "home.insightsCondition": "착용 환경",
     "home.insightsConditionTitle": "계절과 날씨 적합도",
+    "home.insightsPalette": "색상",
+    "home.insightsPaletteTitle": "색상 분포",
     "home.insightsSeason": "계절",
     "home.insightsWeather": "날씨",
     "home.seasonWinter": "겨울",
