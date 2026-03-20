@@ -423,9 +423,14 @@ button {
   margin-bottom: 1rem;
 }
 
-.today-look-card {
+.today-look-card,
+.lookbook-grid {
   display: grid;
   gap: 1rem;
+}
+
+.lookbook-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .lookbook-poster {
@@ -444,6 +449,26 @@ button {
 .lookbook-poster.is-mist { background: linear-gradient(180deg, #ecefec, #dee4e0); }
 .lookbook-poster.is-sand { background: linear-gradient(180deg, #f5e7d0, #d3a56e); color: #4c4030; }
 .lookbook-poster.is-olive { background: linear-gradient(180deg, #dee4e0, #bcc7bf); }
+
+.lookbook-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.lookbook-card .lookbook-poster {
+  min-height: 240px;
+}
+
+.lookbook-card-body {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.lookbook-card-body strong {
+  font-family: "Manrope", sans-serif;
+  font-size: 1.05rem;
+  letter-spacing: -0.04em;
+}
 
 .recommendation-list {
   gap: 0.85rem;
@@ -1072,7 +1097,8 @@ button {
 
   .stats-grid,
   .form-grid,
-  .settings-grid {
+  .settings-grid,
+  .lookbook-grid {
     grid-template-columns: 1fr;
   }
 

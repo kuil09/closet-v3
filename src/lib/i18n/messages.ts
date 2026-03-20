@@ -20,6 +20,8 @@ export type MessageKey =
   | "home.todayLook"
   | "home.todayLookEmpty"
   | "home.todayLookEmptyBody"
+  | "home.lookbooksMore"
+  | "home.lookbooksLess"
   | "home.recommendations"
   | "home.recommendationsTitle"
   | "home.recent"
@@ -170,9 +172,11 @@ const base: Catalog = {
   "home.heroTitle": "Curating your digital closet.",
   "home.heroBody": "A gallery-first wardrobe studio built for private collections and expressive lookbooks.",
   "home.heroEyebrow": "Editorial wardrobe studio",
-  "home.todayLook": "Today's Look",
+  "home.todayLook": "My Lookbooks",
   "home.todayLookEmpty": "No saved lookbook yet",
   "home.todayLookEmptyBody": "Save a composition in Lookbook Maker to see it featured here.",
+  "home.lookbooksMore": "Show more lookbooks",
+  "home.lookbooksLess": "Show fewer lookbooks",
   "home.recommendations": "Weather Picks",
   "home.recommendationsTitle": "Rule-based weather picks",
   "home.recent": "Recently Added",
@@ -324,9 +328,11 @@ export const messages: Record<Locale, Catalog> = {
     "home.heroTitle": "당신의 디지털 옷장을 큐레이팅합니다.",
     "home.heroBody": "개인 컬렉션을 위한 갤러리 중심 옷장 스튜디오입니다.",
     "home.heroEyebrow": "에디토리얼 옷장 스튜디오",
-    "home.todayLook": "오늘의 룩",
+    "home.todayLook": "내 룩북",
     "home.todayLookEmpty": "저장된 룩북이 없습니다",
     "home.todayLookEmptyBody": "룩북 메이커에서 구성을 저장하면 여기에 표시됩니다.",
+    "home.lookbooksMore": "룩북 더 보기",
+    "home.lookbooksLess": "룩북 접기",
     "home.recommendations": "날씨 추천",
     "home.recommendationsTitle": "규칙 기반 날씨 추천",
     "home.recent": "최근 추가",

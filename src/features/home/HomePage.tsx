@@ -14,11 +14,13 @@ export function HomePage() {
   const lookbooks = useLiveQuery(() => atelierDb.lookbooks.toArray(), [], []);
   const { context, loading, error } = useWeather();
   const [showAllRecent, setShowAllRecent] = useState(false);
+  const [showAllLookbooks, setShowAllLookbooks] = useState(false);
 
   const activeItems = items.filter((item) => item.status !== "archived");
   const recentItems = [...activeItems].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   const visibleRecentItems = showAllRecent ? recentItems : recentItems.slice(0, 4);
-  const todayLook = lookbooks[0];
+  const sortedLookbooks = [...lookbooks].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const visibleLookbooks = showAllLookbooks ? sortedLookbooks : sortedLookbooks.slice(0, 4);
 
   return (
     <div className="page-stack">
@@ -56,19 +58,35 @@ export function HomePage() {
         <div className="panel-head">
           <div>
             <span className="section-tag">{t("home.todayLook")}</span>
-            <h3>{todayLook?.title ?? t("home.todayLookEmpty")}</h3>
+            <h3>{sortedLookbooks.length > 0 ? t("home.todayLook") : t("home.todayLookEmpty")}</h3>
           </div>
         </div>
-        {todayLook ? (
-          <div className="today-look-card">
-            <div className={`lookbook-poster is-${todayLook.backgroundStyle}`}>
-              <div className="lookbook-overlay">{todayLook.title}</div>
-            </div>
-            <p>{todayLook.description}</p>
+        {sortedLookbooks.length > 0 ? (
+          <div className="lookbook-grid">
+            {visibleLookbooks.map((lookbook) => (
+              <article key={lookbook.id} className="lookbook-card">
+                <div className={`lookbook-poster is-${lookbook.backgroundStyle}`}>
+                  <div className="lookbook-overlay">{lookbook.title}</div>
+                </div>
+                <div className="lookbook-card-body">
+                  <strong>{lookbook.title}</strong>
+                  {lookbook.description ? (
+                    <div className="item-detail-scroll">
+                      <span>{lookbook.description}</span>
+                    </div>
+                  ) : null}
+                </div>
+              </article>
+            ))}
           </div>
         ) : (
           <p className="muted-copy">{t("home.todayLookEmptyBody")}</p>
         )}
+        {sortedLookbooks.length > 4 ? (
+          <button className="secondary-button" onClick={() => setShowAllLookbooks((current) => !current)}>
+            {showAllLookbooks ? t("home.lookbooksLess") : t("home.lookbooksMore")}
+          </button>
+        ) : null}
       </section>
 
       <section className="panel-card">
