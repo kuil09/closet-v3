@@ -180,10 +180,10 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
-    await view.findByText(/Live weather/i);
-    expect(await view.findByRole("heading", { name: /^18C$/i })).toBeTruthy();
+    await view.findByLabelText(/Live weather/i);
+    expect(view.getByText(/^18C$/i)).toBeTruthy();
     await user.click(view.getByRole("button", { name: /^Fahrenheit$/ }));
-    await view.findByRole("heading", { name: /^64F$/i });
+    await view.findByText(/^64F$/i);
   });
 
   test("saves a new lookbook composition and shows it in saved boards", async () => {

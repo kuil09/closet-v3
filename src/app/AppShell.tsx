@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useI18n } from "../lib/i18n/i18n";
 import { usePreferencesStore } from "../lib/state/preferences-store";
+import { useWeather } from "../lib/weather/use-weather";
+import { formatTemperature } from "../lib/utils/format";
 
 const navItems = [
   { to: "/", key: "nav.home" as const, icon: "⌂" },
@@ -18,6 +20,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const setTheme = usePreferencesStore((state) => state.setTheme);
   const language = usePreferencesStore((state) => state.language);
   const setLanguage = usePreferencesStore((state) => state.setLanguage);
+  const units = usePreferencesStore((state) => state.units);
+  const setUnits = usePreferencesStore((state) => state.setUnits);
+  const { context, loading, error } = useWeather();
 
   const activeLabel =
     navItems.find((item) => (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)))?.key ?? "nav.home";
@@ -49,6 +54,36 @@ export function AppShell({ children }: { children: ReactNode }) {
             <h1 className="page-title">{t(activeLabel)}</h1>
           </div>
           <div className="topbar-controls">
+            <div className="topbar-weather" aria-label={t("home.weatherTitle")}>
+              <div className="topbar-weather-copy">
+                <strong>
+                  {loading && t("home.weatherRefreshing")}
+                  {!loading && context && formatTemperature(context.temperatureC, units)}
+                  {!loading && !context && t("home.weatherUnavailable")}
+                </strong>
+                <span>{context ? context.condition : error ? error : t("home.weatherUnavailable")}</span>
+              </div>
+              <div className="weather-actions topbar-weather-actions" aria-label={t("settings.units")}>
+                <button
+                  type="button"
+                  className={`weather-unit-toggle ${units === "C" ? "is-active" : ""}`}
+                  aria-label={t("settings.unitsC")}
+                  aria-pressed={units === "C"}
+                  onClick={() => setUnits("C")}
+                >
+                  C
+                </button>
+                <button
+                  type="button"
+                  className={`weather-unit-toggle ${units === "F" ? "is-active" : ""}`}
+                  aria-label={t("settings.unitsF")}
+                  aria-pressed={units === "F"}
+                  onClick={() => setUnits("F")}
+                >
+                  F
+                </button>
+              </div>
+            </div>
             <select
               aria-label={t("settings.language")}
               className="control-select shell-language-select"

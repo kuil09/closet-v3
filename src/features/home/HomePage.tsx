@@ -2,20 +2,14 @@ import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
-import { useWeather } from "../../lib/weather/use-weather";
 import { useI18n } from "../../lib/i18n/i18n";
-import { usePreferencesStore } from "../../lib/state/preferences-store";
-import { formatTemperature } from "../../lib/utils/format";
 import { ItemImage } from "../shared/ItemImage";
 
 export function HomePage() {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const units = usePreferencesStore((state) => state.units);
-  const setUnits = usePreferencesStore((state) => state.setUnits);
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
   const lookbooks = useLiveQuery(() => atelierDb.lookbooks.toArray(), [], []);
-  const { context, loading, error } = useWeather();
   const [showAllRecent, setShowAllRecent] = useState(false);
   const [showAllLookbooks, setShowAllLookbooks] = useState(false);
 
@@ -40,41 +34,6 @@ export function HomePage() {
           <span>{t("home.stats.favorites")}</span>
           <strong>{activeItems.filter((item) => item.favorite).length}</strong>
         </button>
-      </section>
-
-      <section className="weather-card">
-        <div>
-          <span className="section-tag">{t("home.weatherTitle")}</span>
-          <h3>
-            {loading && t("home.weatherRefreshing")}
-            {!loading && context && formatTemperature(context.temperatureC, units)}
-            {!loading && !context && t("home.weatherUnavailable")}
-          </h3>
-          <div className="weather-meta">
-            <p>{context ? `${context.condition} · ${Math.round(context.windKph)} kph wind` : t("home.weatherUnavailable")}</p>
-            {error ? <small>{`${error}. ${t("home.weatherFallback")}`}</small> : null}
-          </div>
-        </div>
-        <div className="weather-actions" aria-label={t("settings.units")}>
-          <button
-            type="button"
-            className={`weather-unit-toggle ${units === "C" ? "is-active" : ""}`}
-            aria-label={t("settings.unitsC")}
-            aria-pressed={units === "C"}
-            onClick={() => setUnits("C")}
-          >
-            C
-          </button>
-          <button
-            type="button"
-            className={`weather-unit-toggle ${units === "F" ? "is-active" : ""}`}
-            aria-label={t("settings.unitsF")}
-            aria-pressed={units === "F"}
-            onClick={() => setUnits("F")}
-          >
-            F
-          </button>
-        </div>
       </section>
 
       <section className="panel-card">
