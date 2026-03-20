@@ -30,6 +30,10 @@ export async function ensureSeedData() {
     return;
   }
 
+  await importSampleData();
+}
+
+export async function importSampleData() {
   await atelierDb.transaction("rw", atelierDb.items, atelierDb.lookbooks, async () => {
     await atelierDb.items.bulkPut(seedItems);
     await atelierDb.lookbooks.bulkPut(seedLookbooks);

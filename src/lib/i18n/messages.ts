@@ -149,6 +149,8 @@ export type MessageKey =
   | "settings.resetAction"
   | "settings.resetConfirm"
   | "settings.resetDone"
+  | "settings.sampleAction"
+  | "settings.sampleDone"
   | "settings.localDataSection";
 
 type Catalog = Record<MessageKey, string>;
@@ -302,6 +304,8 @@ const base: Catalog = {
   "settings.resetAction": "Clear local data",
   "settings.resetConfirm": "Clear all wardrobe data stored on this device?",
   "settings.resetDone": "Local wardrobe data cleared.",
+  "settings.sampleAction": "Load sample data",
+  "settings.sampleDone": "Sample wardrobe data loaded.",
   "settings.localDataSection": "Local data management"
 };
 
@@ -453,6 +457,8 @@ export const messages: Record<Locale, Catalog> = {
     "settings.resetAction": "로컬 데이터 삭제",
     "settings.resetConfirm": "이 기기에 저장된 옷장 데이터를 모두 삭제할까요?",
     "settings.resetDone": "로컬 옷장 데이터를 삭제했습니다.",
+    "settings.sampleAction": "샘플 데이터 불러오기",
+    "settings.sampleDone": "샘플 옷장 데이터를 불러왔습니다.",
     "settings.localDataSection": "로컬 데이터 관리"
   },
   ja: {

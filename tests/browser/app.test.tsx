@@ -217,6 +217,24 @@ describe("app flows", () => {
     window.confirm = originalConfirm;
   });
 
+  test("restores sample data from settings after a reset", async () => {
+    const originalConfirm = window.confirm;
+    window.confirm = () => true;
+    const user = userEvent.setup();
+    const view = renderAt("/settings");
+
+    await user.click(await view.findByRole("button", { name: /Local data management/i }));
+    await user.click(view.getByRole("button", { name: /^Clear local data$/ }));
+    await waitFor(() => expect(view.getAllByText("Local wardrobe data cleared.").length).toBeGreaterThan(0));
+    await user.click(view.getByRole("button", { name: /^Load sample data$/ }));
+    await waitFor(() => expect(view.getAllByText("Sample wardrobe data loaded.").length).toBeGreaterThan(0));
+
+    await user.click(view.getAllByRole("link", { name: /My Wardrobe$/ })[0]);
+    await view.findByText("Structured Wool Blazer");
+
+    window.confirm = originalConfirm;
+  });
+
   test("keeps advanced wardrobe filters collapsed by default and remembers expansion", async () => {
     const user = userEvent.setup();
     const view = renderAt("/wardrobe");
