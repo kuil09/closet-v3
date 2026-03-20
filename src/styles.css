@@ -971,6 +971,44 @@ button {
   color: inherit;
 }
 
+.recent-expand-bar {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.9rem 1rem 1rem;
+  border: 0;
+  border-radius: 1.1rem;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-soft) 35%, transparent), var(--surface-soft));
+  color: color-mix(in srgb, var(--text) 70%, var(--muted));
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.recent-expand-bar:hover,
+.recent-expand-bar:focus-visible {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary-soft) 36%, transparent), color-mix(in srgb, var(--surface-soft) 92%, var(--primary-soft)));
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.recent-expand-bar-line {
+  width: min(100%, 18rem);
+  height: 1px;
+  background: color-mix(in srgb, var(--border) 88%, transparent);
+}
+
+.recent-expand-bar-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: transform 160ms ease;
+}
+
+.recent-expand-bar-icon.is-open {
+  transform: rotate(180deg);
+}
+
 .chip {
   display: inline-flex;
   align-items: center;

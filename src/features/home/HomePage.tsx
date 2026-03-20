@@ -59,8 +59,17 @@ export function HomePage() {
           ))}
         </div>
         {recentItems.length > 4 ? (
-          <button className="secondary-button" onClick={() => setShowAllRecent((current) => !current)}>
-            {showAllRecent ? t("home.recentLess") : t("home.recentMore")}
+          <button
+            type="button"
+            className="recent-expand-bar"
+            aria-label={showAllRecent ? t("home.recentLess") : t("home.recentMore")}
+            title={showAllRecent ? t("home.recentLess") : t("home.recentMore")}
+            onClick={() => setShowAllRecent((current) => !current)}
+          >
+            <span className="recent-expand-bar-line" aria-hidden="true" />
+            <span className={`recent-expand-bar-icon ${showAllRecent ? "is-open" : ""}`} aria-hidden="true">
+              ↓
+            </span>
           </button>
         ) : null}
       </section>
