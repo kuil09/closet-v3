@@ -7,6 +7,7 @@ import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db
 import { temperatureBandLabel, normalizeToken } from "../../lib/utils/format";
 import { buildPaletteTags, itemMatchesPaletteRange, itemPaletteLightness } from "../../lib/utils/palette-range";
 import { useI18n } from "../../lib/i18n/i18n";
+import { InfoHint } from "../shared/InfoHint";
 import { ItemImage } from "../shared/ItemImage";
 
 type SortField = "updated" | "name" | "color";
@@ -172,7 +173,10 @@ export function WardrobePage() {
         {colorTags.length > 0 ? (
           <div className="color-range-filter filter-primary-block">
             <div className="color-range-head">
-              <span>{t("wardrobe.colorRange")}</span>
+              <div className="label-with-hint">
+                <span>{t("wardrobe.colorRange")}</span>
+                <InfoHint label={t("wardrobe.colorRange")} content={t("wardrobe.colorRangeHint")} />
+              </div>
             </div>
             <div className="color-range-slider-shell">
               <div className="color-range-slider-track" style={{ background: colorRangeTrack }} />
@@ -239,7 +243,6 @@ export function WardrobePage() {
                 />
               ) : null}
             </div>
-            <p className="muted-copy">{t("wardrobe.colorRangeHint")}</p>
           </div>
         ) : null}
         <div className="filter-actions wardrobe-filter-actions">
@@ -339,7 +342,7 @@ export function WardrobePage() {
           </label>
         </div>
         <div className="secondary-actions wardrobe-filter-notes">
-          <p className="muted-copy">{t("wardrobe.advancedHint")}</p>
+          <InfoHint label={t("wardrobe.advancedFilters")} content={t("wardrobe.advancedHint")} />
         </div>
       </section>
 

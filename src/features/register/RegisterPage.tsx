@@ -9,6 +9,7 @@ import { ingestImage, useStoredImageSource } from "../../lib/media/images";
 import { temperatureBandLabel } from "../../lib/utils/format";
 import { makeId } from "../../lib/utils/id";
 import { DisclosureSection } from "../shared/DisclosureSection";
+import { InfoHint } from "../shared/InfoHint";
 import { ItemImage } from "../shared/ItemImage";
 
 const categories = ["Outerwear", "Tops", "Bottoms", "Shoes", "Accessories"];
@@ -336,13 +337,14 @@ export function RegisterPage() {
                   imgRef={heroImageElementRef}
                   onImageClick={handleImagePaletteSample}
                 />
-                {isSamplingPaletteColor ? <div className="image-sampler-hint">{t("register.pickFromImageActive")}</div> : null}
               </div>
             ) : (
               <label className="image-dropzone-action">
                 <div className="dropzone-copy">
-                  <strong>{t("register.heroImage")}</strong>
-                  <p>{t("register.heroBody")}</p>
+                  <div className="label-with-hint label-with-hint-centered">
+                    <strong>{t("register.heroImage")}</strong>
+                    <InfoHint label={t("register.heroImage")} content={t("register.heroBody")} align="left" />
+                  </div>
                 </div>
                 <input
                   aria-label={t("register.heroImage")}
@@ -380,7 +382,6 @@ export function RegisterPage() {
                 {t("register.removeImage")}
               </button>
             </div>
-            {isSamplingPaletteColor ? <p className="muted-copy">{t("register.pickFromImageActive")}</p> : null}
           </div>
 
           <div className="section-stack">
@@ -594,6 +595,11 @@ export function RegisterPage() {
             >
               {t("register.pickFromImage")}
             </button>
+            <InfoHint
+              label={t("register.pickFromImage")}
+              content={t("register.pickFromImageActive")}
+              className="palette-hint"
+            />
           </div>
         </DisclosureSection>
 

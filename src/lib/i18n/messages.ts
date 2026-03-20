@@ -1,6 +1,8 @@
 import type { Locale } from "../db/types";
 
 export type MessageKey =
+  | "info.open"
+  | "info.close"
   | "disclosure.open"
   | "disclosure.close"
   | "disclosure.showMore"
@@ -114,6 +116,8 @@ export type MessageKey =
 type Catalog = Record<MessageKey, string>;
 
 const base: Catalog = {
+  "info.open": "Show help",
+  "info.close": "Hide help",
   "disclosure.open": "Open",
   "disclosure.close": "Close",
   "disclosure.showMore": "Show more",
@@ -229,6 +233,8 @@ export const messages: Record<Locale, Catalog> = {
   en: base,
   ko: {
     ...base,
+    "info.open": "도움말 보기",
+    "info.close": "도움말 닫기",
     "disclosure.open": "열기",
     "disclosure.close": "닫기",
     "disclosure.showMore": "더 보기",

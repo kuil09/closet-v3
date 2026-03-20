@@ -2,6 +2,7 @@ import { clearAllProductData, importSampleData } from "../../lib/db/app-db";
 import { useI18n } from "../../lib/i18n/i18n";
 import { useState } from "react";
 import { DisclosureSection } from "../shared/DisclosureSection";
+import { InfoHint } from "../shared/InfoHint";
 
 export function SettingsPage() {
   const { t } = useI18n();
@@ -30,7 +31,9 @@ export function SettingsPage() {
         summary={feedback || t("settings.resetAction")}
         defaultOpen={false}
       >
-        <p className="muted-copy">{t("settings.resetBody")}</p>
+        <div className="section-inline-tools">
+          <InfoHint label={t("settings.localDataSection")} content={t("settings.resetBody")} />
+        </div>
         <div className="button-row">
           <button className="secondary-button" onClick={() => void handleImportSamples()}>
             {t("settings.sampleAction")}
