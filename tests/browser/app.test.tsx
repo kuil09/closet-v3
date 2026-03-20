@@ -109,11 +109,16 @@ describe("app flows", () => {
 
     const recentHeading = await view.findByText(/Fresh additions and drafts/i);
     const recentSection = recentHeading.closest("section");
-    const firstRecentCard = recentSection?.querySelector<HTMLButtonElement>(".item-card-button");
-    const expectedName = firstRecentCard?.querySelector("strong")?.textContent;
+    let firstRecentCard: HTMLButtonElement | null = null;
+    let expectedName = "";
 
-    expect(firstRecentCard).toBeTruthy();
-    expect(expectedName).toBeTruthy();
+    await waitFor(() => {
+      firstRecentCard = recentSection?.querySelector<HTMLButtonElement>(".item-card-button") ?? null;
+      expectedName = firstRecentCard?.querySelector("strong")?.textContent?.trim() ?? "";
+
+      expect(firstRecentCard, "recent section found but no cards rendered yet").toBeTruthy();
+      expect(expectedName, "recent card rendered without a readable item name").toBeTruthy();
+    });
 
     await user.click(firstRecentCard!);
     await view.findByDisplayValue(expectedName!);
