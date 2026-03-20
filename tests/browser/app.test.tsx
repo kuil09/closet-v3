@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 import { atelierDb } from "../../src/lib/db/app-db";
@@ -206,5 +206,31 @@ describe("app flows", () => {
     expect(view.queryByLabelText("Motion")).toBeNull();
     await user.click(view.getByRole("button", { name: /Motion settings/i }));
     await view.findByLabelText("Motion");
+  });
+
+  test("navigates between primary views with a mobile swipe", async () => {
+    const view = renderAt("/", 768);
+
+    await view.findByText(/Total Pieces/i);
+    const contentArea = document.querySelector(".content-area");
+    if (!(contentArea instanceof HTMLElement)) {
+      throw new Error("Expected content area for swipe navigation");
+    }
+
+    await act(async () => {
+      fireEvent.touchStart(contentArea, { touches: [{ clientX: 260, clientY: 180 }] });
+      fireEvent.touchMove(contentArea, { touches: [{ clientX: 100, clientY: 190 }] });
+      fireEvent.touchEnd(contentArea);
+    });
+
+    await view.findByText(/Your Digital Sanctuary/i);
+
+    await act(async () => {
+      fireEvent.touchStart(contentArea, { touches: [{ clientX: 80, clientY: 180 }] });
+      fireEvent.touchMove(contentArea, { touches: [{ clientX: 260, clientY: 188 }] });
+      fireEvent.touchEnd(contentArea);
+    });
+
+    await view.findByText(/Total Pieces/i);
   });
 });

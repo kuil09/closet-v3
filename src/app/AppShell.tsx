@@ -1,7 +1,8 @@
-import type { ReactNode } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import type { ReactNode, TouchEvent } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useI18n } from "../lib/i18n/i18n";
 import { usePreferencesStore } from "../lib/state/preferences-store";
+import { useRef } from "react";
 
 const navItems = [
   { to: "/", key: "nav.home" as const, icon: "⌂" },
@@ -13,14 +14,86 @@ const navItems = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { t } = useI18n();
   const theme = usePreferencesStore((state) => state.theme);
   const setTheme = usePreferencesStore((state) => state.setTheme);
   const language = usePreferencesStore((state) => state.language);
   const setLanguage = usePreferencesStore((state) => state.setLanguage);
+  const swipeState = useRef<{ startX: number; startY: number; deltaX: number; deltaY: number; lockedAxis: "x" | "y" | null } | null>(
+    null
+  );
 
   const activeLabel =
     navItems.find((item) => (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)))?.key ?? "nav.home";
+  const activeIndex = navItems.findIndex((item) => (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)));
+
+  function shouldIgnoreSwipeTarget(target: EventTarget | null) {
+    if (!(target instanceof HTMLElement)) {
+      return false;
+    }
+
+    return Boolean(target.closest("input, textarea, select, button, a, canvas, [contenteditable='true'], [data-swipe-ignore='true']"));
+  }
+
+  function handleTouchStart(event: TouchEvent<HTMLElement>) {
+    if (window.innerWidth > 920 || shouldIgnoreSwipeTarget(event.target)) {
+      swipeState.current = null;
+      return;
+    }
+
+    const touch = event.touches[0];
+    swipeState.current = {
+      startX: touch.clientX,
+      startY: touch.clientY,
+      deltaX: 0,
+      deltaY: 0,
+      lockedAxis: null
+    };
+  }
+
+  function handleTouchMove(event: TouchEvent<HTMLElement>) {
+    const touch = event.touches[0];
+    if (!swipeState.current || !touch) {
+      return;
+    }
+
+    swipeState.current.deltaX = touch.clientX - swipeState.current.startX;
+    swipeState.current.deltaY = touch.clientY - swipeState.current.startY;
+
+    if (!swipeState.current.lockedAxis) {
+      if (Math.abs(swipeState.current.deltaX) > 12 || Math.abs(swipeState.current.deltaY) > 12) {
+        swipeState.current.lockedAxis =
+          Math.abs(swipeState.current.deltaX) > Math.abs(swipeState.current.deltaY) ? "x" : "y";
+      }
+    }
+
+    if (swipeState.current.lockedAxis === "x") {
+      event.preventDefault();
+    }
+  }
+
+  function handleTouchEnd() {
+    if (!swipeState.current || window.innerWidth > 920 || activeIndex < 0) {
+      swipeState.current = null;
+      return;
+    }
+
+    const { deltaX, deltaY, lockedAxis } = swipeState.current;
+    swipeState.current = null;
+
+    if (lockedAxis !== "x" || Math.abs(deltaX) < 72 || Math.abs(deltaX) < Math.abs(deltaY) * 1.2) {
+      return;
+    }
+
+    const nextIndex = deltaX < 0 ? activeIndex + 1 : activeIndex - 1;
+    const nextItem = navItems[nextIndex];
+    if (!nextItem) {
+      return;
+    }
+
+    navigate(nextItem.to);
+  }
 
   return (
     <div className="app-shell">
@@ -73,7 +146,14 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="content-area">{children}</main>
+        <main
+          className="content-area"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {children}
+        </main>
       </div>
 
       <nav className="mobile-nav">
