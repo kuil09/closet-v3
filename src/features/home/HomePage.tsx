@@ -1,7 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { atelierDb } from "../../lib/db/app-db";
-import { buildRecommendations } from "../../lib/recommendation/engine";
 import { useWeather } from "../../lib/weather/use-weather";
 import { useI18n } from "../../lib/i18n/i18n";
 import { usePreferencesStore } from "../../lib/state/preferences-store";
@@ -19,10 +18,6 @@ export function HomePage() {
   const activeItems = items.filter((item) => item.status !== "archived");
   const recentItems = [...activeItems].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   const visibleRecentItems = showAllRecent ? recentItems : recentItems.slice(0, 4);
-  const recommendations = useMemo(
-    () => buildRecommendations(activeItems, lookbooks, context).slice(0, 4),
-    [activeItems, context, lookbooks]
-  );
   const todayLook = lookbooks[0];
 
   return (
@@ -57,56 +52,23 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="two-column-grid">
-        <article className="panel-card">
-          <div className="panel-head">
-            <div>
-              <span className="section-tag">{t("home.todayLook")}</span>
-              <h3>{todayLook?.title ?? t("home.todayLookEmpty")}</h3>
-            </div>
+      <section className="panel-card">
+        <div className="panel-head">
+          <div>
+            <span className="section-tag">{t("home.todayLook")}</span>
+            <h3>{todayLook?.title ?? t("home.todayLookEmpty")}</h3>
           </div>
-          {todayLook ? (
-            <div className="today-look-card">
-              <div className={`lookbook-poster is-${todayLook.backgroundStyle}`}>
-                <div className="lookbook-overlay">{todayLook.title}</div>
-              </div>
-              <p>{todayLook.description}</p>
+        </div>
+        {todayLook ? (
+          <div className="today-look-card">
+            <div className={`lookbook-poster is-${todayLook.backgroundStyle}`}>
+              <div className="lookbook-overlay">{todayLook.title}</div>
             </div>
-          ) : (
-            <p className="muted-copy">{t("home.todayLookEmptyBody")}</p>
-          )}
-        </article>
-
-        <article className="panel-card">
-          <div className="panel-head">
-            <div>
-              <span className="section-tag">{t("home.recommendations")}</span>
-              <h3>{t("home.recommendationsTitle")}</h3>
-            </div>
+            <p>{todayLook.description}</p>
           </div>
-          <div className="recommendation-list">
-            {recommendations.map((recommendation) => {
-              const item = activeItems.find((entry) => entry.id === recommendation.itemIds[0]);
-              if (!item) {
-                return null;
-              }
-
-              return (
-                <div key={recommendation.id} className="recommendation-card">
-                  <div className="recommendation-thumb">
-                    <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image" />
-                  </div>
-                  <div className="recommendation-body">
-                    <strong>{item.name}</strong>
-                    <div className="recommendation-copy-scroll">
-                      <p>{recommendation.reason}</p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </article>
+        ) : (
+          <p className="muted-copy">{t("home.todayLookEmptyBody")}</p>
+        )}
       </section>
 
       <section className="panel-card">
