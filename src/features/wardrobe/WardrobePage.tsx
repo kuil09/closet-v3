@@ -372,7 +372,6 @@ export function WardrobePage() {
             onPreview={() => setPreviewItem(item)}
             onEdit={() => navigate(`/register?item=${item.id}`)}
             onToggleFavorite={() => void toggleFavorite(item.id, !item.favorite)}
-            onToggleArchived={() => void archiveItem(item.id, item.status !== "archived")}
           />
         ))}
       </section>
@@ -409,15 +408,13 @@ function WardrobeCard({
   t,
   onPreview,
   onEdit,
-  onToggleFavorite,
-  onToggleArchived
+  onToggleFavorite
 }: {
   item: ClosetItem;
   t: (key: MessageKey) => string;
   onPreview: () => void;
   onEdit: () => void;
   onToggleFavorite: () => void;
-  onToggleArchived: () => void;
 }) {
   return (
     <article className="item-card">
@@ -430,14 +427,6 @@ function WardrobeCard({
             title={item.favorite ? t("wardrobe.unfavorite") : t("wardrobe.favorite")}
           >
             <FavoriteGlyph filled={item.favorite} />
-          </button>
-          <button
-            className="card-icon-button card-corner-button"
-            onClick={onToggleArchived}
-            aria-label={item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
-            title={item.status === "archived" ? t("wardrobe.restore") : t("wardrobe.archive")}
-          >
-            {item.status === "archived" ? <RestoreGlyph /> : <ArchiveGlyph />}
           </button>
         </div>
         <button className="item-image-wrap card-button" onClick={onPreview} aria-label={item.name}>
@@ -478,24 +467,6 @@ function FavoriteGlyph({ filled }: { filled: boolean }) {
         className={filled ? "card-action-glyph-fill" : "card-action-glyph-stroke"}
         d="m10 3.7 1.9 3.9 4.3.6-3.1 3 .7 4.2-3.8-2-3.8 2 .7-4.2-3.1-3 4.3-.6z"
       />
-    </svg>
-  );
-}
-
-function ArchiveGlyph() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 20 20" className="card-action-glyph" fill="none">
-      <path className="card-action-glyph-stroke" d="M4.5 6.1h11v8.6h-11z" />
-      <path className="card-action-glyph-stroke" d="M6 6.1V4.7h8v1.4M8 9.2h4" />
-    </svg>
-  );
-}
-
-function RestoreGlyph() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 20 20" className="card-action-glyph" fill="none">
-      <path className="card-action-glyph-stroke" d="M6 10a4 4 0 1 0 1.2-2.9" />
-      <path className="card-action-glyph-stroke" d="M6 4.8v2.8h2.8" />
     </svg>
   );
 }
