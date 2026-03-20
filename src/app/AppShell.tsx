@@ -1,0 +1,94 @@
+import type { ReactNode } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { useI18n } from "../lib/i18n/i18n";
+import { usePreferencesStore } from "../lib/state/preferences-store";
+
+const navItems = [
+  { to: "/", key: "nav.home" as const, icon: "⌂" },
+  { to: "/wardrobe", key: "nav.wardrobe" as const, icon: "▦" },
+  { to: "/register", key: "nav.register" as const, icon: "+" },
+  { to: "/lookbook", key: "nav.lookbook" as const, icon: "✦" },
+  { to: "/settings", key: "nav.settings" as const, icon: "⚙" }
+];
+
+export function AppShell({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation();
+  const { t } = useI18n();
+  const theme = usePreferencesStore((state) => state.theme);
+  const setTheme = usePreferencesStore((state) => state.setTheme);
+  const language = usePreferencesStore((state) => state.language);
+  const setLanguage = usePreferencesStore((state) => state.setLanguage);
+
+  const activeLabel =
+    navItems.find((item) => (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)))?.key ?? "nav.home";
+
+  return (
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="brand-block">
+          <div className="brand-mark">The Atelier</div>
+          <div className="brand-caption">{t("badge.local")}</div>
+        </div>
+        <nav className="nav-list">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) => `nav-item ${isActive ? "is-active" : ""}`}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              <span>{t(item.key)}</span>
+            </NavLink>
+          ))}
+        </nav>
+      </aside>
+
+      <div className="app-main">
+        <header className="topbar">
+          <div>
+            <div className="eyebrow">{t("app.title")}</div>
+            <h1 className="page-title">{t(activeLabel)}</h1>
+          </div>
+          <div className="topbar-controls">
+            <span className="local-pill">{t("badge.local")}</span>
+            <select
+              aria-label={t("settings.language")}
+              className="control-select"
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as typeof language)}
+            >
+              <option value="en">EN</option>
+              <option value="ko">KO</option>
+              <option value="ja">JA</option>
+              <option value="fr">FR</option>
+              <option value="es">ES</option>
+              <option value="de">DE</option>
+              <option value="zh-CN">ZH</option>
+            </select>
+            <button
+              aria-label={t("settings.theme")}
+              className="theme-toggle"
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+            >
+              {theme === "light" ? t("settings.themeDark") : t("settings.themeLight")}
+            </button>
+          </div>
+        </header>
+
+        <main className="content-area">{children}</main>
+      </div>
+
+      <nav className="mobile-nav">
+        {navItems.map((item) => {
+          const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+          return (
+            <NavLink key={item.to} to={item.to} className={`mobile-nav-item ${isActive ? "is-active" : ""}`}>
+              <span className="nav-icon">{item.icon}</span>
+              <span>{t(item.key)}</span>
+            </NavLink>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}

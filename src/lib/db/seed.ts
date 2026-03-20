@@ -1,0 +1,179 @@
+import type { ClosetItem, Lookbook, LookbookElement } from "./types";
+
+const now = new Date().toISOString();
+
+export const seedItems: ClosetItem[] = [
+  {
+    id: "item_coat",
+    status: "saved",
+    name: "Over-Sized Cashmere Coat",
+    category: "Outerwear",
+    materials: ["Cashmere", "Wool"],
+    heroImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuATCn-khPxvbRb4OHbQYUBvrAkKgB6v4K69d7z3JflIhqdk4qLHHWlDXyEoV7xd0z2QI64xYmYrgU6Vag5rUtqtrXlKN2tj2KeC7U-D329SQX78_Jq0ajuRHIkMGAU5z5o_IXC8PgiSz-ZR4Qv8uPmAH0Xnmf1z3OJPyGlwQIdcZSESZSBqbOSOqUgsYLD-phu5Al4pUa2fIWc3rp8rQMijQyH7F-LjhU4ACr4zXURFbUXJg4GJH9_j2B4eUPEjTqdw2-Hup9EmQpM",
+    galleryImageIds: [],
+    paletteColors: ["#C3AE8D", "#E7E4DE"],
+    purchaseDate: "2024-10-02",
+    price: 420,
+    currency: "USD",
+    storageLocation: "Main Closet",
+    temperatureBand: ["cold", "mild"],
+    weatherTags: ["clear", "cloudy", "wind"],
+    occasionTags: ["workwear", "formal", "city"],
+    usageFrequency: "often",
+    favorite: true,
+    styleNotes: "Strong outer layer for sharp editorial silhouettes.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now,
+    lastWornAt: now
+  },
+  {
+    id: "item_shirt",
+    status: "saved",
+    name: "Essential Linen Shirt",
+    category: "Tops",
+    materials: ["Linen"],
+    heroImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuBP6V1-Jf7AGvr1SLQHHwmxF_ks83aXjxUbplx7odRfz4rJBpoaqyJwesqkw13AX8twqWlsv4JPzUYXL1hwh1ozc7okA2fjqb-E4UUeGaFw3ckBknSeKrmUwO2-aV3c746Y_eoXAj8MFSglUVD_o-cqEs4YxS46YvswO0-UbgzruCVUitNVamGtwO6WwQNV3rTR-HfhdnJzgytqfGGwtwssFbGxvwuWHofYSxjHTlQRbNIqic-WmpmfcHKPPZp9b3hJaCNSeafzaP8",
+    galleryImageIds: [],
+    paletteColors: ["#F4F2ED", "#D6D0C7"],
+    purchaseDate: "2024-05-18",
+    price: 98,
+    currency: "USD",
+    storageLocation: "Rail A",
+    temperatureBand: ["mild", "warm"],
+    weatherTags: ["clear", "cloudy"],
+    occasionTags: ["daily", "summer", "minimal"],
+    usageFrequency: "regularly",
+    favorite: false,
+    styleNotes: "Reliable base layer for soft tailoring and weather picks.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    id: "item_denim",
+    status: "saved",
+    name: "Raw Indigo Denim",
+    category: "Bottoms",
+    materials: ["Denim"],
+    heroImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuAtKPkJqetrodMtMtgRmxXW2EXvIKsf3Cxs1g3UlGmpkQ9_0d3mmnfmUe9pqGgpaZykwojGL01-5gX1evy804kockmDVPbz8tzSL3CDHTwT6xWDeVPUYixD0JYjRtBIlG8Tf_tsPO4hpiMWVROj9UsR9scl3w17iX9lbcGt2fG4lJnO59ZnOo11-oWnJEWEY3AjkyrDmKxNh9Fd1sBo4rxgaFCUv3cU-V03lWJbzv4grgPqQvzlg0Dqsh6tUiC0A2KaWn6JCSZJd34",
+    galleryImageIds: [],
+    paletteColors: ["#22406A", "#111F2E"],
+    purchaseDate: "2023-11-09",
+    price: 150,
+    currency: "USD",
+    storageLocation: "Drawer B",
+    temperatureBand: ["cold", "mild", "warm"],
+    weatherTags: ["clear", "cloudy", "wind"],
+    occasionTags: ["daily", "heritage"],
+    usageFrequency: "often",
+    favorite: true,
+    styleNotes: "Anchors casual and transitional outfits.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    id: "item_boot",
+    status: "saved",
+    name: "Terra Chelsea Boots",
+    category: "Shoes",
+    materials: ["Leather"],
+    heroImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuAUEVjPMvvcZcJOpzZbQjBw0o2mAFntqpxo4RK3wsEdKoxzpEXVo7EvVKXOgsYoomDLdG-bYusyuFU6to30UT-tu5K5a3e6gBH4SlqNDKa9-zDSwev6WWdlEm0qezWTlNjMZGcfZpcuOwqII5BQ3SAFNURKOlZeSCOnTklTtXjtaD4GHxSsLwCTAmEz6hZEyo8LlqVy0khCwpYB4rs-DTEYI5iGG-cNNKgWae4tfKv879jygzC9qPVMZOUllGvnS-JhsvJ_ojwomEs",
+    galleryImageIds: [],
+    paletteColors: ["#A96A34", "#3A240C"],
+    purchaseDate: "2023-08-16",
+    price: 260,
+    currency: "USD",
+    storageLocation: "Shoe Rack",
+    temperatureBand: ["cold", "mild"],
+    weatherTags: ["clear", "cloudy", "rain"],
+    occasionTags: ["daily", "workwear"],
+    usageFrequency: "regularly",
+    favorite: false,
+    styleNotes: "Grounds the wardrobe with textured warmth.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    id: "item_blazer",
+    status: "draft",
+    name: "Structured Wool Blazer",
+    category: "Outerwear",
+    materials: ["Wool"],
+    heroImage:
+      "https://lh3.googleusercontent.com/aida-public/AB6AXuAtpEQO6kGybUp50z9NvNZyPfiwufBP1Run9Y-oL3QyIi69MNFSZksIzF5EzuZwKk35iI6Jlz29h0bBOf8OTZTJ7AwSPs4BGmZ-wsCfD6ZIvtQWFlieD5PeTLC2hk06NIHmecVwA-wtxFlWuSFVUVof6MD6xKeyUDBrTMmIFUeDQdKInqmehgmrM_U8lnlTzUm3oLEGZBG_PWSe16TMYVqsiqWhzG1s5m5Yo4tAJLPBE5QVpb6zqZekDslh7ziLzBDATmjFhCPCF4w",
+    galleryImageIds: [],
+    paletteColors: ["#252628", "#E8E1D7"],
+    purchaseDate: null,
+    price: null,
+    currency: "USD",
+    storageLocation: "Fitting Rail",
+    temperatureBand: ["mild", "warm"],
+    weatherTags: ["clear", "cloudy"],
+    occasionTags: ["formal", "evening"],
+    usageFrequency: "rarely",
+    favorite: false,
+    styleNotes: "Draft entry for tailored evening looks.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  }
+];
+
+const seedLookbookElements: LookbookElement[] = [
+  {
+    id: "el_headline",
+    type: "headline",
+    position: { x: 50, y: 44 },
+    size: { width: 240, height: 92 },
+    rotation: 0,
+    zIndex: 1,
+    locked: false,
+    style: { color: "#5F5E5E", fontSize: 34, fontFamily: "Manrope", fontWeight: 800 },
+    refId: null,
+    text: "AUTUMN\nREDACTION"
+  },
+  {
+    id: "el_coat",
+    type: "item",
+    position: { x: 240, y: 110 },
+    size: { width: 210, height: 280 },
+    rotation: -5,
+    zIndex: 2,
+    locked: false,
+    style: { borderRadius: 18 },
+    refId: "item_coat"
+  },
+  {
+    id: "el_shirt",
+    type: "item",
+    position: { x: 150, y: 310 },
+    size: { width: 160, height: 220 },
+    rotation: 4,
+    zIndex: 3,
+    locked: false,
+    style: { borderRadius: 18 },
+    refId: "item_shirt"
+  }
+];
+
+export const seedLookbooks: Lookbook[] = [
+  {
+    id: "look_autumn",
+    title: "Autumn Redaction",
+    description: "Curated for transitional weather and soft tailoring.",
+    backgroundStyle: "sand",
+    canvasSize: { width: 520, height: 680 },
+    elements: seedLookbookElements,
+    sourceItemIds: ["item_coat", "item_shirt"],
+    thumbnailImageId: null,
+    createdAt: now,
+    updatedAt: now
+  }
+];

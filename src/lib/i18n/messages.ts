@@ -1,0 +1,447 @@
+import type { Locale } from "../db/types";
+
+export type MessageKey =
+  | "nav.home"
+  | "nav.wardrobe"
+  | "nav.register"
+  | "nav.lookbook"
+  | "nav.settings"
+  | "app.title"
+  | "app.boot"
+  | "app.loadingView"
+  | "badge.local"
+  | "home.heroTitle"
+  | "home.heroBody"
+  | "home.heroEyebrow"
+  | "home.todayLook"
+  | "home.todayLookEmpty"
+  | "home.todayLookEmptyBody"
+  | "home.recommendations"
+  | "home.recommendationsTitle"
+  | "home.recent"
+  | "home.recentTitle"
+  | "home.weatherTitle"
+  | "home.weatherRefreshing"
+  | "home.weatherUnavailable"
+  | "home.weatherFallback"
+  | "home.weatherRefresh"
+  | "home.stats.items"
+  | "home.stats.lookbooks"
+  | "home.stats.favorites"
+  | "wardrobe.title"
+  | "wardrobe.search"
+  | "wardrobe.searchLabel"
+  | "wardrobe.empty"
+  | "wardrobe.favorites"
+  | "wardrobe.showArchived"
+  | "wardrobe.sortNewest"
+  | "wardrobe.sortFavorites"
+  | "wardrobe.sortName"
+  | "wardrobe.favorite"
+  | "wardrobe.unfavorite"
+  | "wardrobe.archive"
+  | "wardrobe.restore"
+  | "wardrobe.materialUnknown"
+  | "register.title"
+  | "register.captureTitle"
+  | "register.editingTitle"
+  | "register.saveDraft"
+  | "register.saveItem"
+  | "register.heroImage"
+  | "register.heroBody"
+  | "register.replaceImage"
+  | "register.removeImage"
+  | "register.palette"
+  | "register.addColor"
+  | "register.metaAssetType"
+  | "register.metaAssets"
+  | "register.addMetaImage"
+  | "register.noMetaAssets"
+  | "register.removeAsset"
+  | "register.name"
+  | "register.category"
+  | "register.materials"
+  | "register.storageLocation"
+  | "register.purchaseDate"
+  | "register.price"
+  | "register.occasionTags"
+  | "register.styleNotes"
+  | "register.temperature"
+  | "register.weather"
+  | "register.validationName"
+  | "register.clearError"
+  | "lookbook.title"
+  | "lookbook.save"
+  | "lookbook.export"
+  | "lookbook.addHeadline"
+  | "lookbook.addNote"
+  | "lookbook.addShape"
+  | "lookbook.newBoard"
+  | "lookbook.inspector"
+  | "lookbook.selectElement"
+  | "lookbook.width"
+  | "lookbook.height"
+  | "lookbook.rotation"
+  | "lookbook.layer"
+  | "lookbook.text"
+  | "lookbook.lock"
+  | "lookbook.unlock"
+  | "lookbook.delete"
+  | "lookbook.forward"
+  | "lookbook.backward"
+  | "lookbook.drawer"
+  | "lookbook.drawerTitle"
+  | "lookbook.savedBoards"
+  | "lookbook.savedBoardsTitle"
+  | "lookbook.defaultHeadline"
+  | "lookbook.defaultBody"
+  | "lookbook.noBoards"
+  | "lookbook.untitled"
+  | "lookbook.fileName"
+  | "lookbook.layers"
+  | "lookbook.backgroundPaper"
+  | "lookbook.backgroundMist"
+  | "lookbook.backgroundSand"
+  | "lookbook.backgroundOlive"
+  | "settings.title"
+  | "settings.productControls"
+  | "settings.localOnly"
+  | "settings.theme"
+  | "settings.language"
+  | "settings.units"
+  | "settings.weather"
+  | "settings.motion"
+  | "settings.manualCity"
+  | "settings.manualTemperature"
+  | "settings.manualCondition"
+  | "settings.manualWind"
+  | "settings.themeLight"
+  | "settings.themeDark"
+  | "settings.unitsC"
+  | "settings.unitsF"
+  | "settings.weatherAuto"
+  | "settings.weatherManual"
+  | "settings.motionFull"
+  | "settings.motionReduced"
+  | "settings.conditionClear"
+  | "settings.conditionCloudy"
+  | "settings.conditionRain"
+  | "settings.conditionSnow"
+  | "settings.conditionWind"
+  | "settings.resetTitle"
+  | "settings.resetBody"
+  | "settings.resetAction"
+  | "settings.resetConfirm"
+  | "settings.resetDone";
+
+type Catalog = Record<MessageKey, string>;
+
+const base: Catalog = {
+  "nav.home": "Home",
+  "nav.wardrobe": "My Wardrobe",
+  "nav.register": "Register Item",
+  "nav.lookbook": "Lookbook Maker",
+  "nav.settings": "Settings",
+  "app.title": "The Atelier",
+  "app.boot": "Building your local wardrobe studio...",
+  "app.loadingView": "Loading view...",
+  "badge.local": "Local-only storage",
+  "home.heroTitle": "Curating your digital closet.",
+  "home.heroBody": "A gallery-first wardrobe studio built for private collections and expressive lookbooks.",
+  "home.heroEyebrow": "Editorial wardrobe studio",
+  "home.todayLook": "Today's Look",
+  "home.todayLookEmpty": "No saved lookbook yet",
+  "home.todayLookEmptyBody": "Save a composition in Lookbook Maker to see it featured here.",
+  "home.recommendations": "Weather Picks",
+  "home.recommendationsTitle": "Rule-based weather picks",
+  "home.recent": "Recently Added",
+  "home.recentTitle": "Fresh additions and drafts",
+  "home.weatherTitle": "Live weather",
+  "home.weatherRefreshing": "Refreshing conditions...",
+  "home.weatherUnavailable": "Weather unavailable",
+  "home.weatherFallback": "Manual fallback applied.",
+  "home.weatherRefresh": "Refresh",
+  "home.stats.items": "Total Pieces",
+  "home.stats.lookbooks": "Lookbooks",
+  "home.stats.favorites": "Favorites",
+  "wardrobe.title": "Your Digital Sanctuary",
+  "wardrobe.search": "Search your collection...",
+  "wardrobe.searchLabel": "Search wardrobe",
+  "wardrobe.empty": "No pieces match this combination yet.",
+  "wardrobe.favorites": "Favorites",
+  "wardrobe.showArchived": "Show archived",
+  "wardrobe.sortNewest": "Newest",
+  "wardrobe.sortFavorites": "Favorites first",
+  "wardrobe.sortName": "Name",
+  "wardrobe.favorite": "Favorite",
+  "wardrobe.unfavorite": "Unfavorite",
+  "wardrobe.archive": "Archive",
+  "wardrobe.restore": "Restore",
+  "wardrobe.materialUnknown": "Unspecified material",
+  "register.title": "Register Item",
+  "register.captureTitle": "Capture a new piece",
+  "register.editingTitle": "Editing",
+  "register.saveDraft": "Save draft",
+  "register.saveItem": "Save to closet",
+  "register.heroImage": "Hero Image",
+  "register.heroBody": "Upload a garment image or continue as a draft.",
+  "register.replaceImage": "Replace image",
+  "register.removeImage": "Remove image",
+  "register.palette": "Palette",
+  "register.addColor": "Add color",
+  "register.metaAssetType": "Meta asset type",
+  "register.metaAssets": "Meta Assets",
+  "register.addMetaImage": "Add image",
+  "register.noMetaAssets": "No meta assets yet.",
+  "register.removeAsset": "Remove asset",
+  "register.name": "Name",
+  "register.category": "Category",
+  "register.materials": "Materials",
+  "register.storageLocation": "Storage location",
+  "register.purchaseDate": "Purchase date",
+  "register.price": "Price",
+  "register.occasionTags": "Occasion / tags",
+  "register.styleNotes": "Style notes",
+  "register.temperature": "Temperature",
+  "register.weather": "Weather",
+  "register.validationName": "A saved item needs a name.",
+  "register.clearError": "Dismiss validation message",
+  "lookbook.title": "Lookbook Maker",
+  "lookbook.save": "Save lookbook",
+  "lookbook.export": "Export PNG",
+  "lookbook.addHeadline": "Add headline",
+  "lookbook.addNote": "Add note",
+  "lookbook.addShape": "Add shape",
+  "lookbook.newBoard": "New board",
+  "lookbook.inspector": "Inspector",
+  "lookbook.selectElement": "Select an element",
+  "lookbook.width": "Width",
+  "lookbook.height": "Height",
+  "lookbook.rotation": "Rotation",
+  "lookbook.layer": "Layer",
+  "lookbook.text": "Text",
+  "lookbook.lock": "Lock",
+  "lookbook.unlock": "Unlock",
+  "lookbook.delete": "Delete",
+  "lookbook.forward": "Bring forward",
+  "lookbook.backward": "Send backward",
+  "lookbook.drawer": "Closet drawer",
+  "lookbook.drawerTitle": "Add wardrobe items",
+  "lookbook.savedBoards": "Saved boards",
+  "lookbook.savedBoardsTitle": "Reload compositions",
+  "lookbook.defaultHeadline": "NEW STORY",
+  "lookbook.defaultBody": "Add a note for this composition.",
+  "lookbook.noBoards": "No saved lookbooks yet.",
+  "lookbook.untitled": "Untitled lookbook",
+  "lookbook.fileName": "lookbook",
+  "lookbook.layers": "layers",
+  "lookbook.backgroundPaper": "paper",
+  "lookbook.backgroundMist": "mist",
+  "lookbook.backgroundSand": "sand",
+  "lookbook.backgroundOlive": "olive",
+  "settings.title": "Settings",
+  "settings.productControls": "Product controls",
+  "settings.localOnly": "All data stays in this browser profile. Cloud sync and backup are intentionally disabled.",
+  "settings.theme": "Theme",
+  "settings.language": "Language",
+  "settings.units": "Units",
+  "settings.weather": "Weather mode",
+  "settings.motion": "Motion",
+  "settings.manualCity": "Manual city",
+  "settings.manualTemperature": "Manual temperature",
+  "settings.manualCondition": "Manual condition",
+  "settings.manualWind": "Manual wind",
+  "settings.themeLight": "Light",
+  "settings.themeDark": "Dark",
+  "settings.unitsC": "Celsius",
+  "settings.unitsF": "Fahrenheit",
+  "settings.weatherAuto": "Auto",
+  "settings.weatherManual": "Manual",
+  "settings.motionFull": "Full",
+  "settings.motionReduced": "Reduced",
+  "settings.conditionClear": "Clear",
+  "settings.conditionCloudy": "Cloudy",
+  "settings.conditionRain": "Rain",
+  "settings.conditionSnow": "Snow",
+  "settings.conditionWind": "Wind",
+  "settings.resetTitle": "Reset local product data",
+  "settings.resetBody": "Clears wardrobe items, lookbooks, cached weather, and uploaded images from this browser.",
+  "settings.resetAction": "Clear local data",
+  "settings.resetConfirm": "Clear all local wardrobe data from this browser?",
+  "settings.resetDone": "Local wardrobe data cleared."
+};
+
+export const messages: Record<Locale, Catalog> = {
+  en: base,
+  ko: {
+    ...base,
+    "nav.home": "홈",
+    "nav.wardrobe": "나의 옷장",
+    "nav.register": "아이템 등록",
+    "nav.lookbook": "룩북 메이커",
+    "nav.settings": "설정",
+    "app.boot": "로컬 옷장 스튜디오를 준비하는 중입니다...",
+    "app.loadingView": "화면을 불러오는 중입니다...",
+    "badge.local": "브라우저 로컬 저장",
+    "home.heroTitle": "당신의 디지털 옷장을 큐레이팅합니다.",
+    "home.heroBody": "개인 컬렉션을 위한 갤러리 중심 옷장 스튜디오입니다.",
+    "home.heroEyebrow": "에디토리얼 옷장 스튜디오",
+    "home.todayLook": "오늘의 룩",
+    "home.todayLookEmpty": "저장된 룩북이 없습니다",
+    "home.todayLookEmptyBody": "룩북 메이커에서 구성을 저장하면 여기에 표시됩니다.",
+    "home.recommendations": "날씨 추천",
+    "home.recommendationsTitle": "규칙 기반 날씨 추천",
+    "home.recent": "최근 추가",
+    "home.recentTitle": "최근 추가 및 드래프트",
+    "home.weatherTitle": "현재 날씨",
+    "home.weatherRefreshing": "날씨를 새로고침하는 중...",
+    "home.weatherUnavailable": "날씨 정보를 불러올 수 없습니다",
+    "home.weatherFallback": "수동 설정으로 대체했습니다.",
+    "home.weatherRefresh": "새로고침",
+    "wardrobe.title": "당신의 디지털 생추어리",
+    "wardrobe.search": "컬렉션 검색...",
+    "wardrobe.searchLabel": "옷장 검색",
+    "wardrobe.empty": "조건에 맞는 아이템이 없습니다.",
+    "wardrobe.favorites": "즐겨찾기",
+    "wardrobe.showArchived": "보관 항목 표시",
+    "wardrobe.sortNewest": "최신순",
+    "wardrobe.sortFavorites": "즐겨찾기 우선",
+    "wardrobe.sortName": "이름순",
+    "wardrobe.favorite": "즐겨찾기",
+    "wardrobe.unfavorite": "즐겨찾기 해제",
+    "wardrobe.archive": "보관",
+    "wardrobe.restore": "복원",
+    "wardrobe.materialUnknown": "소재 미지정",
+    "register.title": "아이템 등록",
+    "register.captureTitle": "새 아이템 등록",
+    "register.editingTitle": "편집 중",
+    "register.saveDraft": "임시 저장",
+    "register.saveItem": "옷장에 저장",
+    "register.heroImage": "대표 이미지",
+    "register.heroBody": "의류 이미지를 올리거나 드래프트로 계속 진행하세요.",
+    "register.replaceImage": "이미지 교체",
+    "register.removeImage": "이미지 제거",
+    "register.palette": "팔레트",
+    "register.addColor": "색상 추가",
+    "register.metaAssetType": "메타 자산 유형",
+    "register.metaAssets": "메타 자산",
+    "register.addMetaImage": "이미지 추가",
+    "register.noMetaAssets": "메타 자산이 아직 없습니다.",
+    "register.removeAsset": "자산 제거",
+    "register.name": "이름",
+    "register.category": "카테고리",
+    "register.materials": "소재",
+    "register.storageLocation": "보관 위치",
+    "register.purchaseDate": "구매일",
+    "register.price": "가격",
+    "register.occasionTags": "상황 / 태그",
+    "register.styleNotes": "스타일 노트",
+    "register.temperature": "온도",
+    "register.weather": "날씨",
+    "register.validationName": "저장된 아이템에는 이름이 필요합니다.",
+    "register.clearError": "검증 메시지 닫기",
+    "lookbook.title": "룩북 메이커",
+    "lookbook.save": "룩북 저장",
+    "lookbook.export": "PNG 내보내기",
+    "lookbook.addHeadline": "헤드라인 추가",
+    "lookbook.addNote": "노트 추가",
+    "lookbook.addShape": "도형 추가",
+    "lookbook.newBoard": "새 보드",
+    "lookbook.inspector": "인스펙터",
+    "lookbook.selectElement": "요소를 선택하세요",
+    "lookbook.width": "너비",
+    "lookbook.height": "높이",
+    "lookbook.rotation": "회전",
+    "lookbook.layer": "레이어",
+    "lookbook.text": "텍스트",
+    "lookbook.lock": "잠금",
+    "lookbook.unlock": "잠금 해제",
+    "lookbook.delete": "삭제",
+    "lookbook.forward": "앞으로",
+    "lookbook.backward": "뒤로",
+    "lookbook.drawer": "옷장 서랍",
+    "lookbook.drawerTitle": "옷장 아이템 추가",
+    "lookbook.savedBoards": "저장된 보드",
+    "lookbook.savedBoardsTitle": "구성 다시 불러오기",
+    "lookbook.defaultHeadline": "새 이야기",
+    "lookbook.defaultBody": "이 구성에 대한 메모를 추가하세요.",
+    "lookbook.noBoards": "저장된 룩북이 아직 없습니다.",
+    "lookbook.untitled": "제목 없는 룩북",
+    "lookbook.fileName": "lookbook",
+    "lookbook.layers": "레이어",
+    "lookbook.backgroundPaper": "페이퍼",
+    "lookbook.backgroundMist": "미스트",
+    "lookbook.backgroundSand": "샌드",
+    "lookbook.backgroundOlive": "올리브",
+    "settings.title": "설정",
+    "settings.productControls": "제품 설정",
+    "settings.localOnly": "모든 데이터는 현재 브라우저 프로필에만 저장됩니다. 클라우드 동기화와 백업은 제공하지 않습니다.",
+    "settings.theme": "테마",
+    "settings.language": "언어",
+    "settings.units": "단위",
+    "settings.weather": "날씨 모드",
+    "settings.motion": "모션",
+    "settings.manualCity": "수동 도시",
+    "settings.manualTemperature": "수동 온도",
+    "settings.manualCondition": "수동 날씨",
+    "settings.manualWind": "수동 풍속",
+    "settings.themeLight": "라이트",
+    "settings.themeDark": "다크",
+    "settings.unitsC": "섭씨",
+    "settings.unitsF": "화씨",
+    "settings.weatherAuto": "자동",
+    "settings.weatherManual": "수동",
+    "settings.motionFull": "전체",
+    "settings.motionReduced": "축소",
+    "settings.conditionClear": "맑음",
+    "settings.conditionCloudy": "흐림",
+    "settings.conditionRain": "비",
+    "settings.conditionSnow": "눈",
+    "settings.conditionWind": "바람",
+    "settings.resetTitle": "로컬 제품 데이터 초기화",
+    "settings.resetBody": "현재 브라우저의 옷장 아이템, 룩북, 캐시된 날씨, 업로드 이미지를 삭제합니다.",
+    "settings.resetAction": "로컬 데이터 삭제",
+    "settings.resetConfirm": "이 브라우저의 로컬 옷장 데이터를 모두 삭제할까요?",
+    "settings.resetDone": "로컬 옷장 데이터를 삭제했습니다."
+  },
+  ja: {
+    ...base,
+    "nav.home": "ホーム",
+    "nav.wardrobe": "ワードローブ",
+    "nav.register": "アイテム登録",
+    "nav.lookbook": "ルックブック",
+    "nav.settings": "設定"
+  },
+  fr: {
+    ...base,
+    "nav.home": "Accueil",
+    "nav.wardrobe": "Garde-robe",
+    "nav.register": "Ajouter",
+    "nav.lookbook": "Lookbook",
+    "nav.settings": "Paramètres"
+  },
+  es: {
+    ...base,
+    "nav.home": "Inicio",
+    "nav.wardrobe": "Armario",
+    "nav.register": "Registrar",
+    "nav.lookbook": "Lookbook",
+    "nav.settings": "Ajustes"
+  },
+  de: {
+    ...base,
+    "nav.home": "Start",
+    "nav.wardrobe": "Garderobe",
+    "nav.register": "Erfassen",
+    "nav.lookbook": "Lookbook",
+    "nav.settings": "Einstellungen"
+  },
+  "zh-CN": {
+    ...base,
+    "nav.home": "首页",
+    "nav.wardrobe": "衣橱",
+    "nav.register": "登记单品",
+    "nav.lookbook": "造型册",
+    "nav.settings": "设置"
+  }
+};
