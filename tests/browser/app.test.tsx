@@ -77,6 +77,76 @@ function getWardrobeCardTitles(container: HTMLElement) {
     .filter(Boolean);
 }
 
+function mockLookbookExport() {
+  const gradient = { addColorStop() {} };
+  const drawImage = mock(() => {});
+  const downloads: string[] = [];
+  const originalCreateElement = document.createElement.bind(document);
+  const originalImage = globalThis.Image;
+  const context = {
+    createLinearGradient: () => gradient,
+    fillRect: mock(() => {}),
+    strokeRect: mock(() => {}),
+    beginPath: mock(() => {}),
+    arc: mock(() => {}),
+    fill: mock(() => {}),
+    stroke: mock(() => {}),
+    drawImage,
+    fillText: mock(() => {}),
+    measureText: (value: string) => ({ width: value.length * 12 }),
+    font: "",
+    fillStyle: "",
+    strokeStyle: "",
+    lineWidth: 1
+  } as unknown as CanvasRenderingContext2D;
+  const canvas = {
+    width: 0,
+    height: 0,
+    getContext: () => context,
+    toBlob(callback: BlobCallback) {
+      callback(new Blob(["png"], { type: "image/png" }));
+    }
+  } as unknown as HTMLCanvasElement;
+
+  document.createElement = ((tagName: string) => {
+    if (tagName === "canvas") {
+      return canvas;
+    }
+
+    const element = originalCreateElement(tagName);
+    if (tagName === "a") {
+      const anchor = element as HTMLAnchorElement;
+      anchor.click = () => {
+        downloads.push(anchor.download);
+      };
+    }
+
+    return element;
+  }) as typeof document.createElement;
+
+  class MockImage {
+    naturalWidth = 720;
+    naturalHeight = 960;
+    onload: null | (() => void) = null;
+    onerror: null | (() => void) = null;
+
+    set src(_value: string) {
+      queueMicrotask(() => this.onload?.());
+    }
+  }
+
+  globalThis.Image = MockImage as unknown as typeof Image;
+
+  return {
+    downloads,
+    drawImage,
+    restore() {
+      document.createElement = originalCreateElement;
+      globalThis.Image = originalImage;
+    }
+  };
+}
+
 describe("app flows", () => {
   test("supports theme and language switching from the shell", async () => {
     const user = userEvent.setup();
@@ -283,8 +353,8 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/settings");
 
-    await user.click(await view.findByRole("button", { name: /Lookbook direction/i }));
-    expect(await view.findByText(/Select saved pieces from the wardrobe/i)).toBeTruthy();
+    await user.click(await view.findByRole("button", { name: /Lookbook export/i }));
+    expect(await view.findByText(/Filter or sort the wardrobe/i)).toBeTruthy();
   });
 
   test("keeps quick browse controls visible and tucks away rare filters", async () => {
@@ -395,6 +465,25 @@ describe("app flows", () => {
 
     await user.click(view.getByRole("button", { name: /^Close$/ }));
     await waitFor(() => expect(view.queryByRole("dialog", { name: itemName })).toBeNull());
+  });
+
+  test("exports a local lookbook from the visible wardrobe pieces", async () => {
+    const user = userEvent.setup();
+    const exportMock = mockLookbookExport();
+    const view = renderAt("/wardrobe");
+
+    try {
+      await user.click(await view.findByRole("button", { name: /Lookbook export/i }));
+      await view.findByLabelText("Lookbook title");
+      await user.type(view.getByLabelText("Lookbook title"), "Weekend Capsule");
+      await user.click(view.getByRole("button", { name: /^Export PNG$/ }));
+
+      await waitFor(() => expect(exportMock.downloads).toContain("weekend-capsule.png"));
+      expect(exportMock.drawImage).toHaveBeenCalled();
+      expect(view.getAllByText("Lookbook PNG downloaded locally.").length).toBeGreaterThan(0);
+    } finally {
+      exportMock.restore();
+    }
   });
 
   test("opens secondary controls from a mobile sheet launcher", async () => {

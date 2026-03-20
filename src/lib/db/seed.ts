@@ -1,6 +1,16 @@
 import type { ClosetItem } from "./types";
 
 const now = new Date().toISOString();
+const legacyRemoteCoatHero =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuATCn-khPxvbRb4OHbQYUBvrAkKgB6v4K69d7z3JflIhqdk4qLHHWlDXyEoV7xd0z2QI64xYmYrgU6Vag5rUtqtrXlKN2tj2KeC7U-D329SQX78_Jq0ajuRHIkMGAU5z5o_IXC8PgiSz-ZR4Qv8uPmAH0Xnmf1z3OJPyGlwQIdcZSESZSBqbOSOqUgsYLD-phu5Al4pUa2fIWc3rp8rQMijQyH7F-LjhU4ACr4zXURFbUXJg4GJH9_j2B4eUPEjTqdw2-Hup9EmQpM";
+const legacyRemoteShirtHero =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuBP6V1-Jf7AGvr1SLQHHwmxF_ks83aXjxUbplx7odRfz4rJBpoaqyJwesqkw13AX8twqWlsv4JPzUYXL1hwh1ozc7okA2fjqb-E4UUeGaFw3ckBknSeKrmUwO2-aV3c746Y_eoXAj8MFSglUVD_o-cqEs4YxS46YvswO0-UbgzruCVUitNVamGtwO6WwQNV3rTR-HfhdnJzgytqfGGwtwssFbGxvwuWHofYSxjHTlQRbNIqic-WmpmfcHKPPZp9b3hJaCNSeafzaP8";
+const legacyRemoteDenimHero =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuAtKPkJqetrodMtMtgRmxXW2EXvIKsf3Cxs1g3UlGmpkQ9_0d3mmnfmUe9pqGgpaZykwojGL01-5gX1evy804kockmDVPbz8tzSL3CDHTwT6xWDeVPUYixD0JYjRtBIlG8Tf_tsPO4hpiMWVROj9UsR9scl3w17iX9lbcGt2fG4lJnO59ZnOo11-oWnJEWEY3AjkyrDmKxNh9Fd1sBo4rxgaFCUv3cU-V03lWJbzv4grgPqQvzlg0Dqsh6tUiC0A2KaWn6JCSZJd34";
+const legacyRemoteBootHero =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuAUEVjPMvvcZcJOpzZbQjBw0o2mAFntqpxo4RK3wsEdKoxzpEXVo7EvVKXOgsYoomDLdG-bYusyuFU6to30UT-tu5K5a3e6gBH4SlqNDKa9-zDSwev6WWdlEm0qezWTlNjMZGcfZpcuOwqII5BQ3SAFNURKOlZeSCOnTklTtXjtaD4GHxSsLwCTAmEz6hZEyo8LlqVy0khCwpYB4rs-DTEYI5iGG-cNNKgWae4tfKv879jygzC9qPVMZOUllGvnS-JhsvJ_ojwomEs";
+const legacyRemoteBlazerHero =
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuAtpEQO6kGybUp50z9NvNZyPfiwufBP1Run9Y-oL3QyIi69MNFSZksIzF5EzuZwKk35iI6Jlz29h0bBOf8OTZTJ7AwSPs4BGmZ-wsCfD6ZIvtQWFlieD5PeTLC2hk06NIHmecVwA-wtxFlWuSFVUVof6MD6xKeyUDBrTMmIFUeDQdKInqmehgmrM_U8lnlTzUm3oLEGZBG_PWSe16TMYVqsiqWhzG1s5m5Yo4tAJLPBE5QVpb6zqZekDslh7ziLzBDATmjFhCPCF4w";
 
 function makeMetaAssetSvg(title: string, subtitle: string, accent: string) {
   return `data:image/svg+xml;utf8,${encodeURIComponent(`
@@ -13,6 +23,30 @@ function makeMetaAssetSvg(title: string, subtitle: string, accent: string) {
       <rect x="54" y="170" width="372" height="74" rx="18" fill="#FAF8F4" stroke="#E2DCD3" stroke-dasharray="6 6" />
       <text x="54" y="146" fill="#2D3432" font-family="Arial, sans-serif" font-size="30" font-weight="700">${title}</text>
       <text x="54" y="271" fill="#6B716F" font-family="Arial, sans-serif" font-size="22">${subtitle}</text>
+    </svg>
+  `)}`;
+}
+
+function makeGarmentHeroSvg(title: string, accent: string, silhouette: string, detail?: string) {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="720" height="960" viewBox="0 0 720 960">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#F8F5EF" />
+          <stop offset="100%" stop-color="#ECE6DA" />
+        </linearGradient>
+        <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FFFDFC" />
+          <stop offset="100%" stop-color="#F7F1E7" />
+        </linearGradient>
+      </defs>
+      <rect width="720" height="960" rx="48" fill="url(#bg)" />
+      <rect x="44" y="44" width="632" height="872" rx="36" fill="url(#panel)" stroke="#DDD4C8" />
+      <circle cx="560" cy="176" r="136" fill="${accent}" opacity="0.12" />
+      <path d="${silhouette}" fill="${accent}" opacity="0.94" />
+      ${detail ? `<path d="${detail}" fill="#F6F2EB" opacity="0.88" />` : ""}
+      <rect x="132" y="744" width="456" height="2" rx="1" fill="#D8D0C5" />
+      <text x="360" y="816" text-anchor="middle" fill="#2E3432" font-family="Arial, sans-serif" font-size="34" font-weight="700">${title}</text>
     </svg>
   `)}`;
 }
@@ -35,6 +69,52 @@ function makeAccessoryHeroSvg(title: string, accent: string, silhouette: string)
   `)}`;
 }
 
+const coatHeroImage = makeGarmentHeroSvg(
+  "Over-Sized Cashmere Coat",
+  "#C3AE8D",
+  "M250 198c22 24 58 46 110 62 52-16 88-38 110-62l62 94-58 46-34-58v372H270V280l-34 58-58-46 72-94Z",
+  "M312 266c8 52 26 88 48 88s40-36 48-88v386h-96V266Zm-18 24-38 92 54 38M426 290l38 92-54 38"
+);
+const shirtHeroImage = makeGarmentHeroSvg(
+  "Essential Linen Shirt",
+  "#EEE7DB",
+  "M232 236 308 180h104l76 56 66 96-62 50-46-62v330H274V320l-46 62-62-50 66-96Z",
+  "M360 236v414M310 242l50 38 50-38M274 336l44 40M446 336l-44 40"
+);
+const denimHeroImage = makeGarmentHeroSvg(
+  "Raw Indigo Denim",
+  "#22406A",
+  "M266 180h188l38 118-56 356h-88l-28-214-28 214h-88l-56-356 38-118Z",
+  "M360 180v144M282 246l78 78 78-78"
+);
+const bootHeroImage = makeGarmentHeroSvg(
+  "Terra Chelsea Boots",
+  "#A96A34",
+  "M192 486c28 0 56-8 86-24l54-28 48 64c20 26 46 40 90 40h58v116H172V486Zm-10-146h110v118H164c-22 0-40-18-40-40s18-78 58-78Zm212 0h116v174h-70c-24 0-44-10-58-28l-24-32 36-114Z"
+);
+const blazerHeroImage = makeGarmentHeroSvg(
+  "Structured Wool Blazer",
+  "#252628",
+  "M248 206c22 24 58 42 112 56 54-14 90-32 112-56l62 96-58 48-30-62v364H274V288l-30 62-58-48 62-96Z",
+  "M314 262 360 350l46-88v390h-92V262Zm-20 24-42 98 58 40M426 286l42 98-58 40"
+);
+
+export const legacySeedHeroImageMap: Record<string, string> = {
+  [legacyRemoteCoatHero]: coatHeroImage,
+  [legacyRemoteShirtHero]: shirtHeroImage,
+  [legacyRemoteDenimHero]: denimHeroImage,
+  [legacyRemoteBootHero]: bootHeroImage,
+  [legacyRemoteBlazerHero]: blazerHeroImage
+};
+
+export function normalizeSeedHeroImageRef(imageRef: string | null | undefined) {
+  if (!imageRef) {
+    return imageRef;
+  }
+
+  return legacySeedHeroImageMap[imageRef] ?? imageRef;
+}
+
 export const seedItems: ClosetItem[] = [
   {
     id: "item_coat",
@@ -42,8 +122,7 @@ export const seedItems: ClosetItem[] = [
     name: "Over-Sized Cashmere Coat",
     category: "Outerwear",
     materials: ["Cashmere", "Wool"],
-    heroImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuATCn-khPxvbRb4OHbQYUBvrAkKgB6v4K69d7z3JflIhqdk4qLHHWlDXyEoV7xd0z2QI64xYmYrgU6Vag5rUtqtrXlKN2tj2KeC7U-D329SQX78_Jq0ajuRHIkMGAU5z5o_IXC8PgiSz-ZR4Qv8uPmAH0Xnmf1z3OJPyGlwQIdcZSESZSBqbOSOqUgsYLD-phu5Al4pUa2fIWc3rp8rQMijQyH7F-LjhU4ACr4zXURFbUXJg4GJH9_j2B4eUPEjTqdw2-Hup9EmQpM",
+    heroImage: coatHeroImage,
     galleryImageIds: [],
     paletteColors: ["#C3AE8D", "#E7E4DE"],
     purchaseDate: "2024-10-02",
@@ -84,8 +163,7 @@ export const seedItems: ClosetItem[] = [
     name: "Essential Linen Shirt",
     category: "Tops",
     materials: ["Linen"],
-    heroImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBP6V1-Jf7AGvr1SLQHHwmxF_ks83aXjxUbplx7odRfz4rJBpoaqyJwesqkw13AX8twqWlsv4JPzUYXL1hwh1ozc7okA2fjqb-E4UUeGaFw3ckBknSeKrmUwO2-aV3c746Y_eoXAj8MFSglUVD_o-cqEs4YxS46YvswO0-UbgzruCVUitNVamGtwO6WwQNV3rTR-HfhdnJzgytqfGGwtwssFbGxvwuWHofYSxjHTlQRbNIqic-WmpmfcHKPPZp9b3hJaCNSeafzaP8",
+    heroImage: shirtHeroImage,
     galleryImageIds: [],
     paletteColors: ["#F4F2ED", "#D6D0C7"],
     purchaseDate: "2024-05-18",
@@ -101,7 +179,7 @@ export const seedItems: ClosetItem[] = [
     metaAssets: [
       {
         id: "asset_blazer_swatches",
-        itemId: "item_blazer",
+        itemId: "item_shirt",
         type: "extra",
         imageId: makeMetaAssetSvg("Fabric Swatch", "Charcoal wool suiting", "#4B4D52"),
         label: "Fabric swatch",
@@ -117,8 +195,7 @@ export const seedItems: ClosetItem[] = [
     name: "Raw Indigo Denim",
     category: "Bottoms",
     materials: ["Denim"],
-    heroImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAtKPkJqetrodMtMtgRmxXW2EXvIKsf3Cxs1g3UlGmpkQ9_0d3mmnfmUe9pqGgpaZykwojGL01-5gX1evy804kockmDVPbz8tzSL3CDHTwT6xWDeVPUYixD0JYjRtBIlG8Tf_tsPO4hpiMWVROj9UsR9scl3w17iX9lbcGt2fG4lJnO59ZnOo11-oWnJEWEY3AjkyrDmKxNh9Fd1sBo4rxgaFCUv3cU-V03lWJbzv4grgPqQvzlg0Dqsh6tUiC0A2KaWn6JCSZJd34",
+    heroImage: denimHeroImage,
     galleryImageIds: [],
     paletteColors: ["#22406A", "#111F2E"],
     purchaseDate: "2023-11-09",
@@ -141,8 +218,7 @@ export const seedItems: ClosetItem[] = [
     name: "Terra Chelsea Boots",
     category: "Shoes",
     materials: ["Leather"],
-    heroImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAUEVjPMvvcZcJOpzZbQjBw0o2mAFntqpxo4RK3wsEdKoxzpEXVo7EvVKXOgsYoomDLdG-bYusyuFU6to30UT-tu5K5a3e6gBH4SlqNDKa9-zDSwev6WWdlEm0qezWTlNjMZGcfZpcuOwqII5BQ3SAFNURKOlZeSCOnTklTtXjtaD4GHxSsLwCTAmEz6hZEyo8LlqVy0khCwpYB4rs-DTEYI5iGG-cNNKgWae4tfKv879jygzC9qPVMZOUllGvnS-JhsvJ_ojwomEs",
+    heroImage: bootHeroImage,
     galleryImageIds: [],
     paletteColors: ["#A96A34", "#3A240C"],
     purchaseDate: "2023-08-16",
@@ -165,8 +241,7 @@ export const seedItems: ClosetItem[] = [
     name: "Structured Wool Blazer",
     category: "Outerwear",
     materials: ["Wool"],
-    heroImage:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAtpEQO6kGybUp50z9NvNZyPfiwufBP1Run9Y-oL3QyIi69MNFSZksIzF5EzuZwKk35iI6Jlz29h0bBOf8OTZTJ7AwSPs4BGmZ-wsCfD6ZIvtQWFlieD5PeTLC2hk06NIHmecVwA-wtxFlWuSFVUVof6MD6xKeyUDBrTMmIFUeDQdKInqmehgmrM_U8lnlTzUm3oLEGZBG_PWSe16TMYVqsiqWhzG1s5m5Yo4tAJLPBE5QVpb6zqZekDslh7ziLzBDATmjFhCPCF4w",
+    heroImage: blazerHeroImage,
     galleryImageIds: [],
     paletteColors: ["#252628", "#E8E1D7"],
     purchaseDate: null,

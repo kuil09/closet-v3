@@ -16,7 +16,7 @@ All wardrobe data, uploaded images, preferences, and cached weather state stay i
 The app includes:
 
 - Home dashboard with wardrobe stats, recent items, current weather, and rule-based recommendations
-- Wardrobe catalog with search, sorting, favorites, and archive handling
+- Wardrobe catalog with search, sorting, favorites, archive handling, and local lookbook PNG export from the current filtered view
 - Item registration with hero image, palette colors, metadata assets, style notes, and draft/saved states
 - Settings for theme, language, motion, units, manual weather fallback, and local data reset
 
@@ -29,7 +29,6 @@ The app includes:
 - Dexie + IndexedDB
 - Zustand
 - React Router
-- React Konva
 - Vite PWA plugin
 - Bun test + Testing Library + happy-dom
 
@@ -40,6 +39,7 @@ The app includes:
 - Weather source: Open-Meteo public API
 - Offline behavior: PWA shell + cached assets + cached weather responses
 - Deployment target: GitHub Pages
+- Seed wardrobe media: embedded local SVG/data URLs
 
 The app never sends wardrobe data to a remote service.
 
@@ -139,6 +139,7 @@ Important implementation detail:
 ## Notes
 
 - Seed data is loaded only on first run
+- Legacy seed image refs are normalized to embedded local artwork during boot
 - If the user clears local product data, the app does not auto-restore the seed afterward
 - Data is tied to the current browser profile and device
 - Weather fallback can be switched to manual mode from Settings

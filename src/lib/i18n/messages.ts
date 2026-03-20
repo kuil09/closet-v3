@@ -80,6 +80,22 @@ export type MessageKey =
   | "wardrobe.body"
   | "wardrobe.addItem"
   | "wardrobe.itemsInView"
+  | "wardrobe.lookbookTitle"
+  | "wardrobe.lookbookHint"
+  | "wardrobe.lookbookRule"
+  | "wardrobe.lookbookTitleField"
+  | "wardrobe.lookbookNoteField"
+  | "wardrobe.lookbookNotePlaceholder"
+  | "wardrobe.lookbookPreviewLabel"
+  | "wardrobe.lookbookPreviewBody"
+  | "wardrobe.lookbookExportAction"
+  | "wardrobe.lookbookExporting"
+  | "wardrobe.lookbookExportDone"
+  | "wardrobe.lookbookExportFailed"
+  | "wardrobe.lookbookEmpty"
+  | "wardrobe.lookbookEmptySummary"
+  | "wardrobe.lookbookVisibleSummary"
+  | "wardrobe.lookbookDefaultTitle"
   | "weather.clear"
   | "weather.cloudy"
   | "weather.rain"
@@ -258,6 +274,22 @@ const base: Catalog = {
   "wardrobe.body": "Keep browsing fast. Color range stays in view while archive and fit controls stay tucked away.",
   "wardrobe.addItem": "Register piece",
   "wardrobe.itemsInView": "pieces in view",
+  "wardrobe.lookbookTitle": "Lookbook export",
+  "wardrobe.lookbookHint": "Builds a local PNG from the current filtered wardrobe view without uploading images anywhere.",
+  "wardrobe.lookbookRule": "The export always uses the first four visible pieces in the current wardrobe order. Change filters or sorting to change the sheet.",
+  "wardrobe.lookbookTitleField": "Lookbook title",
+  "wardrobe.lookbookNoteField": "Lookbook note",
+  "wardrobe.lookbookNotePlaceholder": "Add a short styling note or occasion for this export.",
+  "wardrobe.lookbookPreviewLabel": "Preview",
+  "wardrobe.lookbookPreviewBody": "A quick sheet preview generated from the current wardrobe view.",
+  "wardrobe.lookbookExportAction": "Export PNG",
+  "wardrobe.lookbookExporting": "Exporting...",
+  "wardrobe.lookbookExportDone": "Lookbook PNG downloaded locally.",
+  "wardrobe.lookbookExportFailed": "Lookbook export could not be generated in this browser.",
+  "wardrobe.lookbookEmpty": "No visible pieces are available for lookbook export.",
+  "wardrobe.lookbookEmptySummary": "No items",
+  "wardrobe.lookbookVisibleSummary": "The first four visible pieces from the current wardrobe view will be exported.",
+  "wardrobe.lookbookDefaultTitle": "Atelier Lookbook",
   "weather.clear": "Clear",
   "weather.cloudy": "Cloudy",
   "weather.rain": "Rain",
@@ -347,12 +379,12 @@ const base: Catalog = {
   "settings.localOnlyTitle": "Local-only product rules",
   "settings.shellControlsSummary": "Language, theme, and units live in the header.",
   "settings.shellControlsBody": "Use the top bar for day-to-day viewing defaults. This page stays focused on local storage rules and rare product controls.",
-  "settings.lookbookTitle": "Lookbook direction",
-  "settings.lookbookSummary": "Select, compose, export locally",
-  "settings.lookbookBody": "When lookbook work lands, it should stay narrow and explainable.",
-  "settings.lookbookStepSelect": "Select saved pieces from the wardrobe into a temporary board.",
-  "settings.lookbookStepCompose": "Arrange them on a simple canvas with notes, order, and spacing controls.",
-  "settings.lookbookStepExport": "Export the final board directly on-device without accounts, sync, or background uploads."
+  "settings.lookbookTitle": "Lookbook export",
+  "settings.lookbookSummary": "Filter, frame, export locally",
+  "settings.lookbookBody": "The first export path stays narrow, explainable, and fully on-device.",
+  "settings.lookbookStepSelect": "Filter or sort the wardrobe until the first visible pieces match the board you want.",
+  "settings.lookbookStepCompose": "Add a short title and note inside the wardrobe export disclosure before downloading.",
+  "settings.lookbookStepExport": "Export the final sheet directly on-device without accounts, sync, or background uploads."
 };
 
 export const messages: Record<Locale, Catalog> = {
@@ -435,6 +467,22 @@ export const messages: Record<Locale, Catalog> = {
     "wardrobe.body": "색상 범위는 바로 보이게 두고, 보관 및 착용 적합도 제어는 필요할 때만 펼쳐지도록 유지합니다.",
     "wardrobe.addItem": "아이템 등록",
     "wardrobe.itemsInView": "개 표시 중",
+    "wardrobe.lookbookTitle": "룩북 내보내기",
+    "wardrobe.lookbookHint": "현재 필터된 옷장 화면을 기준으로 로컬 PNG를 만들며, 이미지를 외부로 업로드하지 않습니다.",
+    "wardrobe.lookbookRule": "내보내기는 현재 옷장 정렬 순서에서 보이는 첫 4개 아이템을 사용합니다. 필터나 정렬을 바꾸면 시트도 함께 바뀝니다.",
+    "wardrobe.lookbookTitleField": "룩북 제목",
+    "wardrobe.lookbookNoteField": "룩북 메모",
+    "wardrobe.lookbookNotePlaceholder": "이 내보내기에 담을 스타일 메모나 착용 상황을 적어보세요.",
+    "wardrobe.lookbookPreviewLabel": "미리보기",
+    "wardrobe.lookbookPreviewBody": "현재 옷장 화면을 기준으로 생성되는 시트 미리보기입니다.",
+    "wardrobe.lookbookExportAction": "PNG 내보내기",
+    "wardrobe.lookbookExporting": "내보내는 중...",
+    "wardrobe.lookbookExportDone": "룩북 PNG를 로컬에 저장했습니다.",
+    "wardrobe.lookbookExportFailed": "이 브라우저에서는 룩북 PNG를 만들 수 없습니다.",
+    "wardrobe.lookbookEmpty": "룩북으로 내보낼 수 있는 표시 중 아이템이 없습니다.",
+    "wardrobe.lookbookEmptySummary": "아이템 없음",
+    "wardrobe.lookbookVisibleSummary": "현재 옷장 화면에서 보이는 첫 4개 아이템이 내보내집니다.",
+    "wardrobe.lookbookDefaultTitle": "아틀리에 룩북",
     "weather.clear": "맑음",
     "weather.cloudy": "흐림",
     "weather.rain": "비",
@@ -524,12 +572,12 @@ export const messages: Record<Locale, Catalog> = {
     "settings.localOnlyTitle": "로컬 전용 제품 원칙",
     "settings.shellControlsSummary": "언어, 테마, 단위는 상단 헤더에서 바로 바꿉니다.",
     "settings.shellControlsBody": "일상적인 보기 기본값은 상단 바에서 조정하고, 이 페이지는 로컬 저장 규칙과 드문 제품 제어에 집중합니다.",
-    "settings.lookbookTitle": "룩북 방향",
-    "settings.lookbookSummary": "선택, 구성, 로컬 내보내기",
-    "settings.lookbookBody": "룩북 기능이 들어와도 범위는 좁고 설명 가능해야 합니다.",
-    "settings.lookbookStepSelect": "옷장에서 저장된 아이템을 임시 보드로 선택합니다.",
-    "settings.lookbookStepCompose": "간단한 캔버스 위에서 순서, 간격, 메모를 조정하며 배치합니다.",
-    "settings.lookbookStepExport": "계정, 동기화, 백그라운드 업로드 없이 기기 안에서 바로 결과물을 내보냅니다."
+    "settings.lookbookTitle": "룩북 내보내기",
+    "settings.lookbookSummary": "필터, 문구, 로컬 내보내기",
+    "settings.lookbookBody": "첫 export 경로는 좁은 범위와 설명 가능한 규칙을 유지하며, 전부 기기 안에서 끝납니다.",
+    "settings.lookbookStepSelect": "옷장을 필터하거나 정렬해서 보이는 첫 아이템들이 원하는 보드가 되도록 맞춥니다.",
+    "settings.lookbookStepCompose": "내보내기 전에 옷장 export disclosure 안에서 제목과 짧은 메모를 더합니다.",
+    "settings.lookbookStepExport": "계정, 동기화, 백그라운드 업로드 없이 최종 시트를 기기에서 바로 내보냅니다."
   },
   ja: {
     ...base,

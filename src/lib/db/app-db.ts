@@ -1,5 +1,5 @@
 import Dexie, { type Table } from "dexie";
-import { seedItems } from "./seed";
+import { normalizeSeedHeroImageRef, seedItems } from "./seed";
 import type { ClosetItem, StoredImage, WeatherCacheEntry } from "./types";
 
 export class AtelierDatabase extends Dexie {
@@ -25,10 +25,12 @@ const seedFlagKey = "atelier-seeded-v1";
 
 export async function ensureSeedData() {
   if (localStorage.getItem(seedFlagKey)) {
+    await migrateLegacySeedMedia();
     return;
   }
 
   await importSampleData();
+  await migrateLegacySeedMedia();
 }
 
 export async function importSampleData() {
@@ -37,6 +39,30 @@ export async function importSampleData() {
   });
 
   localStorage.setItem(seedFlagKey, "true");
+}
+
+export async function migrateLegacySeedMedia() {
+  const items = await atelierDb.items.toArray();
+  const updates = items
+    .map((item) => {
+      const heroImage = normalizeSeedHeroImageRef(item.heroImage);
+      return heroImage !== item.heroImage ? { id: item.id, heroImage } : null;
+    })
+    .filter(Boolean) as Array<{ id: string; heroImage: string | null | undefined }>;
+
+  if (updates.length === 0) {
+    return;
+  }
+
+  await atelierDb.transaction("rw", atelierDb.items, async () => {
+    await Promise.all(
+      updates.map((entry) =>
+        atelierDb.items.update(entry.id, {
+          heroImage: entry.heroImage ?? null
+        })
+      )
+    );
+  });
 }
 
 export async function clearAllProductData() {

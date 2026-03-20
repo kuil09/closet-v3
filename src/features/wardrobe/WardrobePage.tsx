@@ -9,6 +9,7 @@ import { useI18n } from "../../lib/i18n/i18n";
 import type { MessageKey } from "../../lib/i18n/messages";
 import { normalizeToken } from "../../lib/utils/format";
 import { buildPaletteTags, itemMatchesPaletteRange, itemPaletteLightness } from "../../lib/utils/palette-range";
+import { MAX_LOOKBOOK_ITEMS, downloadLookbookPng } from "../../lib/lookbook/export";
 import { InfoHint } from "../shared/InfoHint";
 import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
@@ -16,7 +17,32 @@ import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
 type SortField = "updated" | "name" | "color";
 type SortDirection = "asc" | "desc";
+type SortPreset = "updated-desc" | "updated-asc" | "name-asc" | "name-desc" | "color-asc" | "color-desc";
 const ALL_FILTER_VALUE = "All";
+
+function resolveSortPreset(preset: SortPreset): { field: SortField; direction: SortDirection } {
+  if (preset === "updated-asc") {
+    return { field: "updated", direction: "asc" };
+  }
+
+  if (preset === "name-asc") {
+    return { field: "name", direction: "asc" };
+  }
+
+  if (preset === "name-desc") {
+    return { field: "name", direction: "desc" };
+  }
+
+  if (preset === "color-asc") {
+    return { field: "color", direction: "asc" };
+  }
+
+  if (preset === "color-desc") {
+    return { field: "color", direction: "desc" };
+  }
+
+  return { field: "updated", direction: "desc" };
+}
 
 export function WardrobePage() {
   const { t } = useI18n();
@@ -28,15 +54,19 @@ export function WardrobePage() {
   const [category, setCategory] = useState(ALL_FILTER_VALUE);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
-  const [sortField, setSortField] = useState<SortField>("updated");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [sortPreset, setSortPreset] = useState<SortPreset>("updated-desc");
   const [materialFilter, setMaterialFilter] = useState(ALL_FILTER_VALUE);
   const [occasionFilter, setOccasionFilter] = useState(ALL_FILTER_VALUE);
   const [temperatureFilter, setTemperatureFilter] = useState<TemperatureBand | typeof ALL_FILTER_VALUE>(ALL_FILTER_VALUE);
   const [weatherFilter, setWeatherFilter] = useState<WeatherCondition | typeof ALL_FILTER_VALUE>(ALL_FILTER_VALUE);
   const [colorRangeStart, setColorRangeStart] = useState(0);
   const [colorRangeEnd, setColorRangeEnd] = useState<number | null>(null);
+  const [lookbookTitle, setLookbookTitle] = useState("");
+  const [lookbookNote, setLookbookNote] = useState("");
+  const [lookbookFeedback, setLookbookFeedback] = useState("");
+  const [isExportingLookbook, setIsExportingLookbook] = useState(false);
   const deferredSearch = useDeferredValue(search);
+  const { field: sortField, direction: sortDirection } = useMemo(() => resolveSortPreset(sortPreset), [sortPreset]);
 
   const categories = useMemo(
     () => [ALL_FILTER_VALUE, ...Array.from(new Set(items.map((item) => item.category)))],
@@ -74,18 +104,20 @@ export function WardrobePage() {
   }, [colorTags, maxColorIndex]);
   const rangeStartPercent = maxColorIndex === 0 ? 0 : (effectiveColorRangeStart / maxColorIndex) * 100;
   const rangeEndPercent = maxColorIndex === 0 ? 100 : (effectiveColorRangeEnd / maxColorIndex) * 100;
+  const sortOptions = useMemo(
+    () => [
+      { value: "updated-desc", label: t("wardrobe.sortUpdated") } as const,
+      { value: "updated-asc", label: `${t("wardrobe.sortUpdated")} · ${t("wardrobe.sortAscending")}` } as const,
+      { value: "name-asc", label: `${t("wardrobe.sortName")} · ${t("wardrobe.sortAscending")}` } as const,
+      { value: "name-desc", label: `${t("wardrobe.sortName")} · ${t("wardrobe.sortDescending")}` } as const,
+      { value: "color-asc", label: `${t("wardrobe.sortColor")} · ${t("wardrobe.sortAscending")}` } as const,
+      { value: "color-desc", label: `${t("wardrobe.sortColor")} · ${t("wardrobe.sortDescending")}` } as const
+    ],
+    [t]
+  );
   const activeAdvancedFilters = useMemo(
     () =>
       [
-        deferredSearch ? `${t("wardrobe.searchLabel")}: ${deferredSearch}` : null,
-        category !== ALL_FILTER_VALUE
-          ? categoryMessageKey(category)
-            ? t(categoryMessageKey(category)!)
-            : category
-          : null,
-        sortField !== "updated" ? t(sortField === "name" ? "wardrobe.sortName" : "wardrobe.sortColor") : null,
-        sortDirection !== "desc" ? t("wardrobe.sortAscending") : null,
-        showFavorites ? t("wardrobe.favorites") : null,
         showArchived ? t("wardrobe.showArchived") : null,
         materialFilter !== ALL_FILTER_VALUE ? materialFilter : null,
         occasionFilter !== ALL_FILTER_VALUE ? occasionFilter : null,
@@ -93,14 +125,9 @@ export function WardrobePage() {
         weatherFilter !== ALL_FILTER_VALUE ? t(weatherMessageKey(weatherFilter)) : null
       ].filter(Boolean) as string[],
     [
-      category,
-      deferredSearch,
       materialFilter,
       occasionFilter,
       showArchived,
-      showFavorites,
-      sortDirection,
-      sortField,
       t,
       temperatureFilter,
       weatherFilter
@@ -185,22 +212,45 @@ export function WardrobePage() {
       return left.name.localeCompare(right.name);
     });
   }, [
-    category,
-    colorIndexMap,
-    deferredSearch,
+	    category,
+	    colorIndexMap,
+	    deferredSearch,
     effectiveColorRangeEnd,
     effectiveColorRangeStart,
     isColorRangeActive,
-    items,
-    materialFilter,
-    occasionFilter,
-    showArchived,
-    showFavorites,
-    sortDirection,
-    sortField,
-    temperatureFilter,
+	    items,
+	    materialFilter,
+	    occasionFilter,
+	    showArchived,
+	    showFavorites,
+	    sortPreset,
+	    temperatureFilter,
     weatherFilter
   ]);
+  const lookbookItems = filtered.slice(0, MAX_LOOKBOOK_ITEMS);
+  const lookbookTitleValue = lookbookTitle.trim() || t("wardrobe.lookbookDefaultTitle");
+
+  async function handleLookbookExport() {
+    if (lookbookItems.length === 0 || isExportingLookbook) {
+      return;
+    }
+
+    setIsExportingLookbook(true);
+    setLookbookFeedback("");
+
+    try {
+      await downloadLookbookPng({
+        title: lookbookTitleValue,
+        note: lookbookNote,
+        items: lookbookItems
+      });
+      setLookbookFeedback(t("wardrobe.lookbookExportDone"));
+    } catch {
+      setLookbookFeedback(t("wardrobe.lookbookExportFailed"));
+    } finally {
+      setIsExportingLookbook(false);
+    }
+  }
 
   return (
     <div className="page-stack">
@@ -216,6 +266,59 @@ export function WardrobePage() {
             <span className="local-pill">
               {filtered.length} {t("wardrobe.itemsInView")}
             </span>
+          </div>
+        </div>
+        <div className="wardrobe-quick-controls filter-primary-block">
+          <div className="wardrobe-quick-control-grid">
+            <label className="wardrobe-quick-field wardrobe-quick-field-search">
+              <span>{t("wardrobe.searchLabel")}</span>
+              <input
+                aria-label={t("wardrobe.searchLabel")}
+                className="text-input"
+                placeholder={t("wardrobe.search")}
+                value={search}
+                onChange={(event) => {
+                  const next = event.target.value;
+                  startTransition(() => setSearch(next));
+                }}
+              />
+            </label>
+            <label className="wardrobe-quick-field">
+              <span>{t("register.category")}</span>
+              <select
+                aria-label={t("register.category")}
+                className="control-select"
+                value={category}
+                onChange={(event) => setCategory(event.target.value)}
+              >
+                {categories.map((entry) => (
+                  <option key={entry} value={entry}>
+                    {entry === ALL_FILTER_VALUE ? t("common.all") : categoryMessageKey(entry) ? t(categoryMessageKey(entry)!) : entry}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="wardrobe-quick-field">
+              <span>{t("wardrobe.sortField")}</span>
+              <select
+                aria-label={t("wardrobe.sortField")}
+                className="control-select"
+                value={sortPreset}
+                onChange={(event) => setSortPreset(event.target.value as SortPreset)}
+              >
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="wardrobe-quick-field wardrobe-quick-field-actions">
+              <span>{t("wardrobe.favorites")}</span>
+              <button className={`chip ${showFavorites ? "is-active" : ""}`} type="button" onClick={() => setShowFavorites((value) => !value)}>
+                {t("wardrobe.favorites")}
+              </button>
+            </div>
           </div>
         </div>
         {colorTags.length > 0 ? (
@@ -315,60 +418,10 @@ export function WardrobePage() {
                   <span className="wardrobe-filter-glyph" aria-hidden="true">
                     ◌
                   </span>
-                  <span>{t("wardrobe.searchLabel")}</span>
-                </div>
-                <div className="filter-actions wardrobe-filter-actions wardrobe-filter-actions-search">
-                  <input
-                    aria-label={t("wardrobe.searchLabel")}
-                    className="text-input"
-                    placeholder={t("wardrobe.search")}
-                    value={search}
-                    onChange={(event) => {
-                      const next = event.target.value;
-                      startTransition(() => setSearch(next));
-                    }}
-                  />
-                  <select className="control-select" value={category} onChange={(event) => setCategory(event.target.value)}>
-                    {categories.map((entry) => (
-                      <option key={entry} value={entry}>
-                        {entry === ALL_FILTER_VALUE ? t("common.all") : categoryMessageKey(entry) ? t(categoryMessageKey(entry)!) : entry}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </section>
-
-              <section className="wardrobe-filter-cluster">
-                <div className="wardrobe-filter-cluster-head">
-                  <span className="wardrobe-filter-glyph" aria-hidden="true">
-                    ↕
-                  </span>
-                  <span>{t("wardrobe.sortField")}</span>
+                  <span>{t("register.weatherSection")}</span>
                 </div>
                 <div className="filter-actions wardrobe-filter-actions">
-                  <select
-                    aria-label={t("wardrobe.sortField")}
-                    className="control-select"
-                    value={sortField}
-                    onChange={(event) => setSortField(event.target.value as SortField)}
-                  >
-                    <option value="updated">{t("wardrobe.sortUpdated")}</option>
-                    <option value="name">{t("wardrobe.sortName")}</option>
-                    <option value="color">{t("wardrobe.sortColor")}</option>
-                  </select>
-                  <select
-                    aria-label={t("wardrobe.sortDirection")}
-                    className="control-select"
-                    value={sortDirection}
-                    onChange={(event) => setSortDirection(event.target.value as SortDirection)}
-                  >
-                    <option value="asc">{t("wardrobe.sortAscending")}</option>
-                    <option value="desc">{t("wardrobe.sortDescending")}</option>
-                  </select>
-                  <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
-                    {t("wardrobe.favorites")}
-                  </button>
-                  <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>
+                  <button className={`chip ${showArchived ? "is-active" : ""}`} type="button" onClick={() => setShowArchived((value) => !value)}>
                     {t("wardrobe.showArchived")}
                   </button>
                 </div>
@@ -438,6 +491,86 @@ export function WardrobePage() {
         </DisclosureSection>
       </section>
 
+      <DisclosureSection
+        screenId="wardrobe"
+        sectionId="wardrobe-lookbook"
+        title={t("wardrobe.lookbookTitle")}
+        summary={lookbookItems.length === 0 ? t("wardrobe.lookbookEmptySummary") : `${lookbookItems.length}/${MAX_LOOKBOOK_ITEMS}`}
+        defaultOpen={false}
+        className="wardrobe-lookbook-disclosure"
+      >
+        <div className="lookbook-studio">
+          <section className="lookbook-studio-controls">
+            <div className="wardrobe-filter-studio-head">
+              <div className="wardrobe-filter-title-block">
+                <span className="section-tag">{t("nav.wardrobe")}</span>
+                <strong>{t("wardrobe.lookbookTitle")}</strong>
+              </div>
+              <InfoHint label={t("wardrobe.lookbookTitle")} content={t("wardrobe.lookbookHint")} />
+            </div>
+
+            <p className="muted-copy">{t("wardrobe.lookbookRule")}</p>
+
+            <div className="form-grid lookbook-form-grid">
+              <label className="full-width">
+                <span>{t("wardrobe.lookbookTitleField")}</span>
+                <input
+                  aria-label={t("wardrobe.lookbookTitleField")}
+                  className="text-input"
+                  value={lookbookTitle}
+                  placeholder={t("wardrobe.lookbookDefaultTitle")}
+                  onChange={(event) => setLookbookTitle(event.target.value)}
+                />
+              </label>
+              <label className="full-width">
+                <span>{t("wardrobe.lookbookNoteField")}</span>
+                <textarea
+                  aria-label={t("wardrobe.lookbookNoteField")}
+                  className="text-area"
+                  rows={3}
+                  value={lookbookNote}
+                  placeholder={t("wardrobe.lookbookNotePlaceholder")}
+                  onChange={(event) => setLookbookNote(event.target.value)}
+                />
+              </label>
+            </div>
+
+            <div className="button-row lookbook-studio-actions">
+              <button
+                type="button"
+                className="primary-button"
+                disabled={lookbookItems.length === 0 || isExportingLookbook}
+                onClick={() => void handleLookbookExport()}
+              >
+                {isExportingLookbook ? t("wardrobe.lookbookExporting") : t("wardrobe.lookbookExportAction")}
+              </button>
+            </div>
+
+            <p className="muted-copy lookbook-studio-feedback">
+              {lookbookFeedback || t("wardrobe.lookbookVisibleSummary")}
+            </p>
+          </section>
+
+          <article className="lookbook-sheet-preview" aria-label={t("wardrobe.lookbookPreviewLabel")}>
+            <div className="lookbook-sheet-preview-head">
+              <span className="section-tag">{t("wardrobe.lookbookPreviewLabel")}</span>
+              <strong>{lookbookTitleValue}</strong>
+              <p className="muted-copy">{lookbookNote.trim() || t("wardrobe.lookbookPreviewBody")}</p>
+            </div>
+
+            {lookbookItems.length > 0 ? (
+              <div className={`lookbook-sheet-grid is-${lookbookItems.length}`}>
+                {lookbookItems.map((item) => (
+                  <LookbookPreviewTile key={item.id} item={item} t={t} />
+                ))}
+              </div>
+            ) : (
+              <div className="empty-state lookbook-empty-state">{t("wardrobe.lookbookEmpty")}</div>
+            )}
+          </article>
+        </div>
+      </DisclosureSection>
+
       {filtered.length === 0 ? <div className="empty-state">{t("wardrobe.empty")}</div> : null}
 
       <section className="wardrobe-grid">
@@ -477,6 +610,27 @@ export function WardrobePage() {
         </div>
       ) : null}
     </div>
+  );
+}
+
+function LookbookPreviewTile({
+  item,
+  t
+}: {
+  item: ClosetItem;
+  t: (key: MessageKey) => string;
+}) {
+  return (
+    <article className="lookbook-preview-tile">
+      <div className="lookbook-preview-media">
+        <ItemPaletteDots colors={item.paletteColors} />
+        <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
+      </div>
+      <div className="lookbook-preview-copy">
+        <span>{categoryMessageKey(item.category) ? t(categoryMessageKey(item.category)!) : item.category}</span>
+        <strong>{item.name}</strong>
+      </div>
+    </article>
   );
 }
 
