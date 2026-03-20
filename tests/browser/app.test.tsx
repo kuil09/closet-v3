@@ -416,6 +416,8 @@ describe("app flows", () => {
     expect(conditionCard).toBeTruthy();
     await waitFor(() => expect(categoryCard?.textContent).toContain("Outerwear"));
     await waitFor(() => expect(conditionCard?.textContent).toContain("Winter"));
+    expect(categoryCard?.querySelectorAll(".insight-distribution-segment").length).toBeGreaterThan(0);
+    expect(conditionCard?.querySelectorAll(".metric-icon-shell").length).toBeGreaterThan(0);
     expect(view.getAllByText(/^5$/).length).toBeGreaterThan(0);
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
