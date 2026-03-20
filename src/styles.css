@@ -387,9 +387,26 @@ button {
   border-radius: 999px;
   background: color-mix(in srgb, var(--surface-soft) 86%, transparent);
   color: var(--text);
-  font-size: 0.88rem;
-  line-height: 1;
   flex-shrink: 0;
+}
+
+.weather-glyph {
+  width: 0.92rem;
+  height: 0.92rem;
+  display: block;
+}
+
+.weather-glyph-stroke {
+  stroke: currentColor;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.weather-glyph-muted,
+.weather-glyph-muted-fill {
+  color: var(--muted);
+  fill: currentColor;
 }
 
 .topbar-weather-copy {

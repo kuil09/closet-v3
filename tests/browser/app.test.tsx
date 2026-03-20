@@ -186,9 +186,7 @@ describe("app flows", () => {
     const view = renderAt("/");
 
     const weather = await view.findByLabelText(/Live weather/i);
-    await waitFor(() =>
-      expect(weather.querySelector(".topbar-weather-icon")?.textContent?.trim()).toBe("☀")
-    );
+    await waitFor(() => expect(weather.querySelector(".topbar-weather-icon svg")).toBeTruthy());
     await waitFor(() => expect(view.getByText(/^18C$/i)).toBeTruthy());
     await user.click(view.getByRole("button", { name: /^Fahrenheit$/ }));
     await waitFor(() => expect(view.getByText(/^64F$/i)).toBeTruthy());

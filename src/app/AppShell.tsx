@@ -14,13 +14,79 @@ const navItems = [
   { to: "/settings", key: "nav.settings" as const, icon: "⚙" }
 ];
 
-const weatherIcons: Record<WeatherCondition, string> = {
-  clear: "☀",
-  cloudy: "☁",
-  rain: "☂",
-  snow: "❄",
-  wind: "≋"
-};
+function WeatherGlyph({ condition, loading }: { condition?: WeatherCondition; loading: boolean }) {
+  if (loading) {
+    return (
+      <svg viewBox="0 0 20 20" className="weather-glyph" fill="none" aria-hidden="true">
+        <circle cx="10" cy="10" r="4.2" className="weather-glyph-stroke weather-glyph-muted" />
+        <path d="M10 2.8v2.1M10 15.1v2.1M2.8 10h2.1M15.1 10h2.1" className="weather-glyph-stroke weather-glyph-muted" />
+      </svg>
+    );
+  }
+
+  if (!condition) {
+    return (
+      <svg viewBox="0 0 20 20" className="weather-glyph" fill="none" aria-hidden="true">
+        <circle cx="10" cy="10" r="1.5" fill="currentColor" className="weather-glyph-muted-fill" />
+      </svg>
+    );
+  }
+
+  if (condition === "clear") {
+    return (
+      <svg viewBox="0 0 20 20" className="weather-glyph" fill="none" aria-hidden="true">
+        <circle cx="10" cy="10" r="3.5" className="weather-glyph-stroke" />
+        <path
+          d="M10 1.8v2.3M10 15.9v2.3M1.8 10h2.3M15.9 10h2.3M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M15.8 4.2l-1.6 1.6M5.8 14.2l-1.6 1.6"
+          className="weather-glyph-stroke"
+        />
+      </svg>
+    );
+  }
+
+  if (condition === "cloudy") {
+    return (
+      <svg viewBox="0 0 20 20" className="weather-glyph" fill="none" aria-hidden="true">
+        <path
+          d="M5.2 14.1h8.3a2.8 2.8 0 0 0 .1-5.6 4 4 0 0 0-7.5-1.1 3 3 0 0 0-.9 5.9Z"
+          className="weather-glyph-stroke"
+        />
+      </svg>
+    );
+  }
+
+  if (condition === "rain") {
+    return (
+      <svg viewBox="0 0 20 20" className="weather-glyph" fill="none" aria-hidden="true">
+        <path
+          d="M5.2 11.8h8.3a2.8 2.8 0 0 0 .1-5.6 4 4 0 0 0-7.5-1.1 3 3 0 0 0-.9 5.9Z"
+          className="weather-glyph-stroke"
+        />
+        <path d="M7.2 13.9l-1 2.1M10 13.9l-1 2.1M12.8 13.9l-1 2.1" className="weather-glyph-stroke" />
+      </svg>
+    );
+  }
+
+  if (condition === "snow") {
+    return (
+      <svg viewBox="0 0 20 20" className="weather-glyph" fill="none" aria-hidden="true">
+        <path
+          d="M5.2 11.4h8.3a2.8 2.8 0 0 0 .1-5.6 4 4 0 0 0-7.5-1.1 3 3 0 0 0-.9 5.9Z"
+          className="weather-glyph-stroke"
+        />
+        <path d="M10 13.1v3.2M8.4 14.1l3.2 1.8M11.6 14.1l-3.2 1.8" className="weather-glyph-stroke" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 20 20" className="weather-glyph" fill="none" aria-hidden="true">
+      <path d="M3.4 7.3c1.6-1.9 3.6-2.9 5.8-2.9s4.1 1 5.7 2.9" className="weather-glyph-stroke" />
+      <path d="M2.6 10c2-1.4 4.4-2.1 7.1-2.1s5 .7 7 2.1" className="weather-glyph-stroke" />
+      <path d="M4 12.9c1.6-.8 3.6-1.2 6-1.2s4.4.4 6 1.2" className="weather-glyph-stroke" />
+    </svg>
+  );
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -35,7 +101,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const activeLabel =
     navItems.find((item) => (item.to === "/" ? pathname === "/" : pathname.startsWith(item.to)))?.key ?? "nav.home";
-  const weatherIcon = context ? weatherIcons[context.condition] : loading ? "◌" : "·";
 
   return (
     <div className="app-shell">
@@ -66,7 +131,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="topbar-controls">
             <div className="topbar-weather" aria-label={t("home.weatherTitle")}>
               <span className="topbar-weather-icon" aria-hidden="true">
-                {weatherIcon}
+                <WeatherGlyph condition={context?.condition} loading={loading} />
               </span>
               <div className="topbar-weather-copy">
                 <strong>
