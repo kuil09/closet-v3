@@ -17,32 +17,7 @@ import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
 type SortField = "updated" | "name" | "color";
 type SortDirection = "asc" | "desc";
-type SortPreset = "updated-desc" | "updated-asc" | "name-asc" | "name-desc" | "color-asc" | "color-desc";
 const ALL_FILTER_VALUE = "All";
-
-function resolveSortPreset(preset: SortPreset): { field: SortField; direction: SortDirection } {
-  if (preset === "updated-asc") {
-    return { field: "updated", direction: "asc" };
-  }
-
-  if (preset === "name-asc") {
-    return { field: "name", direction: "asc" };
-  }
-
-  if (preset === "name-desc") {
-    return { field: "name", direction: "desc" };
-  }
-
-  if (preset === "color-asc") {
-    return { field: "color", direction: "asc" };
-  }
-
-  if (preset === "color-desc") {
-    return { field: "color", direction: "desc" };
-  }
-
-  return { field: "updated", direction: "desc" };
-}
 
 export function WardrobePage() {
   const { t } = useI18n();
@@ -54,7 +29,8 @@ export function WardrobePage() {
   const [category, setCategory] = useState(ALL_FILTER_VALUE);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
-  const [sortPreset, setSortPreset] = useState<SortPreset>("updated-desc");
+  const [sortField, setSortField] = useState<SortField>("updated");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [materialFilter, setMaterialFilter] = useState(ALL_FILTER_VALUE);
   const [occasionFilter, setOccasionFilter] = useState(ALL_FILTER_VALUE);
   const [temperatureFilter, setTemperatureFilter] = useState<TemperatureBand | typeof ALL_FILTER_VALUE>(ALL_FILTER_VALUE);
@@ -66,7 +42,6 @@ export function WardrobePage() {
   const [lookbookFeedback, setLookbookFeedback] = useState("");
   const [isExportingLookbook, setIsExportingLookbook] = useState(false);
   const deferredSearch = useDeferredValue(search);
-  const { field: sortField, direction: sortDirection } = useMemo(() => resolveSortPreset(sortPreset), [sortPreset]);
 
   const categories = useMemo(
     () => [ALL_FILTER_VALUE, ...Array.from(new Set(items.map((item) => item.category)))],
@@ -104,18 +79,18 @@ export function WardrobePage() {
   const rangeEndPercent = maxColorIndex === 0 ? 100 : (effectiveColorRangeEnd / maxColorIndex) * 100;
   const sortOptions = useMemo(
     () => [
-      { value: "updated-desc", label: t("wardrobe.sortUpdated") } as const,
-      { value: "updated-asc", label: `${t("wardrobe.sortUpdated")} · ${t("wardrobe.sortAscending")}` } as const,
-      { value: "name-asc", label: `${t("wardrobe.sortName")} · ${t("wardrobe.sortAscending")}` } as const,
-      { value: "name-desc", label: `${t("wardrobe.sortName")} · ${t("wardrobe.sortDescending")}` } as const,
-      { value: "color-asc", label: `${t("wardrobe.sortColor")} · ${t("wardrobe.sortAscending")}` } as const,
-      { value: "color-desc", label: `${t("wardrobe.sortColor")} · ${t("wardrobe.sortDescending")}` } as const
+      { value: "updated", label: t("wardrobe.sortUpdated") } as const,
+      { value: "name", label: t("wardrobe.sortName") } as const,
+      { value: "color", label: t("wardrobe.sortColor") } as const
     ],
     [t]
   );
-  const activeAdvancedFilters = useMemo(
+  const activeHiddenFilters = useMemo(
     () =>
       [
+        search.trim() ? `${t("wardrobe.searchLabel")}: ${search.trim()}` : null,
+        category !== ALL_FILTER_VALUE ? categoryMessageKey(category) ? t(categoryMessageKey(category)!) : category : null,
+        showFavorites ? t("wardrobe.favorites") : null,
         showArchived ? t("wardrobe.showArchived") : null,
         materialFilter !== ALL_FILTER_VALUE ? materialFilter : null,
         occasionFilter !== ALL_FILTER_VALUE ? occasionFilter : null,
@@ -125,6 +100,9 @@ export function WardrobePage() {
     [
       materialFilter,
       occasionFilter,
+      category,
+      search,
+      showFavorites,
       showArchived,
       t,
       temperatureFilter,
@@ -210,19 +188,20 @@ export function WardrobePage() {
       return left.name.localeCompare(right.name);
     });
   }, [
-	    category,
-	    colorIndexMap,
-	    deferredSearch,
+    category,
+    colorIndexMap,
+    deferredSearch,
     effectiveColorRangeEnd,
     effectiveColorRangeStart,
     isColorRangeActive,
-	    items,
-	    materialFilter,
-	    occasionFilter,
-	    showArchived,
-	    showFavorites,
-	    sortPreset,
-	    temperatureFilter,
+    items,
+    materialFilter,
+    occasionFilter,
+    showArchived,
+    showFavorites,
+    sortDirection,
+    sortField,
+    temperatureFilter,
     weatherFilter
   ]);
   const lookbookItems = filtered.slice(0, MAX_LOOKBOOK_ITEMS);
@@ -253,56 +232,72 @@ export function WardrobePage() {
   return (
     <div className="page-stack">
       <section className="filter-bar wardrobe-filter-panel">
-        <div className="filter-copy">
-          <span className="section-tag">{t("nav.wardrobe")}</span>
-          <h2 className="page-title">{t("wardrobe.title")}</h2>
-          <p className="muted-copy">{t("wardrobe.body")}</p>
-          <div className="button-row wardrobe-filter-notes">
-            <button className="primary-button" type="button" onClick={() => navigate("/register")}>
-              {t("wardrobe.addItem")}
-            </button>
-            <span className="local-pill">
+        <div className="wardrobe-toolbar">
+          <div className="wardrobe-toolbar-copy">
+            <span className="section-tag">{t("nav.wardrobe")}</span>
+            <strong>
               {filtered.length} {t("wardrobe.itemsInView")}
-            </span>
+            </strong>
           </div>
+          <button className="secondary-button wardrobe-toolbar-action" type="button" onClick={() => navigate("/register")}>
+            {t("wardrobe.addItem")}
+          </button>
         </div>
-        <div className="wardrobe-quick-controls filter-primary-block">
-          <div className="wardrobe-quick-control-grid">
-            <label className="wardrobe-quick-field wardrobe-quick-field-search">
-              <span>{t("wardrobe.searchLabel")}</span>
-              <input
-                aria-label={t("wardrobe.searchLabel")}
-                className="text-input"
-                placeholder={t("wardrobe.search")}
-                value={search}
-                onChange={(event) => {
-                  const next = event.target.value;
-                  startTransition(() => setSearch(next));
-                }}
-              />
-            </label>
-            <label className="wardrobe-quick-field">
-              <span>{t("register.category")}</span>
-              <select
-                aria-label={t("register.category")}
-                className="control-select"
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-              >
-                {categories.map((entry) => (
-                  <option key={entry} value={entry}>
-                    {entry === ALL_FILTER_VALUE ? t("common.all") : categoryMessageKey(entry) ? t(categoryMessageKey(entry)!) : entry}
-                  </option>
-                ))}
-              </select>
-            </label>
+        <div className="wardrobe-primary-controls filter-primary-block">
+          {colorTags.length > 0 ? (
+            <div className="color-range-filter wardrobe-color-range-panel">
+              <div className="color-range-head">
+                <div className="label-with-hint">
+                  <span>{t("wardrobe.colorRange")}</span>
+                  <InfoHint label={t("wardrobe.colorRange")} content={t("wardrobe.colorRangeHint")} />
+                </div>
+              </div>
+              <div className="color-range-slider-shell">
+                <div className="color-range-slider-track" style={{ background: colorRangeTrack }} />
+                <div
+                  className="color-range-slider-selection"
+                  style={{
+                    left: `${rangeStartPercent}%`,
+                    right: `${100 - rangeEndPercent}%`
+                  }}
+                />
+                <input
+                  aria-label={t("wardrobe.colorFrom")}
+                  className="color-range-thumb color-range-thumb-start"
+                  type="range"
+                  min={0}
+                  max={maxColorIndex}
+                  step={1}
+                  value={effectiveColorRangeStart}
+                  onChange={(event) => {
+                    const next = Number(event.target.value);
+                    setColorRangeStart(Math.min(next, effectiveColorRangeEnd));
+                  }}
+                />
+                <input
+                  aria-label={t("wardrobe.colorTo")}
+                  className="color-range-thumb color-range-thumb-end"
+                  type="range"
+                  min={0}
+                  max={maxColorIndex}
+                  step={1}
+                  value={effectiveColorRangeEnd}
+                  onChange={(event) => {
+                    const next = Number(event.target.value);
+                    setColorRangeEnd(Math.max(next, effectiveColorRangeStart));
+                  }}
+                />
+              </div>
+            </div>
+          ) : null}
+          <div className="wardrobe-sort-row">
             <label className="wardrobe-quick-field">
               <span>{t("wardrobe.sortField")}</span>
               <select
                 aria-label={t("wardrobe.sortField")}
                 className="control-select"
-                value={sortPreset}
-                onChange={(event) => setSortPreset(event.target.value as SortPreset)}
+                value={sortField}
+                onChange={(event) => setSortField(event.target.value as SortField)}
               >
                 {sortOptions.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -311,68 +306,37 @@ export function WardrobePage() {
                 ))}
               </select>
             </label>
-            <div className="wardrobe-quick-field wardrobe-quick-field-actions">
-              <span>{t("wardrobe.favorites")}</span>
-              <button className={`chip ${showFavorites ? "is-active" : ""}`} type="button" onClick={() => setShowFavorites((value) => !value)}>
-                {t("wardrobe.favorites")}
-              </button>
+            <div className="wardrobe-quick-field wardrobe-quick-field-direction">
+              <span>{t("wardrobe.sortDirection")}</span>
+              <div className="wardrobe-sort-toggle" role="group" aria-label={t("wardrobe.sortDirection")}>
+                <button
+                  className={`chip ${sortDirection === "desc" ? "is-active" : ""}`}
+                  type="button"
+                  aria-pressed={sortDirection === "desc"}
+                  onClick={() => setSortDirection("desc")}
+                >
+                  {t("wardrobe.sortDescending")}
+                </button>
+                <button
+                  className={`chip ${sortDirection === "asc" ? "is-active" : ""}`}
+                  type="button"
+                  aria-pressed={sortDirection === "asc"}
+                  onClick={() => setSortDirection("asc")}
+                >
+                  {t("wardrobe.sortAscending")}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-        {colorTags.length > 0 ? (
-          <div className="color-range-filter filter-primary-block">
-            <div className="color-range-head">
-              <div className="label-with-hint">
-                <span>{t("wardrobe.colorRange")}</span>
-                <InfoHint label={t("wardrobe.colorRange")} content={t("wardrobe.colorRangeHint")} />
-              </div>
-            </div>
-            <div className="color-range-slider-shell">
-              <div className="color-range-slider-track" style={{ background: colorRangeTrack }} />
-              <div
-                className="color-range-slider-selection"
-                style={{
-                  left: `${rangeStartPercent}%`,
-                  right: `${100 - rangeEndPercent}%`
-                }}
-              />
-              <input
-                aria-label={t("wardrobe.colorFrom")}
-                className="color-range-thumb color-range-thumb-start"
-                type="range"
-                min={0}
-                max={maxColorIndex}
-                step={1}
-                value={effectiveColorRangeStart}
-                onChange={(event) => {
-                  const next = Number(event.target.value);
-                  setColorRangeStart(Math.min(next, effectiveColorRangeEnd));
-                }}
-              />
-              <input
-                aria-label={t("wardrobe.colorTo")}
-                className="color-range-thumb color-range-thumb-end"
-                type="range"
-                min={0}
-                max={maxColorIndex}
-                step={1}
-                value={effectiveColorRangeEnd}
-                onChange={(event) => {
-                  const next = Number(event.target.value);
-                  setColorRangeEnd(Math.max(next, effectiveColorRangeStart));
-                }}
-              />
-            </div>
-          </div>
-        ) : null}
         <DisclosureSection
           screenId="wardrobe"
           sectionId="wardrobe-hidden-filters"
           title={t("wardrobe.advancedFilters")}
           summary={
-            activeAdvancedFilters.length > 0 ? (
+            activeHiddenFilters.length > 0 ? (
               <span className="wardrobe-filter-summary">
-                {activeAdvancedFilters.slice(0, 3).map((entry) => (
+                {activeHiddenFilters.slice(0, 3).map((entry) => (
                   <span key={entry} className="wardrobe-filter-summary-chip">
                     {entry}
                   </span>
@@ -392,31 +356,30 @@ export function WardrobePage() {
               </div>
               <InfoHint label={t("wardrobe.advancedFilters")} content={t("wardrobe.advancedHint")} />
             </div>
-
-            <div className="wardrobe-filter-cluster-grid">
-              <section className="wardrobe-filter-cluster">
-                <div className="wardrobe-filter-cluster-head">
-                  <span className="wardrobe-filter-glyph" aria-hidden="true">
-                    ◌
-                  </span>
-                  <span>{t("register.weatherSection")}</span>
-                </div>
-                <div className="filter-actions wardrobe-filter-actions">
-                  <button className={`chip ${showArchived ? "is-active" : ""}`} type="button" onClick={() => setShowArchived((value) => !value)}>
-                    {t("wardrobe.showArchived")}
-                  </button>
-                </div>
-              </section>
-            </div>
-          </div>
-          <section className="wardrobe-filter-cluster wardrobe-filter-cluster-wide">
-            <div className="wardrobe-filter-cluster-head">
-              <span className="wardrobe-filter-glyph" aria-hidden="true">
-                ✦
-              </span>
-              <span>{t("register.weatherSection")}</span>
-            </div>
             <div className="form-grid wardrobe-filter-form-grid">
+              <label className="full-width">
+                <span>{t("wardrobe.searchLabel")}</span>
+                <input
+                  aria-label={t("wardrobe.searchLabel")}
+                  className="text-input"
+                  placeholder={t("wardrobe.search")}
+                  value={search}
+                  onChange={(event) => {
+                    const next = event.target.value;
+                    startTransition(() => setSearch(next));
+                  }}
+                />
+              </label>
+              <label>
+                <span>{t("register.category")}</span>
+                <select className="control-select" value={category} onChange={(event) => setCategory(event.target.value)}>
+                  {categories.map((entry) => (
+                    <option key={entry} value={entry}>
+                      {entry === ALL_FILTER_VALUE ? t("common.all") : categoryMessageKey(entry) ? t(categoryMessageKey(entry)!) : entry}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <label>
                 <span>{t("register.materials")}</span>
                 <select className="control-select" value={materialFilter} onChange={(event) => setMaterialFilter(event.target.value)}>
@@ -468,7 +431,15 @@ export function WardrobePage() {
                 </select>
               </label>
             </div>
-          </section>
+            <div className="filter-actions wardrobe-filter-actions">
+              <button className={`chip ${showFavorites ? "is-active" : ""}`} type="button" onClick={() => setShowFavorites((value) => !value)}>
+                {t("wardrobe.favorites")}
+              </button>
+              <button className={`chip ${showArchived ? "is-active" : ""}`} type="button" onClick={() => setShowArchived((value) => !value)}>
+                {t("wardrobe.showArchived")}
+              </button>
+            </div>
+          </div>
         </DisclosureSection>
       </section>
 

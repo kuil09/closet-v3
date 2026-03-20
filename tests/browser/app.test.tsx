@@ -227,7 +227,9 @@ describe("app flows", () => {
     await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
     await view.findByRole("button", { name: /Total Pieces/i });
     await user.click(view.getByRole("button", { name: /Favorites/i }));
-    await waitFor(() => expect(view.getByRole("button", { name: /^Favorites$/ }).className).toContain("is-active"));
+    await waitFor(() =>
+      expect(Array.from(view.container.querySelectorAll(".wardrobe-filter-summary-chip")).some((node) => node.textContent === "Favorites")).toBe(true)
+    );
   });
 
   test("opens recent items from home in the edit screen", async () => {
@@ -526,18 +528,25 @@ describe("app flows", () => {
     expect(await view.findByText(/Filter or sort the wardrobe/i)).toBeTruthy();
   });
 
-  test("keeps quick browse controls visible and tucks away rare filters", async () => {
-    const view = renderAt("/wardrobe");
+  test("keeps mobile wardrobe controls minimal until advanced filters are opened", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/wardrobe", 768);
 
     await view.findByText("Palette range");
-    expect(view.getByLabelText("Search wardrobe")).toBeTruthy();
-    expect(view.getByLabelText("Category")).toBeTruthy();
     expect(view.getByLabelText("Sort by")).toBeTruthy();
-    expect(view.getByRole("button", { name: /^Favorites$/ })).toBeTruthy();
+    expect(view.getByRole("button", { name: /^Descending$/ })).toBeTruthy();
+    expect(view.getByRole("button", { name: /^Ascending$/ })).toBeTruthy();
+    expect(view.queryByLabelText("Search wardrobe")).toBeNull();
+    expect(view.queryByLabelText("Category")).toBeNull();
     expect(view.queryByRole("button", { name: /^Show archived$/ })).toBeNull();
-    expect(view.queryByLabelText("Materials")).toBeNull();
+    expect(view.queryByRole("button", { name: /^Favorites$/ })).toBeNull();
     const lightestColorInput = view.getByLabelText("Lightest color") as HTMLInputElement;
     expect(lightestColorInput.value).toBe(lightestColorInput.max);
+
+    await user.click(view.getByRole("button", { name: /Advanced filters/i }));
+    await view.findByLabelText("Search wardrobe");
+    expect(view.getByLabelText("Category")).toBeTruthy();
+    expect(view.getByRole("button", { name: /^Favorites$/ })).toBeTruthy();
   });
 
   test("sorts wardrobe items by field and direction", async () => {
@@ -589,19 +598,21 @@ describe("app flows", () => {
 
     await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe(visibleSeedItems.at(-1)?.name ?? ""));
 
-    await user.selectOptions(view.getByLabelText("Sort by"), "name-asc");
+    await user.selectOptions(view.getByLabelText("Sort by"), "name");
+    await user.click(view.getByRole("button", { name: /^Ascending$/ }));
     await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedNameAsc));
 
-    await user.selectOptions(view.getByLabelText("Sort by"), "name-desc");
+    await user.click(view.getByRole("button", { name: /^Descending$/ }));
     await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedNameDesc));
 
-    await user.selectOptions(view.getByLabelText("Sort by"), "updated-asc");
+    await user.selectOptions(view.getByLabelText("Sort by"), "updated");
+    await user.click(view.getByRole("button", { name: /^Ascending$/ }));
     await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe(visibleSeedItems[0]?.name ?? ""));
 
-    await user.selectOptions(view.getByLabelText("Sort by"), "color-asc");
+    await user.selectOptions(view.getByLabelText("Sort by"), "color");
     await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedColorAsc));
 
-    await user.selectOptions(view.getByLabelText("Sort by"), "color-desc");
+    await user.click(view.getByRole("button", { name: /^Descending$/ }));
     await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedColorDesc));
   });
 

@@ -66,6 +66,26 @@ function RecommendationCard({
   );
 }
 
+function HomeMetricCard({
+  label,
+  value,
+  detail,
+  onOpen
+}: {
+  label: string;
+  value: string | number;
+  detail: string;
+  onOpen: () => void;
+}) {
+  return (
+    <button type="button" className="home-hero-rail-card home-metric-card" onClick={onOpen}>
+      <span className="section-tag">{label}</span>
+      <strong>{value}</strong>
+      <p>{detail}</p>
+    </button>
+  );
+}
+
 export function HomePage() {
   const { t } = useI18n();
   const navigate = useNavigate();
@@ -170,72 +190,45 @@ export function HomePage() {
 
   return (
     <div className="page-stack home-page">
-      <section className="hero-card home-hero-card home-minimal-hero">
-        <div className="hero-copy home-hero-copy">
+      <section className="hero-card home-hero-card home-minimal-hero home-overview-hero">
+        <div className="hero-copy home-hero-copy home-overview-copy">
           <span className="eyebrow">{t("home.heroEyebrow")}</span>
           <div className="label-with-hint home-heading-with-hint">
-            <h2>{t("home.heroTitle")}</h2>
-            <InfoHint label={t("home.heroTitle")} content={heroHintContent} align="left" />
+            <h2>{t("home.overviewTitle")}</h2>
+            <InfoHint label={t("home.overviewTitle")} content={t("home.overviewBody")} align="left" />
           </div>
-          <div className="button-row hero-actions">
-            <button
-              className="primary-button"
-              type="button"
-              onClick={() => navigate(latestDraft ? `/register?item=${latestDraft.id}` : "/register")}
-            >
-              {latestDraft ? t("home.quickPrimaryContinue") : t("home.quickPrimaryCapture")}
-            </button>
-            <button className="secondary-button" type="button" onClick={() => navigate("/wardrobe")}>
-              {t("home.quickSecondaryBrowse")}
-            </button>
-          </div>
-          <div className="hero-footnote">
-            <span className="local-pill">{t("badge.local")}</span>
+          <div className="home-overview-list">
+            {overviewRows.map((row) => (
+              <div key={row.label} className="home-overview-row">
+                <span>{row.label}</span>
+                <strong>{row.value}</strong>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="home-hero-rail" aria-label={t("home.overviewTitle")}>
-          <article className="home-hero-rail-card">
-            <span className="section-tag">{t("home.stats.items")}</span>
-            <strong>{activeItems.length}</strong>
-            <p>
-              {favoriteCount} {t("home.stats.favorites")}
-            </p>
-          </article>
-
-          <article className="home-hero-rail-card">
-            <span className="section-tag">{t("home.stats.drafts")}</span>
-            <strong>{draftItems.length}</strong>
-            <p>{latestDraft ? latestDraft.name : t("home.quickPrimaryCapture")}</p>
-          </article>
-
-          <article className="home-hero-rail-card">
-            <span className="section-tag">{t("home.recommendations")}</span>
-            <strong>{recommendationContext}</strong>
-            <p>{recommendedItems[0]?.item.name ?? t("home.recommendationsEmpty")}</p>
-          </article>
+        <div className="home-hero-rail" aria-label={t("home.stats.items")}>
+          <HomeMetricCard
+            label={t("home.stats.items")}
+            value={activeItems.length}
+            detail={topCategory ? `${topCategory.label} · ${topCategory.count}` : t("register.unset")}
+            onOpen={() => navigate("/wardrobe")}
+          />
+          <HomeMetricCard
+            label={t("home.stats.favorites")}
+            value={favoriteCount}
+            detail={topSeason && topSeason.count > 0 ? `${topSeason.label} · ${topSeason.count}` : t("register.unset")}
+            onOpen={() => navigate("/wardrobe?favorites=1")}
+          />
+          <HomeMetricCard
+            label={t("home.stats.drafts")}
+            value={draftItems.length}
+            detail={latestDraft ? latestDraft.name : t("home.quickPrimaryCapture")}
+            onOpen={() => navigate(latestDraft ? `/register?item=${latestDraft.id}` : "/register")}
+          />
         </div>
 
         <div className="hero-orb home-hero-orb" />
-      </section>
-
-      <section className="stats-grid home-quick-grid">
-        <button className="stat-card stat-card-button" type="button" onClick={() => navigate("/wardrobe")}>
-          <span>{t("home.stats.items")}</span>
-          <strong>{activeItems.length}</strong>
-        </button>
-        <button
-          className="stat-card stat-card-button"
-          type="button"
-          onClick={() => navigate(latestDraft ? `/register?item=${latestDraft.id}` : "/register")}
-        >
-          <span>{t("home.stats.drafts")}</span>
-          <strong>{draftItems.length}</strong>
-        </button>
-        <button className="stat-card stat-card-button" type="button" onClick={() => navigate("/wardrobe?favorites=1")}>
-          <span>{t("home.stats.favorites")}</span>
-          <strong>{favoriteCount}</strong>
-        </button>
       </section>
 
       <section className="two-column-grid home-focus-grid">
@@ -269,19 +262,28 @@ export function HomePage() {
             <div>
               <span className="section-tag">{t("nav.home")}</span>
               <div className="label-with-hint home-heading-with-hint">
-                <h3>{t("home.overviewTitle")}</h3>
-                <InfoHint label={t("home.overviewTitle")} content={t("home.overviewBody")} />
+                <h3>{t("home.heroTitle")}</h3>
+                <InfoHint label={t("home.heroTitle")} content={heroHintContent} />
               </div>
             </div>
           </div>
 
-          <div className="home-overview-list">
-            {overviewRows.map((row) => (
-              <div key={row.label} className="home-overview-row">
-                <span>{row.label}</span>
-                <strong>{row.value}</strong>
-              </div>
-            ))}
+          <div className="home-action-stack">
+            <button
+              className="primary-button"
+              type="button"
+              onClick={() => navigate(latestDraft ? `/register?item=${latestDraft.id}` : "/register")}
+            >
+              {latestDraft ? t("home.quickPrimaryContinue") : t("home.quickPrimaryCapture")}
+            </button>
+            <button className="secondary-button" type="button" onClick={() => navigate("/wardrobe")}>
+              {t("home.quickSecondaryBrowse")}
+            </button>
+            <div className="home-action-note">
+              <span className="section-tag">{t("home.recommendations")}</span>
+              <strong>{recommendedItems[0]?.item.name ?? t("home.recommendationsEmpty")}</strong>
+              <p className="muted-copy">{recommendationContext}</p>
+            </div>
           </div>
         </div>
       </section>

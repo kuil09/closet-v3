@@ -271,6 +271,14 @@ button {
   gap: 1rem;
 }
 
+.home-overview-copy {
+  gap: 1.1rem;
+}
+
+.home-overview-copy h2 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+
 .home-hero-rail,
 .home-overview-list {
   position: relative;
@@ -287,6 +295,21 @@ button {
   backdrop-filter: blur(18px);
   display: grid;
   gap: 0.45rem;
+}
+
+.home-metric-card {
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.home-metric-card:hover,
+.home-metric-card:focus-visible {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+  background: color-mix(in srgb, var(--surface-elevated) 84%, var(--primary-soft));
 }
 
 .home-hero-rail-card strong,
@@ -533,11 +556,67 @@ button {
   backdrop-filter: blur(18px);
 }
 
-.wardrobe-filter-panel > .filter-copy,
-.wardrobe-filter-panel > .wardrobe-quick-controls,
-.wardrobe-filter-panel > .color-range-filter,
+.wardrobe-filter-panel > .wardrobe-toolbar,
+.wardrobe-filter-panel > .wardrobe-primary-controls,
 .wardrobe-filter-panel > .wardrobe-hidden-filters {
   grid-column: 1 / -1;
+}
+
+.wardrobe-toolbar,
+.wardrobe-toolbar-copy,
+.wardrobe-primary-controls,
+.wardrobe-sort-row,
+.wardrobe-sort-toggle {
+  display: grid;
+}
+
+.wardrobe-toolbar {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.9rem;
+  align-items: center;
+}
+
+.wardrobe-toolbar-copy {
+  gap: 0.3rem;
+}
+
+.wardrobe-toolbar-copy strong {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  letter-spacing: -0.03em;
+}
+
+.wardrobe-toolbar-action {
+  justify-self: end;
+}
+
+.wardrobe-primary-controls {
+  gap: 0.9rem;
+}
+
+.wardrobe-color-range-panel {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.wardrobe-sort-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.9rem;
+  align-items: end;
+}
+
+.wardrobe-quick-field-direction {
+  min-width: 15rem;
+}
+
+.wardrobe-sort-toggle {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.wardrobe-sort-toggle .chip {
+  width: 100%;
+  justify-content: center;
 }
 
 .wardrobe-quick-controls,
@@ -879,6 +958,28 @@ button {
 .home-overview-panel,
 .home-recent-panel {
   align-items: start;
+}
+
+.home-action-stack,
+.home-action-note {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.home-action-note {
+  padding: 1rem;
+  border-radius: 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+  background: color-mix(in srgb, var(--surface-soft) 84%, transparent);
+}
+
+.home-action-note strong {
+  font-family: var(--font-display);
+  letter-spacing: -0.03em;
+}
+
+.home-action-note p {
+  margin: 0;
 }
 
 .home-panel-head {
@@ -2177,6 +2278,14 @@ button {
   .lookbook-studio {
     grid-template-columns: 1fr;
   }
+
+  .wardrobe-sort-row {
+    grid-template-columns: 1fr;
+  }
+
+  .wardrobe-quick-field-direction {
+    min-width: 0;
+  }
 }
 
 @media (max-width: 920px) {
@@ -2197,7 +2306,8 @@ button {
   }
 
   .wardrobe-filter-panel {
-    top: 4.9rem;
+    position: static;
+    top: auto;
   }
 
   .topbar-controls {
@@ -2263,6 +2373,19 @@ button {
   .wardrobe-filter-summary {
     max-width: 100%;
     justify-content: flex-start;
+  }
+
+  .wardrobe-toolbar {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .wardrobe-toolbar-action {
+    justify-self: start;
+  }
+
+  .wardrobe-toolbar-copy .section-tag {
+    display: none;
   }
 
   .recommendation-context {
