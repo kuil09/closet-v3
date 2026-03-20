@@ -337,23 +337,22 @@ export function HomePage() {
         </button>
       </section>
 
-      <section className="insight-grid">
-        <article className="panel-card insight-card">
+      <section className="insight-grid insight-grid-compact">
+        <article className="panel-card insight-card insight-card-category">
           <div className="insight-chart-panel">
             <InsightPieChart label={t("home.insightsCategoryTitle")} gradient={categoryPieGradient} markers={categoryMarkers} />
           </div>
         </article>
 
-        <article className="panel-card insight-card">
-          <div className="condition-pie-grid">
-            <div className="insight-subpanel">
-              <span className="section-tag">{t("home.insightsSeason")}</span>
-              <InsightPieChart label={t("home.insightsSeason")} gradient={seasonPieGradient} markers={seasonMarkers} />
-            </div>
-            <div className="insight-subpanel">
-              <span className="section-tag">{t("home.insightsWeather")}</span>
-              <InsightPieChart label={t("home.insightsWeather")} gradient={weatherPieGradient} markers={weatherMarkers} />
-            </div>
+        <article className="panel-card insight-card insight-card-single">
+          <div className="insight-chart-panel">
+            <InsightPieChart label={t("home.insightsSeason")} gradient={seasonPieGradient} markers={seasonMarkers} />
+          </div>
+        </article>
+
+        <article className="panel-card insight-card insight-card-single">
+          <div className="insight-chart-panel">
+            <InsightPieChart label={t("home.insightsWeather")} gradient={weatherPieGradient} markers={weatherMarkers} />
           </div>
         </article>
       </section>

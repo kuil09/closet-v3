@@ -342,6 +342,15 @@ button {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.insight-grid-compact {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.insight-card-category,
+.insight-card-single {
+  min-width: 0;
+}
+
 .insight-subpanel {
   padding: 1rem;
   border-radius: 1.15rem;
@@ -352,13 +361,13 @@ button {
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 18rem;
-  padding: 2.6rem;
+  min-height: 17rem;
+  padding: 1.8rem;
 }
 
 .insight-pie-chart {
   position: relative;
-  width: min(100%, 13rem);
+  width: min(100%, 14.5rem);
   aspect-ratio: 1;
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border) 65%, transparent);
@@ -1883,6 +1892,10 @@ button {
   }
 
   .insight-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .insight-grid-compact {
     grid-template-columns: 1fr;
   }
 
