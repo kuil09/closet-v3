@@ -257,9 +257,55 @@ button {
   gap: 1.25rem;
 }
 
+.home-page {
+  gap: 1rem;
+}
+
+.home-minimal-hero {
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.75fr);
+  align-items: stretch;
+}
+
 .home-hero-copy {
   display: grid;
   gap: 1rem;
+}
+
+.home-hero-rail,
+.home-overview-list {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.home-hero-rail-card {
+  padding: 1rem 1.1rem;
+  border-radius: 1.3rem;
+  border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated) 76%, transparent);
+  backdrop-filter: blur(18px);
+  display: grid;
+  gap: 0.45rem;
+}
+
+.home-hero-rail-card strong,
+.home-overview-row strong {
+  font-family: var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+.home-hero-rail-card strong {
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+}
+
+.home-hero-rail-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.home-hero-orb {
+  opacity: 0.85;
 }
 
 .hero-copy h2 {
@@ -317,6 +363,10 @@ button {
   padding: 1.2rem 1.25rem;
   display: grid;
   gap: 0.6rem;
+}
+
+.home-quick-grid .stat-card {
+  min-height: 100%;
 }
 
 .insight-card {
@@ -823,6 +873,42 @@ button {
 
 .panel-card {
   padding: 1.25rem;
+}
+
+.home-focus-grid,
+.home-overview-panel,
+.home-recent-panel {
+  align-items: start;
+}
+
+.home-panel-head {
+  align-items: flex-start;
+}
+
+.home-panel-head .muted-copy {
+  max-width: 26rem;
+}
+
+.home-overview-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.95rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--border) 82%, transparent);
+}
+
+.home-overview-row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.home-overview-row span {
+  color: var(--muted);
+}
+
+.home-overview-row strong {
+  text-align: right;
 }
 
 .home-insights-panel {
@@ -2040,6 +2126,14 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .home-minimal-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .home-recommendation-list,
   .register-progress-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2105,6 +2199,7 @@ button {
     display: none;
   }
 
+  .home-hero-rail,
   .stats-grid,
   .insight-grid,
   .form-grid,
@@ -2143,6 +2238,15 @@ button {
   }
 
   .recommendation-context {
+    text-align: left;
+  }
+
+  .home-overview-row {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .home-overview-row strong {
     text-align: left;
   }
 

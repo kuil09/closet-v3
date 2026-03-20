@@ -37,6 +37,12 @@ export type MessageKey =
   | "home.quickSecondaryBrowse"
   | "home.heroFootnote"
   | "home.recommendationsEmpty"
+  | "home.overviewTitle"
+  | "home.overviewBody"
+  | "home.overviewCategory"
+  | "home.overviewSeason"
+  | "home.overviewWeather"
+  | "home.overviewStorage"
   | "home.insightsTitle"
   | "home.insightsBody"
   | "home.insightsCategory"
@@ -210,13 +216,13 @@ const base: Catalog = {
   "app.boot": "Building your local wardrobe studio...",
   "app.loadingView": "Loading view...",
   "badge.local": "Local-only storage",
-  "home.heroTitle": "Curating your digital closet.",
-  "home.heroBody": "A gallery-first wardrobe studio built for private collections.",
-  "home.heroEyebrow": "Editorial wardrobe studio",
+  "home.heroTitle": "A calmer front door for your wardrobe.",
+  "home.heroBody": "Keep capture, browsing, and explainable daily picks within reach without crowding the screen.",
+  "home.heroEyebrow": "Local wardrobe studio",
   "home.recommendations": "Weather Picks",
-  "home.recommendationsTitle": "Rule-based weather picks",
+  "home.recommendationsTitle": "What fits today",
   "home.recent": "Recently Added",
-  "home.recentTitle": "Fresh additions and drafts",
+  "home.recentTitle": "Recent pieces, kept short",
   "home.weatherTitle": "Live weather",
   "home.weatherRefreshing": "Refreshing conditions...",
   "home.weatherUnavailable": "Weather unavailable",
@@ -229,8 +235,14 @@ const base: Catalog = {
   "home.quickPrimaryContinue": "Continue latest draft",
   "home.quickPrimaryCapture": "Register a new piece",
   "home.quickSecondaryBrowse": "Open wardrobe",
-  "home.heroFootnote": "Keep intake moving with drafts first. Weather picks and insights update as you save.",
+  "home.heroFootnote": "Everything stays in this browser. Save as a draft first, then refine when you are ready.",
   "home.recommendationsEmpty": "Save more fit details to unlock stronger rule-based picks.",
+  "home.overviewTitle": "Collection snapshot",
+  "home.overviewBody": "A quieter read on what the wardrobe already covers.",
+  "home.overviewCategory": "Leading category",
+  "home.overviewSeason": "Strongest season",
+  "home.overviewWeather": "Best-covered weather",
+  "home.overviewStorage": "Storage",
   "home.insightsTitle": "Collection patterns",
   "home.insightsBody": "The overview stays nearby, but the next action comes first.",
   "home.insightsCategory": "By category",
@@ -405,13 +417,13 @@ export const messages: Record<Locale, Catalog> = {
     "app.boot": "로컬 옷장 스튜디오를 준비하는 중입니다...",
     "app.loadingView": "화면을 불러오는 중입니다...",
     "badge.local": "브라우저 로컬 저장",
-    "home.heroTitle": "당신의 디지털 옷장을 큐레이팅합니다.",
-    "home.heroBody": "개인 컬렉션을 위한 갤러리 중심 옷장 스튜디오입니다.",
-    "home.heroEyebrow": "에디토리얼 옷장 스튜디오",
+    "home.heroTitle": "옷장을 위한 더 차분한 첫 화면.",
+    "home.heroBody": "등록, 탐색, 설명 가능한 오늘의 추천까지 한 화면 안에서 조용하게 이어지도록 정리했습니다.",
+    "home.heroEyebrow": "로컬 옷장 스튜디오",
     "home.recommendations": "날씨 추천",
-    "home.recommendationsTitle": "규칙 기반 날씨 추천",
+    "home.recommendationsTitle": "오늘 어울리는 아이템",
     "home.recent": "최근 추가",
-    "home.recentTitle": "최근 추가 및 드래프트",
+    "home.recentTitle": "짧게 보는 최근 아이템",
     "home.weatherTitle": "현재 날씨",
     "home.weatherRefreshing": "날씨를 새로고침하는 중...",
     "home.weatherUnavailable": "날씨 정보를 불러올 수 없습니다",
@@ -422,8 +434,14 @@ export const messages: Record<Locale, Catalog> = {
     "home.quickPrimaryContinue": "최근 드래프트 이어서 작업",
     "home.quickPrimaryCapture": "새 아이템 등록",
     "home.quickSecondaryBrowse": "옷장 열기",
-    "home.heroFootnote": "먼저 드래프트로 저장하고, 저장이 쌓일수록 날씨 추천과 인사이트가 더 정확해집니다.",
+    "home.heroFootnote": "모든 데이터는 이 브라우저 안에만 남습니다. 우선 드래프트로 저장하고, 준비되면 나중에 다듬으세요.",
     "home.recommendationsEmpty": "착용 온도와 날씨 정보를 더 저장하면 추천 정확도가 높아집니다.",
+    "home.overviewTitle": "컬렉션 스냅샷",
+    "home.overviewBody": "지금 옷장이 이미 무엇을 커버하고 있는지 조용하게 읽어주는 요약입니다.",
+    "home.overviewCategory": "가장 많은 카테고리",
+    "home.overviewSeason": "가장 강한 계절",
+    "home.overviewWeather": "가장 많이 커버한 날씨",
+    "home.overviewStorage": "저장 위치",
     "home.insightsTitle": "컬렉션 패턴",
     "home.insightsBody": "개요는 아래에 남기고, 다음 행동이 먼저 보이도록 정리했습니다.",
     "home.insightsCategory": "카테고리별",

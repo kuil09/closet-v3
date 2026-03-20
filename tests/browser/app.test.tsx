@@ -152,7 +152,7 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
-    await view.findByText(/Total Pieces/i);
+    await view.findByRole("button", { name: /Total Pieces/i });
     await user.selectOptions(view.getByLabelText("Language"), "ko");
     await waitFor(() => expect(view.getAllByText("홈").length).toBeGreaterThan(0));
 
@@ -164,12 +164,12 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
-    await view.findByText(/Total Pieces/i);
+    await view.findByRole("button", { name: /Total Pieces/i });
     await user.click(view.getByRole("button", { name: /Total Pieces/i }));
     await view.findByText("Palette range");
 
     await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
-    await view.findByText(/Total Pieces/i);
+    await view.findByRole("button", { name: /Total Pieces/i });
     await user.click(view.getByRole("button", { name: /Favorites/i }));
     await waitFor(() => expect(view.getByRole("button", { name: /^Favorites$/ }).className).toContain("is-active"));
   });
@@ -178,7 +178,7 @@ describe("app flows", () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
-    const recentHeading = await view.findByText(/Fresh additions and drafts/i);
+    const recentHeading = await view.findByText(/Recent pieces, kept short/i);
     const recentSection = recentHeading.closest("section");
     let firstRecentCard: HTMLButtonElement | null = null;
     let expectedName = "";
@@ -502,33 +502,17 @@ describe("app flows", () => {
     const activeSeedCount = seedItems.filter((item) => item.status !== "archived").length;
 
     await view.findByRole("button", { name: /Continue latest draft/i });
-    expect(view.getByText(/Rule-based weather picks/i)).toBeTruthy();
-    await view.findByText(/Fresh additions and drafts/i);
+    expect(view.getByText(/What fits today/i)).toBeTruthy();
+    await view.findByText(/Recent pieces, kept short/i);
     expect(view.getAllByRole("button", { name: /Total Pieces|Favorites/i }).length).toBe(2);
-    expect(view.queryByText(/Category breakdown/i)).toBeNull();
-    expect(view.queryByText(/Season and weather fit/i)).toBeNull();
-    const [categoryCard, seasonCard, weatherCard] = Array.from(
-      view.container.querySelectorAll<HTMLElement>(".insight-card")
-    );
-    expect(categoryCard).toBeTruthy();
-    expect(seasonCard).toBeTruthy();
-    expect(weatherCard).toBeTruthy();
-    await waitFor(() => expect(categoryCard?.textContent).toContain("Outerwear"));
-    await waitFor(() => expect(seasonCard?.textContent).toContain("Winter"));
-    await waitFor(() => expect(weatherCard?.textContent).toContain("Clear"));
-    expect(categoryCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
-    expect(categoryCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
-    expect(categoryCard?.querySelectorAll(".insight-donut-label-metric").length).toBeGreaterThan(0);
-    expect(seasonCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
-    expect(seasonCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
-    expect(seasonCard?.querySelectorAll(".insight-donut-label-metric").length).toBeGreaterThan(0);
-    expect(weatherCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
-    expect(weatherCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
-    expect(weatherCard?.querySelectorAll(".insight-donut-label-metric").length).toBeGreaterThan(0);
-    expect(categoryCard?.textContent).toMatch(/\d+\s·\s\d+%/);
-    expect(seasonCard?.textContent).toMatch(/\d+\s·\s\d+%/);
-    expect(weatherCard?.textContent).toMatch(/\d+\s·\s\d+%/);
-    expect(view.getByText(String(activeSeedCount))).toBeTruthy();
+    expect(view.getByText(/Collection snapshot/i)).toBeTruthy();
+    const overviewRows = view.container.querySelectorAll(".home-overview-row");
+    expect(overviewRows.length).toBe(4);
+    await waitFor(() => expect(overviewRows[0]?.textContent).toMatch(/Leading category.+·\s\d+/));
+    await waitFor(() => expect(overviewRows[1]?.textContent).toMatch(/Strongest season.+·\s\d+/));
+    await waitFor(() => expect(overviewRows[2]?.textContent).toMatch(/Best-covered weather.+·\s\d+/));
+    expect(overviewRows[3]?.textContent).toContain("Local-only storage");
+    expect(view.getAllByText(String(activeSeedCount)).length).toBeGreaterThan(0);
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeLessThanOrEqual(3);
