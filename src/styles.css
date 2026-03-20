@@ -874,6 +874,13 @@ button {
   gap: 0.75rem;
 }
 
+.color-range-filter,
+.color-range-slider-shell,
+.color-range-scale,
+.color-range-stops {
+  width: 100%;
+}
+
 .color-range-head strong {
   font-family: var(--font-display);
   font-size: 1rem;
