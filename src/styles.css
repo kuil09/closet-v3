@@ -774,8 +774,9 @@ button {
 .item-card-body strong,
 .item-meta strong {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 0.94rem;
   letter-spacing: -0.04em;
+  line-height: 1.2;
 }
 
 .item-title-row {
