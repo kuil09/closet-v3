@@ -1,5 +1,5 @@
 import { describe, expect, mock, test } from "bun:test";
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 import { atelierDb } from "../../src/lib/db/app-db";
@@ -68,6 +68,12 @@ function renderAt(path: string, width = 1280, options?: { fetchFails?: boolean; 
   setViewportWidth(width);
   window.history.replaceState({}, "", `http://localhost${path}`);
   return render(<App />);
+}
+
+function getWardrobeCardTitles(container: HTMLElement) {
+  return Array.from(container.querySelectorAll(".item-card .item-title-row strong"))
+    .map((node) => node.textContent?.trim() ?? "")
+    .filter(Boolean);
 }
 
 describe("app flows", () => {
@@ -263,8 +269,52 @@ describe("app flows", () => {
     await view.findByLabelText("Search wardrobe");
     await view.findByText("Show archived");
     await view.findByText("Palette range");
+    expect((view.getByLabelText("Sort by") as HTMLSelectElement).value).toBe("updated");
+    expect((view.getByLabelText("Order") as HTMLSelectElement).value).toBe("desc");
+    expect(view.queryByRole("option", { name: "Favorites first" })).toBeNull();
     const lightestColorInput = view.getByLabelText("Lightest color") as HTMLInputElement;
     expect(lightestColorInput.value).toBe(lightestColorInput.max);
+  });
+
+  test("sorts wardrobe items by field and direction", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/wardrobe");
+
+    await view.findByLabelText("Search wardrobe");
+    await waitFor(() => expect(getWardrobeCardTitles(view.container).length).toBeGreaterThan(3));
+
+    await act(async () => {
+      await atelierDb.items.update("item_coat", { updatedAt: "2024-01-01T00:00:00.000Z" });
+      await atelierDb.items.update("item_boot", { updatedAt: "2024-01-02T00:00:00.000Z" });
+      await atelierDb.items.update("item_denim", { updatedAt: "2024-01-03T00:00:00.000Z" });
+      await atelierDb.items.update("item_blazer", { updatedAt: "2024-01-04T00:00:00.000Z" });
+      await atelierDb.items.update("item_shirt", { updatedAt: "2024-01-05T00:00:00.000Z" });
+    });
+
+    await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe("Essential Linen Shirt"));
+
+    await user.selectOptions(view.getByLabelText("Sort by"), "name");
+    await user.selectOptions(view.getByLabelText("Order"), "asc");
+    await waitFor(() =>
+      expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual([
+        "Essential Linen Shirt",
+        "Over-Sized Cashmere Coat",
+        "Raw Indigo Denim"
+      ])
+    );
+
+    await user.selectOptions(view.getByLabelText("Order"), "desc");
+    await waitFor(() =>
+      expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual([
+        "Terra Chelsea Boots",
+        "Structured Wool Blazer",
+        "Raw Indigo Denim"
+      ])
+    );
+
+    await user.selectOptions(view.getByLabelText("Sort by"), "updated");
+    await user.selectOptions(view.getByLabelText("Order"), "asc");
+    await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe("Over-Sized Cashmere Coat"));
   });
 
   test("filters wardrobe items by the saved palette range", async () => {

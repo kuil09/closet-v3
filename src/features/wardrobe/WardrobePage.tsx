@@ -9,7 +9,8 @@ import { buildPaletteTags, itemMatchesPaletteRange } from "../../lib/utils/palet
 import { useI18n } from "../../lib/i18n/i18n";
 import { ItemImage } from "../shared/ItemImage";
 
-type SortKey = "newest" | "favorites" | "name";
+type SortField = "updated" | "name";
+type SortDirection = "asc" | "desc";
 
 export function WardrobePage() {
   const { t } = useI18n();
@@ -20,7 +21,8 @@ export function WardrobePage() {
   const [category, setCategory] = useState("All");
   const [showFavorites, setShowFavorites] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
-  const [sort, setSort] = useState<SortKey>("newest");
+  const [sortField, setSortField] = useState<SortField>("updated");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [materialFilter, setMaterialFilter] = useState("All");
   const [occasionFilter, setOccasionFilter] = useState("All");
   const [temperatureFilter, setTemperatureFilter] = useState<TemperatureBand | "All">("All");
@@ -122,14 +124,17 @@ export function WardrobePage() {
     });
 
     return result.sort((left, right) => {
-      if (sort === "favorites") {
-        return Number(right.favorite) - Number(left.favorite);
-      }
-      if (sort === "name") {
-        return left.name.localeCompare(right.name);
+      if (sortField === "name") {
+        const byName = left.name.localeCompare(right.name);
+        return sortDirection === "asc" ? byName : -byName;
       }
 
-      return right.updatedAt.localeCompare(left.updatedAt);
+      const byUpdated = left.updatedAt.localeCompare(right.updatedAt);
+      if (byUpdated !== 0) {
+        return sortDirection === "asc" ? byUpdated : -byUpdated;
+      }
+
+      return left.name.localeCompare(right.name);
     });
   }, [
     category,
@@ -143,7 +148,8 @@ export function WardrobePage() {
     occasionFilter,
     showArchived,
     showFavorites,
-    sort,
+    sortDirection,
+    sortField,
     temperatureFilter,
     weatherFilter
   ]);
@@ -245,10 +251,23 @@ export function WardrobePage() {
               </option>
             ))}
           </select>
-          <select className="control-select" value={sort} onChange={(event) => setSort(event.target.value as SortKey)}>
-            <option value="newest">{t("wardrobe.sortNewest")}</option>
-            <option value="favorites">{t("wardrobe.sortFavorites")}</option>
+          <select
+            aria-label={t("wardrobe.sortField")}
+            className="control-select"
+            value={sortField}
+            onChange={(event) => setSortField(event.target.value as SortField)}
+          >
+            <option value="updated">{t("wardrobe.sortUpdated")}</option>
             <option value="name">{t("wardrobe.sortName")}</option>
+          </select>
+          <select
+            aria-label={t("wardrobe.sortDirection")}
+            className="control-select"
+            value={sortDirection}
+            onChange={(event) => setSortDirection(event.target.value as SortDirection)}
+          >
+            <option value="asc">{t("wardrobe.sortAscending")}</option>
+            <option value="desc">{t("wardrobe.sortDescending")}</option>
           </select>
           <button className={`chip ${showFavorites ? "is-active" : ""}`} onClick={() => setShowFavorites((value) => !value)}>
             {t("wardrobe.favorites")}

@@ -40,9 +40,12 @@ export type MessageKey =
   | "wardrobe.empty"
   | "wardrobe.favorites"
   | "wardrobe.showArchived"
-  | "wardrobe.sortNewest"
-  | "wardrobe.sortFavorites"
+  | "wardrobe.sortField"
+  | "wardrobe.sortDirection"
+  | "wardrobe.sortUpdated"
   | "wardrobe.sortName"
+  | "wardrobe.sortAscending"
+  | "wardrobe.sortDescending"
   | "wardrobe.favorite"
   | "wardrobe.unfavorite"
   | "wardrobe.archive"
@@ -192,9 +195,12 @@ const base: Catalog = {
   "wardrobe.empty": "No pieces match this combination yet.",
   "wardrobe.favorites": "Favorites",
   "wardrobe.showArchived": "Show archived",
-  "wardrobe.sortNewest": "Newest",
-  "wardrobe.sortFavorites": "Favorites first",
+  "wardrobe.sortField": "Sort by",
+  "wardrobe.sortDirection": "Order",
+  "wardrobe.sortUpdated": "Updated",
   "wardrobe.sortName": "Name",
+  "wardrobe.sortAscending": "Ascending",
+  "wardrobe.sortDescending": "Descending",
   "wardrobe.favorite": "Favorite",
   "wardrobe.unfavorite": "Unfavorite",
   "wardrobe.archive": "Archive",
@@ -342,9 +348,12 @@ export const messages: Record<Locale, Catalog> = {
     "wardrobe.empty": "조건에 맞는 아이템이 없습니다.",
     "wardrobe.favorites": "즐겨찾기",
     "wardrobe.showArchived": "보관 항목 표시",
-    "wardrobe.sortNewest": "최신순",
-    "wardrobe.sortFavorites": "즐겨찾기 우선",
+    "wardrobe.sortField": "정렬 기준",
+    "wardrobe.sortDirection": "정렬 방향",
+    "wardrobe.sortUpdated": "수정일",
     "wardrobe.sortName": "이름순",
+    "wardrobe.sortAscending": "오름차순",
+    "wardrobe.sortDescending": "내림차순",
     "wardrobe.favorite": "즐겨찾기",
     "wardrobe.unfavorite": "즐겨찾기 해제",
     "wardrobe.archive": "보관",
