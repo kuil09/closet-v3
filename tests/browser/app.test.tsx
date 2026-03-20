@@ -186,6 +186,25 @@ describe("app flows", () => {
     });
   });
 
+  test("deletes an existing item from the edit screen", async () => {
+    const originalConfirm = window.confirm;
+    window.confirm = () => true;
+    const user = userEvent.setup();
+    const view = renderAt("/register?item=item_coat");
+
+    try {
+      await view.findByDisplayValue("Over-Sized Cashmere Coat");
+      await user.click(view.getByRole("button", { name: /^Delete item$/ }));
+
+      await view.findByText("Palette range");
+      await waitFor(async () => {
+        expect(await atelierDb.items.get("item_coat")).toBeUndefined();
+      });
+    } finally {
+      window.confirm = originalConfirm;
+    }
+  });
+
   test("shows seeded meta assets with thumbnails on sample items", async () => {
     const user = userEvent.setup();
     const view = renderAt("/register?item=item_coat");

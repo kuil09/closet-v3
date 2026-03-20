@@ -66,6 +66,8 @@ export type MessageKey =
   | "register.editingTitle"
   | "register.saveDraft"
   | "register.saveItem"
+  | "register.deleteItem"
+  | "register.deleteConfirm"
   | "register.heroImage"
   | "register.heroBody"
   | "register.replaceImage"
@@ -198,6 +200,8 @@ const base: Catalog = {
   "register.editingTitle": "Editing",
   "register.saveDraft": "Save draft",
   "register.saveItem": "Save to closet",
+  "register.deleteItem": "Delete item",
+  "register.deleteConfirm": "Delete this item from your wardrobe?",
   "register.heroImage": "Hero Image",
   "register.heroBody": "Upload a garment image or continue as a draft.",
   "register.replaceImage": "Replace image",
@@ -329,6 +333,8 @@ export const messages: Record<Locale, Catalog> = {
     "register.editingTitle": "편집 중",
     "register.saveDraft": "임시 저장",
     "register.saveItem": "옷장에 저장",
+    "register.deleteItem": "아이템 삭제",
+    "register.deleteConfirm": "이 아이템을 옷장에서 삭제할까요?",
     "register.heroImage": "대표 이미지",
     "register.heroBody": "의류 이미지를 올리거나 드래프트로 계속 진행하세요.",
     "register.replaceImage": "이미지 교체",

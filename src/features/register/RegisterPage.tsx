@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
-import { saveClosetItem, saveStoredImage } from "../../lib/db/repository";
+import { deleteClosetItem, saveClosetItem, saveStoredImage } from "../../lib/db/repository";
 import type { ClosetItem, MetaAssetType, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
 import { categoryMessageKey, metaAssetTypeMessageKey, temperatureMessageKey, weatherMessageKey } from "../../lib/i18n/label-keys";
@@ -309,6 +309,19 @@ export function RegisterPage() {
     navigate("/wardrobe");
   }
 
+  async function handleDelete() {
+    if (!draft.id) {
+      return;
+    }
+
+    if (!window.confirm(t("register.deleteConfirm"))) {
+      return;
+    }
+
+    await deleteClosetItem(draft.id);
+    navigate("/wardrobe");
+  }
+
   return (
     <div className="register-layout">
       <section className="panel-card">
@@ -435,7 +448,12 @@ export function RegisterPage() {
               </div>
             </div>
 
-            <div className="button-row">
+            <div className="button-row register-action-row">
+              {draft.id ? (
+                <button className="mini-button register-delete-button" onClick={() => void handleDelete()}>
+                  {t("register.deleteItem")}
+                </button>
+              ) : null}
               <button className="secondary-button" onClick={() => void persist("draft")}>
                 {t("register.saveDraft")}
               </button>

@@ -1065,6 +1065,21 @@ button {
   gap: 1.25rem;
 }
 
+.register-action-row {
+  align-items: center;
+}
+
+.register-delete-button {
+  margin-right: auto;
+  border-color: color-mix(in srgb, #9f4338 36%, var(--border));
+  color: color-mix(in srgb, #9f4338 82%, var(--text));
+}
+
+.register-delete-button:hover,
+.register-delete-button:focus-visible {
+  background: color-mix(in srgb, #9f4338 10%, var(--surface-elevated));
+}
+
 .selector-group,
 .filter-copy,
 .filter-copy h2 {
