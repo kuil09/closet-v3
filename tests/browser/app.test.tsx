@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 import { atelierDb } from "../../src/lib/db/app-db";
 import { seedItems } from "../../src/lib/db/seed";
+import { itemPaletteLightness } from "../../src/lib/utils/palette-range";
 
 function mockEnvironment(options?: { fetchFails?: boolean; geolocationFails?: boolean }) {
   globalThis.fetch = mock(async () => {
@@ -297,61 +298,70 @@ describe("app flows", () => {
   test("sorts wardrobe items by field and direction", async () => {
     const user = userEvent.setup();
     const view = renderAt("/wardrobe");
+    const visibleSeedItems = seedItems.filter((item) => item.status !== "archived");
+    const expectedNameAsc = visibleSeedItems
+      .map((item) => item.name)
+      .sort((left, right) => left.localeCompare(right))
+      .slice(0, 3);
+    const expectedNameDesc = visibleSeedItems
+      .map((item) => item.name)
+      .sort((left, right) => right.localeCompare(left))
+      .slice(0, 3);
+    const expectedColorAsc = [...visibleSeedItems]
+      .sort((left, right) => {
+        const byColor = itemPaletteLightness(left) - itemPaletteLightness(right);
+        if (byColor !== 0) {
+          return byColor;
+        }
+
+        return left.name.localeCompare(right.name);
+      })
+      .map((item) => item.name)
+      .slice(0, 3);
+    const expectedColorDesc = [...visibleSeedItems]
+      .sort((left, right) => {
+        const byColor = itemPaletteLightness(right) - itemPaletteLightness(left);
+        if (byColor !== 0) {
+          return byColor;
+        }
+
+        return left.name.localeCompare(right.name);
+      })
+      .map((item) => item.name)
+      .slice(0, 3);
 
     await openWardrobeHiddenFilters(user, view);
     await waitFor(() => expect(getWardrobeCardTitles(view.container).length).toBeGreaterThan(3));
 
     await act(async () => {
-      await atelierDb.items.update("item_coat", { updatedAt: "2024-01-01T00:00:00.000Z" });
-      await atelierDb.items.update("item_boot", { updatedAt: "2024-01-02T00:00:00.000Z" });
-      await atelierDb.items.update("item_denim", { updatedAt: "2024-01-03T00:00:00.000Z" });
-      await atelierDb.items.update("item_blazer", { updatedAt: "2024-01-04T00:00:00.000Z" });
-      await atelierDb.items.update("item_shirt", { updatedAt: "2024-01-05T00:00:00.000Z" });
+      await Promise.all(
+        visibleSeedItems.map((item, index) =>
+          atelierDb.items.update(item.id, {
+            updatedAt: `2024-01-${String(index + 1).padStart(2, "0")}T00:00:00.000Z`
+          })
+        )
+      );
     });
 
-    await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe("Essential Linen Shirt"));
+    await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe(visibleSeedItems.at(-1)?.name ?? ""));
 
     await user.selectOptions(view.getByLabelText("Sort by"), "name");
     await user.selectOptions(view.getByLabelText("Order"), "asc");
-    await waitFor(() =>
-      expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual([
-        "Essential Linen Shirt",
-        "Over-Sized Cashmere Coat",
-        "Raw Indigo Denim"
-      ])
-    );
+    await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedNameAsc));
 
     await user.selectOptions(view.getByLabelText("Order"), "desc");
-    await waitFor(() =>
-      expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual([
-        "Terra Chelsea Boots",
-        "Structured Wool Blazer",
-        "Raw Indigo Denim"
-      ])
-    );
+    await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedNameDesc));
 
     await user.selectOptions(view.getByLabelText("Sort by"), "updated");
     await user.selectOptions(view.getByLabelText("Order"), "asc");
-    await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe("Over-Sized Cashmere Coat"));
+    await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe(visibleSeedItems[0]?.name ?? ""));
 
     await user.selectOptions(view.getByLabelText("Sort by"), "color");
     await user.selectOptions(view.getByLabelText("Order"), "asc");
-    await waitFor(() =>
-      expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual([
-        "Raw Indigo Denim",
-        "Terra Chelsea Boots",
-        "Structured Wool Blazer"
-      ])
-    );
+    await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedColorAsc));
 
     await user.selectOptions(view.getByLabelText("Order"), "desc");
-    await waitFor(() =>
-      expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual([
-        "Essential Linen Shirt",
-        "Over-Sized Cashmere Coat",
-        "Structured Wool Blazer"
-      ])
-    );
+    await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedColorDesc));
   });
 
   test("filters wardrobe items by the saved palette range", async () => {

@@ -17,6 +17,24 @@ function makeMetaAssetSvg(title: string, subtitle: string, accent: string) {
   `)}`;
 }
 
+function makeAccessoryHeroSvg(title: string, accent: string, silhouette: string) {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="720" height="960" viewBox="0 0 720 960">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#F8F5EF" />
+          <stop offset="100%" stop-color="#EEE7DC" />
+        </linearGradient>
+      </defs>
+      <rect width="720" height="960" rx="48" fill="url(#bg)" />
+      <rect x="44" y="44" width="632" height="872" rx="36" fill="#FCFAF6" stroke="#DDD4C8" />
+      <path d="${silhouette}" fill="${accent}" opacity="0.94" />
+      <rect x="132" y="746" width="456" height="2" rx="1" fill="#D8D0C5" />
+      <text x="360" y="816" text-anchor="middle" fill="#2E3432" font-family="Arial, sans-serif" font-size="34" font-weight="700">${title}</text>
+    </svg>
+  `)}`;
+}
+
 export const seedItems: ClosetItem[] = [
   {
     id: "item_coat",
@@ -161,6 +179,141 @@ export const seedItems: ClosetItem[] = [
     usageFrequency: "rarely",
     favorite: false,
     styleNotes: "Draft entry for tailored evening looks.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    id: "item_hat",
+    status: "saved",
+    name: "Soft Felt Hat",
+    category: "Accessories",
+    materials: ["Felt", "Wool"],
+    heroImage: makeAccessoryHeroSvg(
+      "Soft Felt Hat",
+      "#5B4636",
+      "M164 402c0-97 88-178 196-178s196 81 196 178v20H164zm-64 72h520c24 0 40 20 32 39-18 43-92 74-292 74S86 556 68 513c-8-19 8-39 32-39Z"
+    ),
+    galleryImageIds: [],
+    paletteColors: ["#5B4636", "#C8B9A2"],
+    purchaseDate: "2024-09-07",
+    price: 78,
+    currency: "USD",
+    storageLocation: "Accessory Shelf",
+    temperatureBand: ["cold", "mild"],
+    weatherTags: ["clear", "wind"],
+    occasionTags: ["daily", "travel", "fall"],
+    usageFrequency: "regularly",
+    favorite: false,
+    styleNotes: "Adds softness and structure to layered looks.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    id: "item_earrings",
+    status: "saved",
+    name: "Gold Drop Earrings",
+    category: "Accessories",
+    materials: ["Gold"],
+    heroImage: makeAccessoryHeroSvg(
+      "Gold Drop Earrings",
+      "#C99A3A",
+      "M252 282c0-31 24-56 54-56s54 25 54 56c0 24-15 44-35 52v64c0 24-19 43-43 43s-43-19-43-43v-64c-20-8-35-28-35-52Zm162 0c0-31 24-56 54-56s54 25 54 56c0 24-15 44-35 52v64c0 24-19 43-43 43s-43-19-43-43v-64c-20-8-35-28-35-52Z"
+    ),
+    galleryImageIds: [],
+    paletteColors: ["#C99A3A", "#F0DFC2"],
+    purchaseDate: "2024-03-22",
+    price: 64,
+    currency: "USD",
+    storageLocation: "Jewelry Tray",
+    temperatureBand: ["mild", "warm", "hot"],
+    weatherTags: ["clear", "cloudy"],
+    occasionTags: ["evening", "formal", "occasion"],
+    usageFrequency: "regularly",
+    favorite: true,
+    styleNotes: "Warm metallic accent for dressy styling.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    id: "item_necklace",
+    status: "saved",
+    name: "Pearl Strand Necklace",
+    category: "Accessories",
+    materials: ["Pearl", "Silver"],
+    heroImage: makeAccessoryHeroSvg(
+      "Pearl Strand Necklace",
+      "#D8D3CC",
+      "M184 318c42 118 131 188 176 188s134-70 176-188c-25 17-58 30-94 38-28 50-58 76-82 76s-54-26-82-76c-36-8-69-21-94-38Zm84 86c0 0 26 44 92 44s92-44 92-44"
+    ),
+    galleryImageIds: [],
+    paletteColors: ["#D8D3CC", "#8E8A86"],
+    purchaseDate: "2023-12-12",
+    price: 110,
+    currency: "USD",
+    storageLocation: "Jewelry Tray",
+    temperatureBand: ["mild", "warm"],
+    weatherTags: ["clear", "cloudy"],
+    occasionTags: ["formal", "city", "occasion"],
+    usageFrequency: "often",
+    favorite: false,
+    styleNotes: "Classic neckline piece for refined layers.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    id: "item_bracelet",
+    status: "saved",
+    name: "Silver Chain Bracelet",
+    category: "Accessories",
+    materials: ["Silver"],
+    heroImage: makeAccessoryHeroSvg(
+      "Silver Chain Bracelet",
+      "#929AA3",
+      "M186 390c0-46 38-84 84-84h180c46 0 84 38 84 84s-38 84-84 84H270c-46 0-84-38-84-84Zm58 0c0 14 12 26 26 26h180c14 0 26-12 26-26s-12-26-26-26H270c-14 0-26 12-26 26Z"
+    ),
+    galleryImageIds: [],
+    paletteColors: ["#929AA3", "#DDE2E8"],
+    purchaseDate: "2024-06-02",
+    price: 52,
+    currency: "USD",
+    storageLocation: "Jewelry Tray",
+    temperatureBand: ["mild", "warm", "hot"],
+    weatherTags: ["clear", "cloudy"],
+    occasionTags: ["daily", "minimal", "summer"],
+    usageFrequency: "regularly",
+    favorite: false,
+    styleNotes: "Clean metallic detail for everyday looks.",
+    metaAssets: [],
+    createdAt: now,
+    updatedAt: now
+  },
+  {
+    id: "item_scarf",
+    status: "saved",
+    name: "Silk Print Scarf",
+    category: "Accessories",
+    materials: ["Silk"],
+    heroImage: makeAccessoryHeroSvg(
+      "Silk Print Scarf",
+      "#7D5067",
+      "M186 250c96 16 184 16 280 0v168c0 98-75 180-140 246-65-66-140-148-140-246V250Zm70 104c29 10 58 15 88 15s59-5 88-15M256 432c25 9 47 13 70 13s45-4 70-13"
+    ),
+    galleryImageIds: [],
+    paletteColors: ["#7D5067", "#E1C9C5", "#D7B24A"],
+    purchaseDate: "2024-04-18",
+    price: 86,
+    currency: "USD",
+    storageLocation: "Accessory Drawer",
+    temperatureBand: ["mild", "warm"],
+    weatherTags: ["clear", "cloudy", "wind"],
+    occasionTags: ["travel", "spring", "city"],
+    usageFrequency: "often",
+    favorite: false,
+    styleNotes: "Adds color and motion around the neckline or bag.",
     metaAssets: [],
     createdAt: now,
     updatedAt: now
