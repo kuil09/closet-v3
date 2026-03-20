@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { AppPreferences, Locale, ManualWeatherSetting, MotionMode, ThemeMode, Units, WeatherMode } from "../db/types";
+import type { AppPreferences, Locale, ManualWeatherSetting, ThemeMode, Units, WeatherMode } from "../db/types";
 
 export const defaultManualWeather: ManualWeatherSetting = {
   cityId: "seoul",
@@ -17,8 +17,7 @@ export const defaultPreferences: AppPreferences = {
   language: "en",
   units: "C",
   weatherMode: "auto",
-  manualWeather: defaultManualWeather,
-  motion: "full"
+  manualWeather: defaultManualWeather
 };
 
 interface PreferencesState extends AppPreferences {
@@ -27,7 +26,6 @@ interface PreferencesState extends AppPreferences {
   setUnits: (units: Units) => void;
   setWeatherMode: (mode: WeatherMode) => void;
   setManualWeather: (manualWeather: ManualWeatherSetting) => void;
-  setMotion: (motion: MotionMode) => void;
 }
 
 export const usePreferencesStore = create<PreferencesState>()(
@@ -38,8 +36,7 @@ export const usePreferencesStore = create<PreferencesState>()(
       setLanguage: (language) => set({ language }),
       setUnits: (units) => set({ units }),
       setWeatherMode: (weatherMode) => set({ weatherMode }),
-      setManualWeather: (manualWeather) => set({ manualWeather }),
-      setMotion: (motion) => set({ motion })
+      setManualWeather: (manualWeather) => set({ manualWeather })
     }),
     {
       name: "atelier-preferences-v1"

@@ -36,7 +36,6 @@ function RedirectBootstrap() {
 export function App() {
   const language = usePreferencesStore((state) => state.language) ?? "en";
   const theme = usePreferencesStore((state) => state.theme) ?? "light";
-  const motion = usePreferencesStore((state) => state.motion) ?? "full";
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -46,8 +45,7 @@ export function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.lang = language;
-    document.body.dataset.motion = motion;
-  }, [language, motion, theme]);
+  }, [language, theme]);
 
   if (!ready) {
     return (

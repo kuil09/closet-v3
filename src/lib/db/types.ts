@@ -2,7 +2,6 @@ export type Locale = "en" | "ko" | "ja" | "fr" | "es" | "de" | "zh-CN";
 export type ThemeMode = "light" | "dark";
 export type Units = "C" | "F";
 export type WeatherMode = "auto" | "manual";
-export type MotionMode = "full" | "reduced";
 
 export type ItemStatus = "draft" | "saved" | "archived";
 export type UsageFrequency = "rarely" | "regularly" | "often";
@@ -130,7 +129,6 @@ export interface AppPreferences {
   units: Units;
   weatherMode: WeatherMode;
   manualWeather: ManualWeatherSetting;
-  motion: MotionMode;
 }
 
 export interface WeatherCacheEntry {

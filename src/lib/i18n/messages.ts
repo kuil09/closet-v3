@@ -140,19 +140,15 @@ export type MessageKey =
   | "settings.theme"
   | "settings.language"
   | "settings.units"
-  | "settings.motion"
   | "settings.themeLight"
   | "settings.themeDark"
   | "settings.unitsC"
   | "settings.unitsF"
-  | "settings.motionFull"
-  | "settings.motionReduced"
   | "settings.resetTitle"
   | "settings.resetBody"
   | "settings.resetAction"
   | "settings.resetConfirm"
   | "settings.resetDone"
-  | "settings.motionSection"
   | "settings.localDataSection";
 
 type Catalog = Record<MessageKey, string>;
@@ -297,19 +293,15 @@ const base: Catalog = {
   "settings.theme": "Theme",
   "settings.language": "Language",
   "settings.units": "Units",
-  "settings.motion": "Motion",
   "settings.themeLight": "Light",
   "settings.themeDark": "Dark",
   "settings.unitsC": "Celsius",
   "settings.unitsF": "Fahrenheit",
-  "settings.motionFull": "Full",
-  "settings.motionReduced": "Reduced",
   "settings.resetTitle": "Reset local product data",
   "settings.resetBody": "Clears wardrobe items, lookbooks, cached weather, and uploaded images from this device.",
   "settings.resetAction": "Clear local data",
   "settings.resetConfirm": "Clear all wardrobe data stored on this device?",
   "settings.resetDone": "Local wardrobe data cleared.",
-  "settings.motionSection": "Motion settings",
   "settings.localDataSection": "Local data management"
 };
 
@@ -452,19 +444,15 @@ export const messages: Record<Locale, Catalog> = {
     "settings.theme": "테마",
     "settings.language": "언어",
     "settings.units": "단위",
-    "settings.motion": "모션",
     "settings.themeLight": "라이트",
     "settings.themeDark": "다크",
     "settings.unitsC": "섭씨",
     "settings.unitsF": "화씨",
-    "settings.motionFull": "전체",
-    "settings.motionReduced": "축소",
     "settings.resetTitle": "로컬 제품 데이터 초기화",
     "settings.resetBody": "이 기기에 저장된 옷장 아이템, 룩북, 캐시된 날씨, 업로드 이미지를 삭제합니다.",
     "settings.resetAction": "로컬 데이터 삭제",
     "settings.resetConfirm": "이 기기에 저장된 옷장 데이터를 모두 삭제할까요?",
     "settings.resetDone": "로컬 옷장 데이터를 삭제했습니다.",
-    "settings.motionSection": "모션 설정",
     "settings.localDataSection": "로컬 데이터 관리"
   },
   ja: {

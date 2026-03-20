@@ -240,9 +240,9 @@ describe("app flows", () => {
     const view = renderAt("/settings", 768);
 
     await view.findByText("Product controls");
-    expect(view.queryByLabelText("Motion")).toBeNull();
-    await user.click(view.getByRole("button", { name: /Motion settings/i }));
-    await view.findByLabelText("Motion");
+    expect(view.queryByRole("button", { name: /^Clear local data$/ })).toBeNull();
+    await user.click(view.getByRole("button", { name: /Local data management/i }));
+    await view.findByRole("button", { name: /^Clear local data$/ });
   });
 
   test("navigates between primary views with a mobile swipe", async () => {

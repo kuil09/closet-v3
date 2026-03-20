@@ -8,9 +8,7 @@ import { DisclosureSection } from "../shared/DisclosureSection";
 export function SettingsPage() {
   const { t } = useI18n();
   const units = usePreferencesStore((state) => state.units);
-  const motion = usePreferencesStore((state) => state.motion);
   const setUnits = usePreferencesStore((state) => state.setUnits);
-  const setMotion = usePreferencesStore((state) => state.setMotion);
   const [feedback, setFeedback] = useState("");
 
   async function handleReset() {
@@ -41,28 +39,6 @@ export function SettingsPage() {
           </label>
         </div>
       </section>
-
-      <DisclosureSection
-        screenId="settings"
-        sectionId="settings-motion"
-        title={t("settings.motionSection")}
-        summary={motion === "full" ? t("settings.motionFull") : t("settings.motionReduced")}
-        defaultOpen={false}
-      >
-        <div className="settings-grid">
-          <label>
-            <span>{t("settings.motion")}</span>
-            <select
-              className="control-select"
-              value={motion}
-              onChange={(event) => setMotion(event.target.value as typeof motion)}
-            >
-              <option value="full">{t("settings.motionFull")}</option>
-              <option value="reduced">{t("settings.motionReduced")}</option>
-            </select>
-          </label>
-        </div>
-      </DisclosureSection>
 
       <DisclosureSection
         screenId="settings"

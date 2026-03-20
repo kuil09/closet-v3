@@ -46,11 +46,6 @@ body {
   color: var(--text);
 }
 
-body[data-motion="reduced"] * {
-  animation: none !important;
-  transition: none !important;
-}
-
 button,
 input,
 select,
