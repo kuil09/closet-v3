@@ -112,10 +112,11 @@ export function AppShell({ children }: { children: ReactNode }) {
             <NavLink
               key={item.to}
               to={item.to}
+              aria-label={t(item.key)}
+              title={t(item.key)}
               className={({ isActive }) => `nav-item ${isActive ? "is-active" : ""}`}
             >
               <span className="nav-icon">{item.icon}</span>
-              <span>{t(item.key)}</span>
             </NavLink>
           ))}
         </nav>
@@ -192,9 +193,14 @@ export function AppShell({ children }: { children: ReactNode }) {
         {navItems.map((item) => {
           const isActive = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
           return (
-            <NavLink key={item.to} to={item.to} className={`mobile-nav-item ${isActive ? "is-active" : ""}`}>
+            <NavLink
+              key={item.to}
+              to={item.to}
+              aria-label={t(item.key)}
+              title={t(item.key)}
+              className={`mobile-nav-item ${isActive ? "is-active" : ""}`}
+            >
               <span className="nav-icon">{item.icon}</span>
-              <span>{t(item.key)}</span>
             </NavLink>
           );
         })}
