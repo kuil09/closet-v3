@@ -581,8 +581,9 @@ button {
 }
 
 .register-primary-grid {
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: 1fr;
   align-items: start;
+  gap: 1.25rem;
 }
 
 .selector-group,
