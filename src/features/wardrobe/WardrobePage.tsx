@@ -1,10 +1,11 @@
-import { startTransition, useDeferredValue, useMemo, useState } from "react";
+import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { archiveItem, toggleFavorite } from "../../lib/db/repository";
 import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { temperatureBandLabel, normalizeToken } from "../../lib/utils/format";
+import { buildPaletteTags, itemMatchesPaletteRange } from "../../lib/utils/palette-range";
 import { useI18n } from "../../lib/i18n/i18n";
 import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
@@ -24,6 +25,8 @@ export function WardrobePage() {
   const [occasionFilter, setOccasionFilter] = useState("All");
   const [temperatureFilter, setTemperatureFilter] = useState<TemperatureBand | "All">("All");
   const [weatherFilter, setWeatherFilter] = useState<WeatherCondition | "All">("All");
+  const [colorRangeStart, setColorRangeStart] = useState(0);
+  const [colorRangeEnd, setColorRangeEnd] = useState(Number.MAX_SAFE_INTEGER);
   const deferredSearch = useDeferredValue(search);
 
   const categories = useMemo(
@@ -38,6 +41,25 @@ export function WardrobePage() {
     () => ["All", ...Array.from(new Set(items.flatMap((item) => item.occasionTags).filter(Boolean)))],
     [items]
   );
+  const colorTags = useMemo(() => buildPaletteTags(items), [items]);
+  const colorIndexMap = useMemo(() => new Map(colorTags.map((entry, index) => [entry.value, index])), [colorTags]);
+  const maxColorIndex = Math.max(0, colorTags.length - 1);
+  const effectiveColorRangeStart = Math.min(colorRangeStart, maxColorIndex);
+  const effectiveColorRangeEnd = Math.min(Math.max(colorRangeEnd, effectiveColorRangeStart), maxColorIndex);
+  const selectedColorTags = colorTags.slice(effectiveColorRangeStart, effectiveColorRangeEnd + 1);
+  const isColorRangeActive = colorTags.length > 0 && (effectiveColorRangeStart > 0 || effectiveColorRangeEnd < maxColorIndex);
+  const colorRangeSummary = useMemo(() => {
+    if (!colorTags.length || !selectedColorTags.length) {
+      return t("wardrobe.colorRangeAll");
+    }
+
+    return `${selectedColorTags[0]?.value} → ${selectedColorTags[selectedColorTags.length - 1]?.value}`;
+  }, [colorTags.length, selectedColorTags, t]);
+
+  useEffect(() => {
+    setColorRangeStart((current) => Math.min(Math.max(current, 0), maxColorIndex));
+    setColorRangeEnd((current) => Math.min(Math.max(current, 0), maxColorIndex));
+  }, [maxColorIndex]);
 
   const filtered = useMemo(() => {
     const token = normalizeToken(deferredSearch);
@@ -61,6 +83,12 @@ export function WardrobePage() {
         return false;
       }
       if (weatherFilter !== "All" && !item.weatherTags.includes(weatherFilter)) {
+        return false;
+      }
+      if (
+        isColorRangeActive &&
+        !itemMatchesPaletteRange(item, colorIndexMap, effectiveColorRangeStart, effectiveColorRangeEnd)
+      ) {
         return false;
       }
       if (!token) {
@@ -89,9 +117,31 @@ export function WardrobePage() {
 
       return right.updatedAt.localeCompare(left.updatedAt);
     });
-  }, [category, deferredSearch, items, materialFilter, occasionFilter, showArchived, showFavorites, sort, temperatureFilter, weatherFilter]);
+  }, [
+    category,
+    colorIndexMap,
+    deferredSearch,
+    effectiveColorRangeEnd,
+    effectiveColorRangeStart,
+    isColorRangeActive,
+    items,
+    materialFilter,
+    occasionFilter,
+    showArchived,
+    showFavorites,
+    sort,
+    temperatureFilter,
+    weatherFilter
+  ]);
 
-  const advancedFilterCount = [showArchived, materialFilter !== "All", occasionFilter !== "All", temperatureFilter !== "All", weatherFilter !== "All"].filter(Boolean).length;
+  const advancedFilterCount = [
+    showArchived,
+    materialFilter !== "All",
+    occasionFilter !== "All",
+    temperatureFilter !== "All",
+    weatherFilter !== "All",
+    isColorRangeActive
+  ].filter(Boolean).length;
 
   return (
     <div className="page-stack">
@@ -190,6 +240,66 @@ export function WardrobePage() {
               <option value="wind">wind</option>
             </select>
           </label>
+          {colorTags.length > 0 ? (
+            <div className="full-width color-range-filter">
+              <div className="color-range-head">
+                <span>{t("wardrobe.colorRange")}</span>
+                <strong>{colorRangeSummary}</strong>
+              </div>
+              <div className="color-range-grid">
+                <label>
+                  <span>{t("wardrobe.colorFrom")}</span>
+                  <input
+                    aria-label={t("wardrobe.colorFrom")}
+                    className="temperature-slider"
+                    type="range"
+                    min={0}
+                    max={maxColorIndex}
+                    step={1}
+                    value={effectiveColorRangeStart}
+                    onChange={(event) => {
+                      const next = Number(event.target.value);
+                      setColorRangeStart(Math.min(next, effectiveColorRangeEnd));
+                    }}
+                  />
+                </label>
+                <label>
+                  <span>{t("wardrobe.colorTo")}</span>
+                  <input
+                    aria-label={t("wardrobe.colorTo")}
+                    className="temperature-slider"
+                    type="range"
+                    min={0}
+                    max={maxColorIndex}
+                    step={1}
+                    value={effectiveColorRangeEnd}
+                    onChange={(event) => {
+                      const next = Number(event.target.value);
+                      setColorRangeEnd(Math.max(next, effectiveColorRangeStart));
+                    }}
+                  />
+                </label>
+              </div>
+              <div className="color-range-scale" aria-hidden="true">
+                <span>{t("wardrobe.colorRangeDark")}</span>
+                <div className="color-range-stops">
+                  {colorTags.map((entry, index) => {
+                    const active = index >= effectiveColorRangeStart && index <= effectiveColorRangeEnd;
+                    return (
+                      <span
+                        key={entry.value}
+                        className={`color-range-stop ${active ? "is-active" : ""}`}
+                        style={{ backgroundColor: entry.value }}
+                        title={entry.value}
+                      />
+                    );
+                  })}
+                </div>
+                <span>{t("wardrobe.colorRangeLight")}</span>
+              </div>
+              <p className="muted-copy">{t("wardrobe.colorRangeHint")}</p>
+            </div>
+          ) : null}
         </div>
         <div className="secondary-actions">
           <button className={`chip ${showArchived ? "is-active" : ""}`} onClick={() => setShowArchived((value) => !value)}>

@@ -50,6 +50,13 @@ export type MessageKey =
   | "wardrobe.advancedFilters"
   | "wardrobe.edit"
   | "wardrobe.advancedHint"
+  | "wardrobe.colorRange"
+  | "wardrobe.colorFrom"
+  | "wardrobe.colorTo"
+  | "wardrobe.colorRangeDark"
+  | "wardrobe.colorRangeLight"
+  | "wardrobe.colorRangeHint"
+  | "wardrobe.colorRangeAll"
   | "register.title"
   | "register.captureTitle"
   | "register.editingTitle"
@@ -209,6 +216,13 @@ const base: Catalog = {
   "wardrobe.advancedFilters": "Advanced filters",
   "wardrobe.edit": "Edit",
   "wardrobe.advancedHint": "Archive and fit filters stay tucked away until you need them.",
+  "wardrobe.colorRange": "Palette range",
+  "wardrobe.colorFrom": "Darkest color",
+  "wardrobe.colorTo": "Lightest color",
+  "wardrobe.colorRangeDark": "Black side",
+  "wardrobe.colorRangeLight": "White side",
+  "wardrobe.colorRangeHint": "Use stored garment colors to narrow the wardrobe from darker tones to lighter ones.",
+  "wardrobe.colorRangeAll": "All saved colors",
   "register.title": "Register Item",
   "register.captureTitle": "Capture a new piece",
   "register.editingTitle": "Editing",
@@ -366,6 +380,13 @@ export const messages: Record<Locale, Catalog> = {
     "wardrobe.advancedFilters": "고급 필터",
     "wardrobe.edit": "편집",
     "wardrobe.advancedHint": "보관 표시와 착장 적합도 필터는 필요할 때만 펼쳐집니다.",
+    "wardrobe.colorRange": "색상 범위",
+    "wardrobe.colorFrom": "어두운 쪽 시작",
+    "wardrobe.colorTo": "밝은 쪽 끝",
+    "wardrobe.colorRangeDark": "검정 쪽",
+    "wardrobe.colorRangeLight": "흰색 쪽",
+    "wardrobe.colorRangeHint": "저장된 의류 팔레트를 기준으로 어두운 색부터 밝은 색까지 범위를 좁혀보세요.",
+    "wardrobe.colorRangeAll": "저장된 전체 색상",
     "register.title": "아이템 등록",
     "register.captureTitle": "새 아이템 등록",
     "register.editingTitle": "편집 중",

@@ -1,7 +1,8 @@
 import { describe, expect, mock, test } from "bun:test";
-import { render, waitFor } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
+import { atelierDb } from "../../src/lib/db/app-db";
 
 function mockEnvironment(options?: { fetchFails?: boolean; geolocationFails?: boolean }) {
   globalThis.fetch = mock(async () => {
@@ -92,7 +93,10 @@ describe("app flows", () => {
     await user.click(view.getByText("Save draft"));
 
     await view.findByText(/Your Digital Sanctuary/i);
-    await view.findByText("Test Trench");
+    await waitFor(async () => {
+      const saved = (await atelierDb.items.toArray()).find((item) => item.name === "Test Trench");
+      expect(saved?.status).toBe("draft");
+    });
   });
 
   test("adds and removes a meta asset before saving", async () => {
@@ -119,7 +123,11 @@ describe("app flows", () => {
     await user.type(nameInput, "Edited Coat");
     await user.click(view.getByText("Save to closet"));
 
-    await view.findByText("Edited Coat");
+    await waitFor(async () => {
+      const updated = await atelierDb.items.get("item_coat");
+      expect(updated?.name).toBe("Edited Coat");
+      expect(updated?.status).toBe("saved");
+    });
   });
 
   test("shows an unavailable state when automatic weather cannot be loaded", async () => {
@@ -172,6 +180,20 @@ describe("app flows", () => {
     await view.findByText(/Curating your digital closet/i);
     await user.click(view.getAllByRole("link", { name: /My Wardrobe$/ })[0]);
     await view.findByText("Show archived");
+  });
+
+  test("filters wardrobe items by the saved palette range", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/wardrobe");
+
+    await view.findByText(/Your Digital Sanctuary/i);
+    if (!view.queryByText("Palette range")) {
+      await user.click(view.getByRole("button", { name: /Advanced filters/i }));
+    }
+    await view.findByText("Palette range");
+
+    fireEvent.change(view.getByLabelText("Lightest color"), { target: { value: "0" } });
+    expect((view.getByLabelText("Lightest color") as HTMLInputElement).value).toBe("0");
   });
 
   test("opens secondary controls from a mobile sheet launcher", async () => {
