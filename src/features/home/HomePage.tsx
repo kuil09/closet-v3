@@ -1,11 +1,25 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
+import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
 import { categoryMessageKey } from "../../lib/i18n/label-keys";
 import { ItemImage } from "../shared/ItemImage";
 import { ItemPaletteDots } from "../shared/ItemPaletteDots";
+
+const seasonBands: Array<{ key: "winter" | "spring" | "summer" | "fall"; bands: TemperatureBand[] }> = [
+  { key: "winter", bands: ["freezing", "cold"] },
+  { key: "spring", bands: ["mild"] },
+  { key: "summer", bands: ["warm", "hot"] },
+  { key: "fall", bands: ["cold", "mild"] }
+];
+
+const weatherOrder: WeatherCondition[] = ["clear", "cloudy", "rain", "snow", "wind"];
+
+function hasAnyTemperatureBand(item: ClosetItem, bands: TemperatureBand[]) {
+  return item.temperatureBand.some((band) => bands.includes(band));
+}
 
 export function HomePage() {
   const { t } = useI18n();
@@ -16,6 +30,46 @@ export function HomePage() {
   const activeItems = items.filter((item) => item.status !== "archived");
   const recentItems = [...activeItems].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   const visibleRecentItems = showAllRecent ? recentItems : recentItems.slice(0, 4);
+  const categoryStats = useMemo(
+    () =>
+      Array.from(
+        activeItems.reduce((map, item) => map.set(item.category, (map.get(item.category) ?? 0) + 1), new Map<string, number>())
+      )
+        .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+        .map(([category, count]) => ({
+          label: categoryMessageKey(category) ? t(categoryMessageKey(category)!) : category,
+          count
+        })),
+    [activeItems, t]
+  );
+  const seasonStats = useMemo(
+    () =>
+      seasonBands.map((season) => ({
+        key: season.key,
+        label: t(
+          season.key === "winter"
+            ? "home.seasonWinter"
+            : season.key === "spring"
+              ? "home.seasonSpring"
+              : season.key === "summer"
+                ? "home.seasonSummer"
+                : "home.seasonFall"
+        ),
+        count: activeItems.filter((item) => hasAnyTemperatureBand(item, season.bands)).length
+      })),
+    [activeItems, t]
+  );
+  const weatherStats = useMemo(
+    () =>
+      weatherOrder
+        .map((condition) => ({
+          condition,
+          label: t(`weather.${condition}` as const),
+          count: activeItems.filter((item) => item.weatherTags.includes(condition)).length
+        }))
+        .filter((entry) => entry.count > 0),
+    [activeItems, t]
+  );
 
   return (
     <div className="page-stack">
@@ -28,6 +82,58 @@ export function HomePage() {
           <span>{t("home.stats.favorites")}</span>
           <strong>{activeItems.filter((item) => item.favorite).length}</strong>
         </button>
+      </section>
+
+      <section className="insight-grid">
+        <article className="panel-card insight-card">
+          <div className="panel-head">
+            <div>
+              <span className="section-tag">{t("home.insightsCategory")}</span>
+              <h3>{t("home.insightsCategoryTitle")}</h3>
+            </div>
+          </div>
+          <div className="metric-list">
+            {categoryStats.map((entry) => (
+              <div key={entry.label} className="metric-row">
+                <span>{entry.label}</span>
+                <strong>{entry.count}</strong>
+              </div>
+            ))}
+          </div>
+        </article>
+
+        <article className="panel-card insight-card">
+          <div className="panel-head">
+            <div>
+              <span className="section-tag">{t("home.insightsCondition")}</span>
+              <h3>{t("home.insightsConditionTitle")}</h3>
+            </div>
+          </div>
+          <div className="condition-insight-grid">
+            <div className="metric-group">
+              <span className="section-tag">{t("home.insightsSeason")}</span>
+              <div className="metric-list">
+                {seasonStats.map((entry) => (
+                  <div key={entry.key} className="metric-row">
+                    <span>{entry.label}</span>
+                    <strong>{entry.count}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="metric-group">
+              <span className="section-tag">{t("home.insightsWeather")}</span>
+              <div className="metric-list">
+                {weatherStats.map((entry) => (
+                  <div key={entry.condition} className="metric-row">
+                    <span>{entry.label}</span>
+                    <strong>{entry.count}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </article>
       </section>
 
       <section className="panel-card">

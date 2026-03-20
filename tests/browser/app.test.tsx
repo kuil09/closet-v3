@@ -400,6 +400,13 @@ describe("app flows", () => {
 
     await view.findByText(/Fresh additions and drafts/i);
     expect(view.getAllByRole("button", { name: /Total Pieces|Favorites/i }).length).toBe(2);
+    const categoryCard = view.getByText(/Category breakdown/i).closest(".insight-card");
+    const conditionCard = view.getByText(/Season and weather fit/i).closest(".insight-card");
+    expect(categoryCard).toBeTruthy();
+    expect(conditionCard).toBeTruthy();
+    expect(categoryCard?.textContent).toContain("Outerwear");
+    expect(conditionCard?.textContent).toContain("Winter");
+    expect(view.getAllByText(/^5$/).length).toBeGreaterThan(0);
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeLessThanOrEqual(3);

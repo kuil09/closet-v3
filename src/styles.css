@@ -279,6 +279,7 @@ button {
 
 .stats-grid,
 .two-column-grid,
+.insight-grid,
 .settings-grid {
   display: grid;
   gap: 1rem;
@@ -288,10 +289,20 @@ button {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.insight-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+}
+
 .stat-card {
   padding: 1.2rem 1.25rem;
   display: grid;
   gap: 0.6rem;
+}
+
+.insight-card {
+  padding: 1.2rem 1.25rem;
+  display: grid;
+  gap: 1rem;
 }
 
 .stat-card-button {
@@ -311,6 +322,38 @@ button {
 
 .stat-card strong {
   font-size: 2rem;
+}
+
+.condition-insight-grid,
+.metric-list,
+.metric-group {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.condition-insight-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.metric-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 1rem;
+  background: var(--surface-soft);
+}
+
+.metric-row span {
+  color: var(--muted);
+}
+
+.metric-row strong {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: -0.04em;
 }
 
 .weather-card,
@@ -1603,6 +1646,7 @@ button {
   }
 
   .stats-grid,
+  .insight-grid,
   .form-grid,
   .settings-grid {
     grid-template-columns: 1fr;
@@ -1620,12 +1664,24 @@ button {
     gap: 0.65rem;
   }
 
+  .insight-grid {
+    grid-template-columns: 1fr;
+  }
+
   .stat-card {
     padding: 0.95rem 0.8rem;
   }
 
+  .insight-card {
+    padding: 1rem;
+  }
+
   .stat-card strong {
     font-size: 1.45rem;
+  }
+
+  .condition-insight-grid {
+    grid-template-columns: 1fr;
   }
 
   .weather-actions {

@@ -31,6 +31,16 @@ export type MessageKey =
   | "home.recentLess"
   | "home.stats.items"
   | "home.stats.favorites"
+  | "home.insightsCategory"
+  | "home.insightsCategoryTitle"
+  | "home.insightsCondition"
+  | "home.insightsConditionTitle"
+  | "home.insightsSeason"
+  | "home.insightsWeather"
+  | "home.seasonWinter"
+  | "home.seasonSpring"
+  | "home.seasonSummer"
+  | "home.seasonFall"
   | "wardrobe.search"
   | "wardrobe.searchLabel"
   | "wardrobe.empty"
@@ -165,6 +175,16 @@ const base: Catalog = {
   "home.recentLess": "Show fewer pieces",
   "home.stats.items": "Total Pieces",
   "home.stats.favorites": "Favorites",
+  "home.insightsCategory": "By category",
+  "home.insightsCategoryTitle": "Category breakdown",
+  "home.insightsCondition": "Wear conditions",
+  "home.insightsConditionTitle": "Season and weather fit",
+  "home.insightsSeason": "Season",
+  "home.insightsWeather": "Weather",
+  "home.seasonWinter": "Winter",
+  "home.seasonSpring": "Spring",
+  "home.seasonSummer": "Summer",
+  "home.seasonFall": "Fall",
   "wardrobe.search": "Search your collection...",
   "wardrobe.searchLabel": "Search wardrobe",
   "wardrobe.empty": "No pieces match this combination yet.",
@@ -298,6 +318,16 @@ export const messages: Record<Locale, Catalog> = {
     "home.weatherFallback": "자동 날씨를 불러오지 못했습니다. 위치 권한이나 네트워크 상태를 확인하세요.",
     "home.recentMore": "아이템 더 보기",
     "home.recentLess": "아이템 접기",
+    "home.insightsCategory": "카테고리별",
+    "home.insightsCategoryTitle": "카테고리 분포",
+    "home.insightsCondition": "착용 환경",
+    "home.insightsConditionTitle": "계절과 날씨 적합도",
+    "home.insightsSeason": "계절",
+    "home.insightsWeather": "날씨",
+    "home.seasonWinter": "겨울",
+    "home.seasonSpring": "봄",
+    "home.seasonSummer": "여름",
+    "home.seasonFall": "가을",
     "wardrobe.search": "컬렉션 검색...",
     "wardrobe.searchLabel": "옷장 검색",
     "wardrobe.empty": "조건에 맞는 아이템이 없습니다.",
