@@ -40,7 +40,10 @@ function toAppUrl() {
 async function waitForAppReady(page) {
   await page.waitForLoadState("domcontentloaded");
   await page.waitForLoadState("networkidle");
-  await page.getByText(/The Atelier/i).waitFor();
+  // Wait for the app shell's content area which is visible at all viewport sizes.
+  // The sidebar brand mark "The Atelier" is hidden on mobile (display:none at ≤920px),
+  // so it cannot be used as a reliable readiness signal across viewports.
+  await page.locator("main.content-area").waitFor();
 }
 
 async function main() {
