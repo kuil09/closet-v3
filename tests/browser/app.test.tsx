@@ -441,6 +441,7 @@ describe("app flows", () => {
 
     await view.findByText("Palette range");
     expect(view.container.querySelector(".color-range-summary")).toBeNull();
+    expect(view.container.querySelector(".color-range-edge-swatch")).toBeNull();
     expect(view.queryByText("Black side")).toBeNull();
     expect(view.queryByText("White side")).toBeNull();
 

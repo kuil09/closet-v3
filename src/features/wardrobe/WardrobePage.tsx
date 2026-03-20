@@ -87,8 +87,6 @@ export function WardrobePage() {
   const effectiveColorRangeEnd =
     colorRangeEnd == null ? maxColorIndex : Math.min(Math.max(colorRangeEnd, effectiveColorRangeStart), maxColorIndex);
   const isColorRangeActive = colorTags.length > 0 && (effectiveColorRangeStart > 0 || effectiveColorRangeEnd < maxColorIndex);
-  const darkestColor = colorTags[0]?.value;
-  const lightestColor = colorTags[colorTags.length - 1]?.value;
   const colorRangeTrack = useMemo(() => {
     if (colorTags.length === 0) {
       return "linear-gradient(90deg, #1B1B1B 0%, #F5F5F5 100%)";
@@ -364,23 +362,6 @@ export function WardrobePage() {
                   setColorRangeEnd(Math.max(next, effectiveColorRangeStart));
                 }}
               />
-            </div>
-            <div className="color-range-scale" aria-hidden="true">
-              {darkestColor ? (
-                <span
-                  className="color-range-edge-swatch"
-                  style={{ backgroundColor: darkestColor }}
-                  title={darkestColor}
-                />
-              ) : null}
-              <div />
-              {lightestColor ? (
-                <span
-                  className="color-range-edge-swatch"
-                  style={{ backgroundColor: lightestColor }}
-                  title={lightestColor}
-                />
-              ) : null}
             </div>
           </div>
         ) : null}
