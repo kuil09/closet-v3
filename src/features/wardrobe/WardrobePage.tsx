@@ -552,19 +552,21 @@ export function WardrobePage() {
         </div>
       </DisclosureSection>
 
-      {filtered.length === 0 ? <div className="empty-state">{t("wardrobe.empty")}</div> : null}
+      <section className="wardrobe-results-panel">
+        {filtered.length === 0 ? <div className="empty-state">{t("wardrobe.empty")}</div> : null}
 
-      <section className="wardrobe-grid">
-        {filtered.map((item) => (
-          <WardrobeCard
-            key={item.id}
-            item={item}
-            t={t}
-            onPreview={() => setPreviewItem(item)}
-            onEdit={() => navigate(`/register?item=${item.id}`)}
-            onToggleFavorite={() => void toggleFavorite(item.id, !item.favorite)}
-          />
-        ))}
+        <div className="wardrobe-grid">
+          {filtered.map((item) => (
+            <WardrobeCard
+              key={item.id}
+              item={item}
+              t={t}
+              onPreview={() => setPreviewItem(item)}
+              onEdit={() => navigate(`/register?item=${item.id}`)}
+              onToggleFavorite={() => void toggleFavorite(item.id, !item.favorite)}
+            />
+          ))}
+        </div>
       </section>
 
       {previewItem ? (
