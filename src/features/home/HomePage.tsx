@@ -2,9 +2,10 @@ import { useMemo, useState, type ReactNode } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
-import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
+import type { ClosetItem, Recommendation, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
-import { categoryMessageKey } from "../../lib/i18n/label-keys";
+import { categoryMessageKey, temperatureMessageKey, weatherMessageKey } from "../../lib/i18n/label-keys";
+import { buildRecommendations } from "../../lib/recommendation/engine";
 import { ItemImage } from "../shared/ItemImage";
 import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
@@ -333,15 +334,65 @@ function InsightDonutChart({
   );
 }
 
+function RecommendationCard({
+  item,
+  recommendation,
+  onOpen,
+  t
+}: {
+  item: ClosetItem;
+  recommendation: Recommendation;
+  onOpen: () => void;
+  t: ReturnType<typeof useI18n>["t"];
+}) {
+  const fitTags = [
+    ...recommendation.matchedTemperatureBands.map((band) => t(temperatureMessageKey(band))),
+    ...recommendation.matchedWeatherTags.map((condition) => t(weatherMessageKey(condition)))
+  ];
+
+  return (
+    <button type="button" className="recommendation-card item-card-button home-recommendation-card" onClick={onOpen}>
+      <div className="recommendation-thumb">
+        <ItemPaletteDots colors={item.paletteColors} />
+        <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
+        <span className="item-chip">
+          {categoryMessageKey(item.category) ? t(categoryMessageKey(item.category)!) : item.category}
+        </span>
+      </div>
+      <div className="recommendation-body">
+        <strong>{item.name}</strong>
+        <p>{fitTags.join(" · ") || t("home.recommendationsEmpty")}</p>
+      </div>
+    </button>
+  );
+}
+
 export function HomePage() {
   const { t } = useI18n();
   const navigate = useNavigate();
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
+  const weatherEntry = useLiveQuery(() => atelierDb.weatherCache.get("current"), [], null);
   const [showAllRecent, setShowAllRecent] = useState(false);
 
   const activeItems = items.filter((item) => item.status !== "archived");
   const recentItems = [...activeItems].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+  const draftItems = recentItems.filter((item) => item.status === "draft");
+  const latestDraft = draftItems[0] ?? null;
+  const weatherContext = weatherEntry?.context ?? null;
   const visibleRecentItems = showAllRecent ? recentItems : recentItems.slice(0, 4);
+  const recommendedItems = useMemo(() => {
+    const itemMap = new Map(activeItems.map((item) => [item.id, item]));
+    return buildRecommendations(activeItems, weatherContext)
+      .map((recommendation) => {
+        const item = itemMap.get(recommendation.itemIds[0]);
+        return item ? { item, recommendation } : null;
+      })
+      .filter((entry): entry is { item: ClosetItem; recommendation: Recommendation } => entry != null)
+      .slice(0, 3);
+  }, [activeItems, weatherContext]);
+  const recommendationContext = weatherContext
+    ? `${weatherContext.locationName} · ${t(weatherMessageKey(weatherContext.condition))}`
+    : t("home.weatherUnavailable");
   const categoryStats = useMemo(
     () =>
       Array.from(
@@ -416,10 +467,43 @@ export function HomePage() {
 
   return (
     <div className="page-stack">
+      <section className="hero-card home-hero-card">
+        <div className="hero-copy home-hero-copy">
+          <span className="eyebrow">{t("home.heroEyebrow")}</span>
+          <h2>{t("home.heroTitle")}</h2>
+          <p>{t("home.heroBody")}</p>
+          <div className="button-row hero-actions">
+            <button
+              className="primary-button"
+              type="button"
+              onClick={() => navigate(latestDraft ? `/register?item=${latestDraft.id}` : "/register")}
+            >
+              {latestDraft ? t("home.quickPrimaryContinue") : t("home.quickPrimaryCapture")}
+            </button>
+            <button className="secondary-button" type="button" onClick={() => navigate("/wardrobe")}>
+              {t("home.quickSecondaryBrowse")}
+            </button>
+          </div>
+          <div className="hero-footnote">
+            <span className="local-pill">{t("badge.local")}</span>
+            <p className="muted-copy">{t("home.heroFootnote")}</p>
+          </div>
+        </div>
+        <div className="hero-orb" />
+      </section>
+
       <section className="stats-grid">
         <button className="stat-card stat-card-button" type="button" onClick={() => navigate("/wardrobe")}>
           <span>{t("home.stats.items")}</span>
           <strong>{activeItems.length}</strong>
+        </button>
+        <button
+          className="stat-card stat-card-button"
+          type="button"
+          onClick={() => navigate(latestDraft ? `/register?item=${latestDraft.id}` : "/register")}
+        >
+          <span>{t("home.stats.drafts")}</span>
+          <strong>{draftItems.length}</strong>
         </button>
         <button className="stat-card stat-card-button" type="button" onClick={() => navigate("/wardrobe?favorites=1")}>
           <span>{t("home.stats.favorites")}</span>
@@ -427,36 +511,29 @@ export function HomePage() {
         </button>
       </section>
 
-      <section className="insight-grid insight-grid-compact">
-        <article className="panel-card insight-card insight-card-category">
-          <div className="insight-chart-panel">
-            <InsightDonutChart
-              label={t("home.insightsCategoryTitle")}
-              slices={categorySlices}
-              renderGlyph={(key) => <CategoryGlyphPaths category={key} />}
-            />
+      <section className="panel-card">
+        <div className="panel-head">
+          <div>
+            <span className="section-tag">{t("home.recommendations")}</span>
+            <h3>{t("home.recommendationsTitle")}</h3>
           </div>
-        </article>
-
-        <article className="panel-card insight-card insight-card-single">
-          <div className="insight-chart-panel">
-            <InsightDonutChart
-              label={t("home.insightsSeason")}
-              slices={seasonSlices}
-              renderGlyph={(key) => <SeasonGlyphPaths season={key as "winter" | "spring" | "summer" | "fall"} />}
-            />
+          <p className="muted-copy recommendation-context">{recommendationContext}</p>
+        </div>
+        {recommendedItems.length > 0 ? (
+          <div className="recommendation-list home-recommendation-list">
+            {recommendedItems.map(({ item, recommendation }) => (
+              <RecommendationCard
+                key={recommendation.id}
+                item={item}
+                recommendation={recommendation}
+                onOpen={() => navigate(`/register?item=${item.id}`)}
+                t={t}
+              />
+            ))}
           </div>
-        </article>
-
-        <article className="panel-card insight-card insight-card-single">
-          <div className="insight-chart-panel">
-            <InsightDonutChart
-              label={t("home.insightsWeather")}
-              slices={weatherSlices}
-              renderGlyph={(key) => <WeatherGlyphPaths condition={key as WeatherCondition} />}
-            />
-          </div>
-        </article>
+        ) : (
+          <div className="empty-state">{t("home.recommendationsEmpty")}</div>
+        )}
       </section>
 
       <section className="panel-card">
@@ -501,6 +578,47 @@ export function HomePage() {
             </span>
           </button>
         ) : null}
+      </section>
+
+      <section className="panel-card home-insights-panel">
+        <div className="panel-head">
+          <div>
+            <span className="section-tag">{t("nav.home")}</span>
+            <h3>{t("home.insightsTitle")}</h3>
+          </div>
+          <p className="muted-copy recommendation-context">{t("home.insightsBody")}</p>
+        </div>
+        <div className="insight-grid insight-grid-compact">
+          <article className="panel-card insight-card insight-card-category">
+            <div className="insight-chart-panel">
+              <InsightDonutChart
+                label={t("home.insightsCategoryTitle")}
+                slices={categorySlices}
+                renderGlyph={(key) => <CategoryGlyphPaths category={key} />}
+              />
+            </div>
+          </article>
+
+          <article className="panel-card insight-card insight-card-single">
+            <div className="insight-chart-panel">
+              <InsightDonutChart
+                label={t("home.insightsSeason")}
+                slices={seasonSlices}
+                renderGlyph={(key) => <SeasonGlyphPaths season={key as "winter" | "spring" | "summer" | "fall"} />}
+              />
+            </div>
+          </article>
+
+          <article className="panel-card insight-card insight-card-single">
+            <div className="insight-chart-panel">
+              <InsightDonutChart
+                label={t("home.insightsWeather")}
+                slices={weatherSlices}
+                renderGlyph={(key) => <WeatherGlyphPaths condition={key as WeatherCondition} />}
+              />
+            </div>
+          </article>
+        </div>
       </section>
     </div>
   );

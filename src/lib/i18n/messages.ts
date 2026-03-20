@@ -31,6 +31,14 @@ export type MessageKey =
   | "home.recentLess"
   | "home.stats.items"
   | "home.stats.favorites"
+  | "home.stats.drafts"
+  | "home.quickPrimaryContinue"
+  | "home.quickPrimaryCapture"
+  | "home.quickSecondaryBrowse"
+  | "home.heroFootnote"
+  | "home.recommendationsEmpty"
+  | "home.insightsTitle"
+  | "home.insightsBody"
   | "home.insightsCategory"
   | "home.insightsCategoryTitle"
   | "home.insightsCondition"
@@ -68,6 +76,10 @@ export type MessageKey =
   | "wardrobe.colorTo"
   | "wardrobe.colorRangeHint"
   | "wardrobe.colorRangeAll"
+  | "wardrobe.title"
+  | "wardrobe.body"
+  | "wardrobe.addItem"
+  | "wardrobe.itemsInView"
   | "weather.clear"
   | "weather.cloudy"
   | "weather.rain"
@@ -125,6 +137,17 @@ export type MessageKey =
   | "register.metaTypeReceipt"
   | "register.metaTypeExtra"
   | "register.untitledPiece"
+  | "register.intro"
+  | "register.progressTitle"
+  | "register.progressBody"
+  | "register.progressImage"
+  | "register.progressCore"
+  | "register.progressStyle"
+  | "register.progressWeather"
+  | "register.progressMeta"
+  | "register.progressReady"
+  | "register.progressOptional"
+  | "register.progressPending"
   | "settings.title"
   | "settings.productControls"
   | "settings.localOnly"
@@ -142,7 +165,16 @@ export type MessageKey =
   | "settings.resetDone"
   | "settings.sampleAction"
   | "settings.sampleDone"
-  | "settings.localDataSection";
+  | "settings.localDataSection"
+  | "settings.localOnlyTitle"
+  | "settings.shellControlsSummary"
+  | "settings.shellControlsBody"
+  | "settings.lookbookTitle"
+  | "settings.lookbookSummary"
+  | "settings.lookbookBody"
+  | "settings.lookbookStepSelect"
+  | "settings.lookbookStepCompose"
+  | "settings.lookbookStepExport";
 
 type Catalog = Record<MessageKey, string>;
 
@@ -177,6 +209,14 @@ const base: Catalog = {
   "home.recentLess": "Show fewer pieces",
   "home.stats.items": "Total Pieces",
   "home.stats.favorites": "Favorites",
+  "home.stats.drafts": "Drafts",
+  "home.quickPrimaryContinue": "Continue latest draft",
+  "home.quickPrimaryCapture": "Register a new piece",
+  "home.quickSecondaryBrowse": "Open wardrobe",
+  "home.heroFootnote": "Keep intake moving with drafts first. Weather picks and insights update as you save.",
+  "home.recommendationsEmpty": "Save more fit details to unlock stronger rule-based picks.",
+  "home.insightsTitle": "Collection patterns",
+  "home.insightsBody": "The overview stays nearby, but the next action comes first.",
   "home.insightsCategory": "By category",
   "home.insightsCategoryTitle": "Category breakdown",
   "home.insightsCondition": "Wear conditions",
@@ -214,6 +254,10 @@ const base: Catalog = {
   "wardrobe.colorTo": "Lightest color",
   "wardrobe.colorRangeHint": "Use stored garment colors to narrow the wardrobe from darker tones to lighter ones.",
   "wardrobe.colorRangeAll": "All saved colors",
+  "wardrobe.title": "Wardrobe studio",
+  "wardrobe.body": "Keep browsing fast. Color range stays in view while archive and fit controls stay tucked away.",
+  "wardrobe.addItem": "Register piece",
+  "wardrobe.itemsInView": "pieces in view",
   "weather.clear": "Clear",
   "weather.cloudy": "Cloudy",
   "weather.rain": "Rain",
@@ -271,6 +315,17 @@ const base: Catalog = {
   "register.metaTypeReceipt": "Receipt",
   "register.metaTypeExtra": "Extra",
   "register.untitledPiece": "Untitled piece",
+  "register.intro": "Start with the photo or skip it. Core details stay in front, and the rest stays tucked into the side rail.",
+  "register.progressTitle": "Capture flow",
+  "register.progressBody": "Move from core intake to optional notes without losing draft momentum.",
+  "register.progressImage": "Hero image",
+  "register.progressCore": "Core details",
+  "register.progressStyle": "Style notes",
+  "register.progressWeather": "Weather fit",
+  "register.progressMeta": "References",
+  "register.progressReady": "Ready",
+  "register.progressOptional": "Optional",
+  "register.progressPending": "Needs input",
   "settings.title": "Settings",
   "settings.productControls": "Product controls",
   "settings.localOnly": "All data stays in this browser profile. Cloud sync and backup are intentionally disabled.",
@@ -288,7 +343,16 @@ const base: Catalog = {
   "settings.resetDone": "Local wardrobe data cleared.",
   "settings.sampleAction": "Load sample data",
   "settings.sampleDone": "Sample wardrobe data loaded.",
-  "settings.localDataSection": "Local data management"
+  "settings.localDataSection": "Local data management",
+  "settings.localOnlyTitle": "Local-only product rules",
+  "settings.shellControlsSummary": "Language, theme, and units live in the header.",
+  "settings.shellControlsBody": "Use the top bar for day-to-day viewing defaults. This page stays focused on local storage rules and rare product controls.",
+  "settings.lookbookTitle": "Lookbook direction",
+  "settings.lookbookSummary": "Select, compose, export locally",
+  "settings.lookbookBody": "When lookbook work lands, it should stay narrow and explainable.",
+  "settings.lookbookStepSelect": "Select saved pieces from the wardrobe into a temporary board.",
+  "settings.lookbookStepCompose": "Arrange them on a simple canvas with notes, order, and spacing controls.",
+  "settings.lookbookStepExport": "Export the final board directly on-device without accounts, sync, or background uploads."
 };
 
 export const messages: Record<Locale, Catalog> = {
@@ -322,6 +386,14 @@ export const messages: Record<Locale, Catalog> = {
     "home.weatherFallback": "자동 날씨를 불러오지 못했습니다. 위치 권한이나 네트워크 상태를 확인하세요.",
     "home.recentMore": "아이템 더 보기",
     "home.recentLess": "아이템 접기",
+    "home.stats.drafts": "드래프트",
+    "home.quickPrimaryContinue": "최근 드래프트 이어서 작업",
+    "home.quickPrimaryCapture": "새 아이템 등록",
+    "home.quickSecondaryBrowse": "옷장 열기",
+    "home.heroFootnote": "먼저 드래프트로 저장하고, 저장이 쌓일수록 날씨 추천과 인사이트가 더 정확해집니다.",
+    "home.recommendationsEmpty": "착용 온도와 날씨 정보를 더 저장하면 추천 정확도가 높아집니다.",
+    "home.insightsTitle": "컬렉션 패턴",
+    "home.insightsBody": "개요는 아래에 남기고, 다음 행동이 먼저 보이도록 정리했습니다.",
     "home.insightsCategory": "카테고리별",
     "home.insightsCategoryTitle": "카테고리 분포",
     "home.insightsCondition": "착용 환경",
@@ -359,6 +431,10 @@ export const messages: Record<Locale, Catalog> = {
     "wardrobe.colorTo": "밝은 쪽 끝",
     "wardrobe.colorRangeHint": "저장된 의류 팔레트를 기준으로 어두운 색부터 밝은 색까지 범위를 좁혀보세요.",
     "wardrobe.colorRangeAll": "저장된 전체 색상",
+    "wardrobe.title": "옷장 스튜디오",
+    "wardrobe.body": "색상 범위는 바로 보이게 두고, 보관 및 착용 적합도 제어는 필요할 때만 펼쳐지도록 유지합니다.",
+    "wardrobe.addItem": "아이템 등록",
+    "wardrobe.itemsInView": "개 표시 중",
     "weather.clear": "맑음",
     "weather.cloudy": "흐림",
     "weather.rain": "비",
@@ -416,6 +492,17 @@ export const messages: Record<Locale, Catalog> = {
     "register.metaTypeReceipt": "영수증",
     "register.metaTypeExtra": "추가 자료",
     "register.untitledPiece": "이름 없는 아이템",
+    "register.intro": "사진부터 시작해도 되고 건너뛰어도 됩니다. 핵심 정보는 앞에 두고, 나머지는 사이드 레일에 숨겨 둡니다.",
+    "register.progressTitle": "등록 흐름",
+    "register.progressBody": "핵심 입력부터 선택 메모까지, 드래프트 흐름을 끊지 않고 이어갑니다.",
+    "register.progressImage": "대표 이미지",
+    "register.progressCore": "핵심 정보",
+    "register.progressStyle": "스타일 메모",
+    "register.progressWeather": "날씨 적합도",
+    "register.progressMeta": "참고 자료",
+    "register.progressReady": "준비됨",
+    "register.progressOptional": "선택",
+    "register.progressPending": "입력 필요",
     "settings.title": "설정",
     "settings.productControls": "제품 설정",
     "settings.localOnly": "모든 데이터는 현재 브라우저 프로필에만 저장됩니다. 클라우드 동기화와 백업은 제공하지 않습니다.",
@@ -433,7 +520,16 @@ export const messages: Record<Locale, Catalog> = {
     "settings.resetDone": "로컬 옷장 데이터를 삭제했습니다.",
     "settings.sampleAction": "샘플 데이터 불러오기",
     "settings.sampleDone": "샘플 옷장 데이터를 불러왔습니다.",
-    "settings.localDataSection": "로컬 데이터 관리"
+    "settings.localDataSection": "로컬 데이터 관리",
+    "settings.localOnlyTitle": "로컬 전용 제품 원칙",
+    "settings.shellControlsSummary": "언어, 테마, 단위는 상단 헤더에서 바로 바꿉니다.",
+    "settings.shellControlsBody": "일상적인 보기 기본값은 상단 바에서 조정하고, 이 페이지는 로컬 저장 규칙과 드문 제품 제어에 집중합니다.",
+    "settings.lookbookTitle": "룩북 방향",
+    "settings.lookbookSummary": "선택, 구성, 로컬 내보내기",
+    "settings.lookbookBody": "룩북 기능이 들어와도 범위는 좁고 설명 가능해야 합니다.",
+    "settings.lookbookStepSelect": "옷장에서 저장된 아이템을 임시 보드로 선택합니다.",
+    "settings.lookbookStepCompose": "간단한 캔버스 위에서 순서, 간격, 메모를 조정하며 배치합니다.",
+    "settings.lookbookStepExport": "계정, 동기화, 백그라운드 업로드 없이 기기 안에서 바로 결과물을 내보냅니다."
   },
   ja: {
     ...base,

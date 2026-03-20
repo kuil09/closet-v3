@@ -207,6 +207,16 @@ export function WardrobePage() {
       <section className="filter-bar wardrobe-filter-panel">
         <div className="filter-copy">
           <span className="section-tag">{t("nav.wardrobe")}</span>
+          <h2 className="page-title">{t("wardrobe.title")}</h2>
+          <p className="muted-copy">{t("wardrobe.body")}</p>
+          <div className="button-row wardrobe-filter-notes">
+            <button className="primary-button" type="button" onClick={() => navigate("/register")}>
+              {t("wardrobe.addItem")}
+            </button>
+            <span className="local-pill">
+              {filtered.length} {t("wardrobe.itemsInView")}
+            </span>
+          </div>
         </div>
         {colorTags.length > 0 ? (
           <div className="color-range-filter filter-primary-block">

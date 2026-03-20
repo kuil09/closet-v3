@@ -198,6 +198,51 @@ export function RegisterPage() {
     const count = draft.existingMetaAssets.length + draft.metaFiles.length;
     return count > 0 ? count : "—";
   }, [draft.existingMetaAssets.length, draft.metaFiles.length]);
+  const progressSteps = useMemo(
+    () => [
+      {
+        key: "image",
+        label: t("register.progressImage"),
+        status: heroImageRef ? t("register.progressReady") : t("register.progressOptional"),
+        complete: Boolean(heroImageRef)
+      },
+      {
+        key: "core",
+        label: t("register.progressCore"),
+        status: draft.name.trim() ? t("register.progressReady") : t("register.progressPending"),
+        complete: Boolean(draft.name.trim())
+      },
+      {
+        key: "style",
+        label: t("register.progressStyle"),
+        status: draft.occasionTags.trim() || draft.styleNotes.trim() ? t("register.progressReady") : t("register.progressOptional"),
+        complete: Boolean(draft.occasionTags.trim() || draft.styleNotes.trim())
+      },
+      {
+        key: "weather",
+        label: t("register.progressWeather"),
+        status: selectedTemperature || draft.weatherTags.length > 0 ? t("register.progressReady") : t("register.progressOptional"),
+        complete: Boolean(selectedTemperature || draft.weatherTags.length > 0)
+      },
+      {
+        key: "meta",
+        label: t("register.progressMeta"),
+        status: draft.existingMetaAssets.length + draft.metaFiles.length > 0 ? t("register.progressReady") : t("register.progressOptional"),
+        complete: draft.existingMetaAssets.length + draft.metaFiles.length > 0
+      }
+    ],
+    [
+      draft.existingMetaAssets.length,
+      draft.metaFiles.length,
+      draft.name,
+      draft.occasionTags,
+      draft.styleNotes,
+      draft.weatherTags.length,
+      heroImageRef,
+      selectedTemperature,
+      t
+    ]
+  );
 
   function setPaletteColor(index: number, color: string) {
     setDraft((current) => ({
@@ -315,11 +360,12 @@ export function RegisterPage() {
 
   return (
     <div className="register-layout">
-      <section className="panel-card">
+      <section className="panel-card register-intake-card">
         <div className="panel-head">
           <div>
             <span className="section-tag">{t("register.title")}</span>
             <h2>{draftTitle}</h2>
+            <p className="muted-copy register-intro-copy">{t("register.intro")}</p>
           </div>
         </div>
 
@@ -331,6 +377,40 @@ export function RegisterPage() {
             </button>
           </div>
         ) : null}
+
+        <div className="subtle-card register-flow-card">
+          <div className="register-flow-head">
+            <div>
+              <span className="section-tag">{t("register.progressTitle")}</span>
+              <strong>{t("register.progressBody")}</strong>
+            </div>
+          </div>
+          <div className="register-progress-grid">
+            {progressSteps.map((step) => (
+              <div
+                key={step.key}
+                className={`register-progress-card ${step.complete ? "is-complete" : "is-optional"}`.trim()}
+              >
+                <span className="section-tag">{step.label}</span>
+                <strong>{step.status}</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="button-row register-action-row">
+          {draft.id ? (
+            <button className="mini-button register-delete-button" onClick={() => void handleDelete()}>
+              {t("register.deleteItem")}
+            </button>
+          ) : null}
+          <button className="secondary-button" onClick={() => void persist("draft")}>
+            {t("register.saveDraft")}
+          </button>
+          <button className="primary-button" onClick={() => void persist("saved")}>
+            {t("register.saveItem")}
+          </button>
+        </div>
 
         <div className="register-primary-grid">
           <div className="image-dropzone">
@@ -437,20 +517,6 @@ export function RegisterPage() {
                   />
                 </label>
               </div>
-            </div>
-
-            <div className="button-row register-action-row">
-              {draft.id ? (
-                <button className="mini-button register-delete-button" onClick={() => void handleDelete()}>
-                  {t("register.deleteItem")}
-                </button>
-              ) : null}
-              <button className="secondary-button" onClick={() => void persist("draft")}>
-                {t("register.saveDraft")}
-              </button>
-              <button className="primary-button" onClick={() => void persist("saved")}>
-                {t("register.saveItem")}
-              </button>
             </div>
           </div>
         </div>
