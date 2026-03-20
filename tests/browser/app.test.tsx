@@ -186,9 +186,9 @@ describe("app flows", () => {
     const view = renderAt("/");
 
     await view.findByLabelText(/Live weather/i);
-    expect(view.getByText(/^18C$/i)).toBeTruthy();
+    await waitFor(() => expect(view.getByText(/^18C$/i)).toBeTruthy());
     await user.click(view.getByRole("button", { name: /^Fahrenheit$/ }));
-    await view.findByText(/^64F$/i);
+    await waitFor(() => expect(view.getByText(/^64F$/i)).toBeTruthy());
   });
 
   test("saves a new lookbook composition and shows it in saved boards", async () => {
