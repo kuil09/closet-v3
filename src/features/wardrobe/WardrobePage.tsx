@@ -260,19 +260,7 @@ export function WardrobePage() {
                   title={darkestColor}
                 />
               ) : null}
-              <div className="color-range-stops">
-                {colorTags.map((entry, index) => {
-                  const active = index >= effectiveColorRangeStart && index <= effectiveColorRangeEnd;
-                  return (
-                    <span
-                      key={entry.value}
-                      className={`color-range-stop ${active ? "is-active" : ""}`}
-                      style={{ backgroundColor: entry.value }}
-                      title={entry.value}
-                    />
-                  );
-                })}
-              </div>
+              <div />
               {lightestColor ? (
                 <span
                   className="color-range-edge-swatch"

@@ -1387,7 +1387,7 @@ button {
 .color-range-filter,
 .color-range-slider-shell,
 .color-range-scale,
-.color-range-stops {
+.color-range-scale > div {
   width: 100%;
 }
 
@@ -1496,13 +1496,6 @@ button {
   cursor: ew-resize;
 }
 
-.color-range-stops {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18px, 1fr));
-  gap: 0.45rem;
-  align-items: center;
-}
-
 .color-range-edge-swatch {
   display: block;
   width: 1rem;
@@ -1510,22 +1503,6 @@ button {
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--text) 16%, transparent);
   flex: 0 0 auto;
-}
-
-.color-range-stop {
-  display: block;
-  width: 100%;
-  min-height: 1.4rem;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--text) 16%, transparent);
-  opacity: 0.3;
-  transform: scale(0.96);
-  transition: opacity 160ms ease, transform 160ms ease;
-}
-
-.color-range-stop.is-active {
-  opacity: 1;
-  transform: scale(1);
 }
 
 .temperature-stop {
