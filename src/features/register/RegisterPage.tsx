@@ -6,6 +6,7 @@ import { saveClosetItem, saveStoredImage } from "../../lib/db/repository";
 import type { ClosetItem, MetaAssetType, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
 import { ingestImage, useStoredImageSource } from "../../lib/media/images";
+import { temperatureBandLabel } from "../../lib/utils/format";
 import { makeId } from "../../lib/utils/id";
 import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
@@ -117,6 +118,21 @@ function sampleImageColor(image: HTMLImageElement, clientX: number, clientY: num
   return `#${channelToHex(red)}${channelToHex(green)}${channelToHex(blue)}`;
 }
 
+function temperatureMessageKey(band: TemperatureBand) {
+  switch (band) {
+    case "freezing":
+      return "register.tempFreezing" as const;
+    case "cold":
+      return "register.tempCold" as const;
+    case "mild":
+      return "register.tempMild" as const;
+    case "warm":
+      return "register.tempWarm" as const;
+    case "hot":
+      return "register.tempHot" as const;
+  }
+}
+
 export function RegisterPage() {
   const { t } = useI18n();
   const navigate = useNavigate();
@@ -148,6 +164,8 @@ export function RegisterPage() {
   }, [previewUrl]);
 
   const heroImageRef = previewUrl ?? storedUrl ?? draft.heroImage;
+  const selectedTemperature = draft.temperatureBand[0] ?? "mild";
+  const selectedTemperatureIndex = Math.max(0, temperatureOptions.indexOf(selectedTemperature));
   const draftTitle = useMemo(
     () => (draft.id ? `${t("register.editingTitle")} ${draft.name || t("register.title")}` : t("register.captureTitle")),
     [draft.id, draft.name, t]
@@ -157,8 +175,8 @@ export function RegisterPage() {
     [draft.occasionTags, draft.styleNotes]
   );
   const weatherSummary = useMemo(
-    () => [...draft.temperatureBand, ...draft.weatherTags].slice(0, 3).join(" · ") || "—",
-    [draft.temperatureBand, draft.weatherTags]
+    () => [t(temperatureMessageKey(selectedTemperature)), ...draft.weatherTags].slice(0, 3).join(" · ") || "—",
+    [draft.weatherTags, selectedTemperature, t]
   );
   const paletteSummary = useMemo(() => draft.paletteColors.slice(0, 2).join(" · ") || "—", [draft.paletteColors]);
   const metaSummary = useMemo(() => {
@@ -207,6 +225,14 @@ export function RegisterPage() {
         : [...current.paletteColors, sampledColor]
     }));
     setIsSamplingPaletteColor(false);
+  }
+
+  function setSelectedTemperature(index: number) {
+    const next = temperatureOptions[Math.max(0, Math.min(temperatureOptions.length - 1, index))];
+    setDraft((current) => ({
+      ...current,
+      temperatureBand: [next]
+    }));
   }
 
   async function persist(status: ClosetItem["status"]) {
@@ -445,26 +471,35 @@ export function RegisterPage() {
           <div className="selector-group">
             <div>
               <span className="section-tag">{t("register.temperature")}</span>
-              <div className="chip-row">
-                {temperatureOptions.map((option) => {
-                  const active = draft.temperatureBand.includes(option);
-                  return (
-                    <button
-                      key={option}
-                      className={`chip ${active ? "is-active" : ""}`}
-                      onClick={() =>
-                        setDraft((current) => ({
-                          ...current,
-                          temperatureBand: active
-                            ? current.temperatureBand.filter((entry) => entry !== option)
-                            : [...current.temperatureBand, option]
-                        }))
-                      }
-                    >
-                      {option}
-                    </button>
-                  );
-                })}
+              <div className="temperature-slider-group">
+                <div className="temperature-slider-meta">
+                  <strong>{t(temperatureMessageKey(selectedTemperature))}</strong>
+                  <span>{temperatureBandLabel(selectedTemperature)}</span>
+                </div>
+                <input
+                  aria-label={t("register.temperature")}
+                  className="temperature-slider"
+                  type="range"
+                  min={0}
+                  max={temperatureOptions.length - 1}
+                  step={1}
+                  value={selectedTemperatureIndex}
+                  onChange={(event) => setSelectedTemperature(Number(event.target.value))}
+                />
+                <div className="temperature-slider-scale">
+                  {temperatureOptions.map((option, index) => {
+                    const active = selectedTemperature === option;
+                    return (
+                      <button
+                        key={option}
+                        className={`temperature-stop ${active ? "is-active" : ""}`}
+                        onClick={() => setSelectedTemperature(index)}
+                      >
+                        {t(temperatureMessageKey(option))}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 

@@ -80,6 +80,11 @@ export type MessageKey =
   | "register.occasionTags"
   | "register.styleNotes"
   | "register.temperature"
+  | "register.tempFreezing"
+  | "register.tempCold"
+  | "register.tempMild"
+  | "register.tempWarm"
+  | "register.tempHot"
   | "register.weather"
   | "register.validationName"
   | "register.clearError"
@@ -239,6 +244,11 @@ const base: Catalog = {
   "register.occasionTags": "Occasion / tags",
   "register.styleNotes": "Style notes",
   "register.temperature": "Temperature",
+  "register.tempFreezing": "Freezing",
+  "register.tempCold": "Cold",
+  "register.tempMild": "Mild",
+  "register.tempWarm": "Warm",
+  "register.tempHot": "Hot",
   "register.weather": "Weather",
   "register.validationName": "A saved item needs a name.",
   "register.clearError": "Dismiss validation message",
@@ -396,6 +406,11 @@ export const messages: Record<Locale, Catalog> = {
     "register.occasionTags": "상황 / 태그",
     "register.styleNotes": "스타일 노트",
     "register.temperature": "온도",
+    "register.tempFreezing": "매우 추움",
+    "register.tempCold": "추움",
+    "register.tempMild": "선선함",
+    "register.tempWarm": "따뜻함",
+    "register.tempHot": "더움",
     "register.weather": "날씨",
     "register.validationName": "저장된 아이템에는 이름이 필요합니다.",
     "register.clearError": "검증 메시지 닫기",
