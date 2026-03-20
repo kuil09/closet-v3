@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
+import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { useWeather } from "../../lib/weather/use-weather";
 import { useI18n } from "../../lib/i18n/i18n";
@@ -9,6 +10,7 @@ import { ItemImage } from "../shared/ItemImage";
 
 export function HomePage() {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const units = usePreferencesStore((state) => state.units);
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
   const lookbooks = useLiveQuery(() => atelierDb.lookbooks.toArray(), [], []);
@@ -25,18 +27,18 @@ export function HomePage() {
   return (
     <div className="page-stack">
       <section className="stats-grid">
-        <div className="stat-card">
+        <button className="stat-card stat-card-button" type="button" onClick={() => navigate("/wardrobe")}>
           <span>{t("home.stats.items")}</span>
           <strong>{activeItems.length}</strong>
-        </div>
-        <div className="stat-card">
+        </button>
+        <button className="stat-card stat-card-button" type="button" onClick={() => navigate("/lookbook")}>
           <span>{t("home.stats.lookbooks")}</span>
           <strong>{lookbooks.length}</strong>
-        </div>
-        <div className="stat-card">
+        </button>
+        <button className="stat-card stat-card-button" type="button" onClick={() => navigate("/wardrobe?favorites=1")}>
           <span>{t("home.stats.favorites")}</span>
           <strong>{activeItems.filter((item) => item.favorite).length}</strong>
-        </div>
+        </button>
       </section>
 
       <section className="weather-card">

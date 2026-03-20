@@ -82,6 +82,26 @@ describe("app flows", () => {
     expect(document.documentElement.dataset.theme).toBe("dark");
   });
 
+  test("opens the related pages from home summary cards", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/");
+
+    await view.findByText(/Total Pieces/i);
+    await user.click(view.getByRole("button", { name: /Total Pieces/i }));
+    await view.findByText(/Your Digital Sanctuary/i);
+
+    await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
+    await view.findByText(/Total Pieces/i);
+    await user.click(view.getByRole("button", { name: /Lookbooks/i }));
+    await view.findByRole("heading", { name: /Lookbook Maker/i });
+
+    await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
+    await view.findByText(/Total Pieces/i);
+    await user.click(view.getByRole("button", { name: /Favorites/i }));
+    await view.findByText(/Your Digital Sanctuary/i);
+    expect(view.getByRole("button", { name: /^Favorites$/ }).className).toContain("is-active");
+  });
+
   test("creates a draft item without uploading an image", async () => {
     const user = userEvent.setup();
     const view = renderAt("/register");

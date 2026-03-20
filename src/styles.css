@@ -279,6 +279,21 @@ button {
   gap: 0.6rem;
 }
 
+.stat-card-button {
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.stat-card-button:hover,
+.stat-card-button:focus-visible {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+  background: color-mix(in srgb, var(--surface-elevated) 78%, var(--primary-soft));
+}
+
 .stat-card strong {
   font-size: 2rem;
 }
@@ -1102,6 +1117,19 @@ button {
   .settings-grid,
   .lookbook-grid {
     grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+
+  .stat-card {
+    padding: 0.95rem 0.8rem;
+  }
+
+  .stat-card strong {
+    font-size: 1.45rem;
   }
 
   .lookbook-mobile-tools {

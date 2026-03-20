@@ -1,6 +1,6 @@
 import { startTransition, useDeferredValue, useEffect, useMemo, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { archiveItem, toggleFavorite } from "../../lib/db/repository";
 import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
@@ -15,6 +15,7 @@ type SortKey = "newest" | "favorites" | "name";
 export function WardrobePage() {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
@@ -77,6 +78,10 @@ export function WardrobePage() {
     setColorRangeStart((current) => Math.min(Math.max(current, 0), maxColorIndex));
     setColorRangeEnd((current) => Math.min(Math.max(current, 0), maxColorIndex));
   }, [maxColorIndex]);
+
+  useEffect(() => {
+    setShowFavorites(searchParams.get("favorites") === "1");
+  }, [searchParams]);
 
   const filtered = useMemo(() => {
     const token = normalizeToken(deferredSearch);
