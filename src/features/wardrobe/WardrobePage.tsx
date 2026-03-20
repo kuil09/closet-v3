@@ -377,12 +377,14 @@ function WardrobeCard({
         <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image" />
         <span className="item-chip">{item.category}</span>
       </button>
-      <div className="item-meta">
-        <div>
+      <div className="item-card-body">
+        <div className="item-title-row">
           <strong>{item.name}</strong>
-          <span>{item.materials.join(" · ") || t("wardrobe.materialUnknown")}</span>
         </div>
-        <span>{item.temperatureBand.map(temperatureBandLabel).join(", ")}</span>
+        <div className="item-detail-scroll">
+          <span>{item.materials.join(" · ") || t("wardrobe.materialUnknown")}</span>
+          <span>{item.temperatureBand.map(temperatureBandLabel).join(", ")}</span>
+        </div>
       </div>
       <div className="card-actions">
         <button className="primary-button" onClick={onEdit}>

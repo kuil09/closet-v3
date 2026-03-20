@@ -105,9 +105,11 @@ export function HomePage() {
                   <div className="recommendation-thumb">
                     <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image" />
                   </div>
-                  <div>
+                  <div className="recommendation-body">
                     <strong>{item.name}</strong>
-                    <p>{recommendation.reason}</p>
+                    <div className="recommendation-copy-scroll">
+                      <p>{recommendation.reason}</p>
+                    </div>
                   </div>
                 </div>
               );
@@ -130,9 +132,11 @@ export function HomePage() {
                 <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image" />
                 <span className="item-chip">{item.category}</span>
               </div>
-              <div className="item-meta">
+              <div className="item-card-body">
                 <strong>{item.name}</strong>
-                <span>{item.materials.join(" · ")}</span>
+                <div className="item-detail-scroll">
+                  <span>{item.materials.join(" · ")}</span>
+                </div>
               </div>
             </article>
           ))}
