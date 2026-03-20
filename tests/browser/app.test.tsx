@@ -411,17 +411,17 @@ describe("app flows", () => {
 
     await view.findByText(/Fresh additions and drafts/i);
     expect(view.getAllByRole("button", { name: /Total Pieces|Favorites/i }).length).toBe(2);
-    const categoryCard = view.getByText(/Category breakdown/i).closest(".insight-card");
-    const conditionCard = view.getByText(/Season and weather fit/i).closest(".insight-card");
+    expect(view.queryByText(/Category breakdown/i)).toBeNull();
+    expect(view.queryByText(/Season and weather fit/i)).toBeNull();
+    const [categoryCard, conditionCard] = Array.from(view.container.querySelectorAll<HTMLElement>(".insight-card"));
     expect(categoryCard).toBeTruthy();
     expect(conditionCard).toBeTruthy();
     await waitFor(() => expect(categoryCard?.textContent).toContain("Outerwear"));
     await waitFor(() => expect(conditionCard?.textContent).toContain("Winter"));
     expect(categoryCard?.querySelectorAll(".insight-pie-chart").length).toBeGreaterThan(0);
-    expect(categoryCard?.querySelectorAll(".insight-pie-center-icon").length).toBeGreaterThan(0);
+    expect(categoryCard?.querySelectorAll(".insight-pie-marker").length).toBeGreaterThan(0);
     expect(conditionCard?.querySelectorAll(".insight-pie-chart").length).toBeGreaterThan(1);
-    expect(conditionCard?.querySelectorAll(".insight-pie-center-icon").length).toBeGreaterThan(1);
-    expect(conditionCard?.querySelectorAll(".insight-legend-item").length).toBeGreaterThan(0);
+    expect(conditionCard?.querySelectorAll(".insight-pie-marker").length).toBeGreaterThan(1);
     expect(view.getByText(String(activeSeedCount))).toBeTruthy();
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);

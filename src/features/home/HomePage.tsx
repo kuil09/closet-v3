@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
@@ -162,63 +162,68 @@ function WeatherIcon({ condition }: { condition: WeatherCondition }) {
   }
 }
 
-function InsightBadgeIcon({ kind }: { kind: "category" | "season" | "weather" }) {
-  switch (kind) {
-    case "category":
-      return (
-        <svg viewBox="0 0 20 20" aria-hidden="true" className="insight-icon-svg">
-          <path d="M4 4.2h4.8V9H4zM11.2 4.2H16V9h-4.8zM4 11h4.8v4.8H4zM11.2 11H16v4.8h-4.8z" />
-        </svg>
-      );
-    case "season":
-      return (
-        <svg viewBox="0 0 20 20" aria-hidden="true" className="insight-icon-svg">
-          <path d="M10 2.6v14.8M4.4 5.2l11.2 9.6M15.6 5.2 4.4 14.8M3.3 10h13.4" />
-        </svg>
-      );
-    case "weather":
-      return (
-        <svg viewBox="0 0 20 20" aria-hidden="true" className="insight-icon-svg">
-          <circle cx="10" cy="10" r="3.4" />
-          <path d="M10 1.8v2.3M10 15.9v2.3M1.8 10h2.3M15.9 10h2.3M4.2 4.2l1.6 1.6M14.2 14.2l1.6 1.6M15.8 4.2l-1.6 1.6M5.8 14.2l-1.6 1.6" />
-        </svg>
-      );
-  }
-}
+function buildPieMarkers<T extends { count: number }>(entries: T[]) {
+  const visibleEntries = entries.filter((entry) => entry.count > 0);
+  const total = visibleEntries.reduce((sum, entry) => sum + entry.count, 0);
 
-function InsightCenterLabel({
-  kind,
-  label
-}: {
-  kind: "category" | "season" | "weather";
-  label: string;
-}) {
-  return (
-    <span className="insight-pie-center-stack">
-      <span className="insight-pie-center-icon" aria-hidden="true">
-        <InsightBadgeIcon kind={kind} />
-      </span>
-      <span className="insight-pie-center-label">{label}</span>
-    </span>
-  );
+  if (total === 0) {
+    return [];
+  }
+
+  let cursor = 0;
+  return visibleEntries.map((entry) => {
+    const start = (cursor / total) * Math.PI * 2 - Math.PI / 2;
+    cursor += entry.count;
+    const end = (cursor / total) * Math.PI * 2 - Math.PI / 2;
+    const angle = (start + end) / 2;
+
+    return {
+      ...entry,
+      x: `${Math.cos(angle) * 40}%`,
+      y: `${Math.sin(angle) * 40}%`
+    };
+  });
 }
 
 function InsightPieChart({
   label,
   gradient,
-  children
+  markers
 }: {
   label: string;
   gradient: string;
-  children?: ReactNode;
+  markers: Array<{
+    key: string;
+    label: string;
+    x: string;
+    y: string;
+    color: string;
+    icon: JSX.Element;
+  }>;
 }) {
   return (
     <div className="insight-pie-wrap">
       <div className="insight-pie-chart" aria-label={label} role="img" style={{ background: gradient }}>
-        <span className="insight-pie-core" aria-hidden="true">
-          {children}
-        </span>
+        <span className="insight-pie-core" aria-hidden="true" />
       </div>
+      {markers.map((marker) => (
+        <span
+          key={marker.key}
+          className="insight-pie-marker"
+          style={
+            {
+              "--insight-marker-x": marker.x,
+              "--insight-marker-y": marker.y,
+              "--insight-marker-color": marker.color
+            } as CSSProperties
+          }
+        >
+          <span className="insight-pie-marker-icon" aria-hidden="true">
+            {marker.icon}
+          </span>
+          <span className="insight-pie-marker-text">{marker.label}</span>
+        </span>
+      ))}
     </div>
   );
 }
@@ -277,12 +282,45 @@ export function HomePage() {
     () => buildPieGradient(categoryStats.map((entry, index) => ({ count: entry.count, color: categoryColors[index % categoryColors.length] }))),
     [categoryStats]
   );
+  const categoryMarkers = useMemo(
+    () =>
+      buildPieMarkers(categoryStats.map((entry, index) => ({
+        key: entry.category,
+        label: entry.label,
+        count: entry.count,
+        color: categoryColors[index % categoryColors.length],
+        icon: <CategoryIcon category={entry.category} />
+      }))),
+    [categoryStats]
+  );
   const seasonPieGradient = useMemo(
     () => buildPieGradient(seasonStats.map((entry, index) => ({ count: entry.count, color: seasonColors[index % seasonColors.length] }))),
     [seasonStats]
   );
+  const seasonMarkers = useMemo(
+    () =>
+      buildPieMarkers(seasonStats.map((entry, index) => ({
+        key: entry.key,
+        label: entry.label,
+        count: entry.count,
+        color: seasonColors[index % seasonColors.length],
+        icon: <SeasonIcon season={entry.key} />
+      }))),
+    [seasonStats]
+  );
   const weatherPieGradient = useMemo(
     () => buildPieGradient(weatherStats.map((entry) => ({ count: entry.count, color: weatherColors[entry.condition] }))),
+    [weatherStats]
+  );
+  const weatherMarkers = useMemo(
+    () =>
+      buildPieMarkers(weatherStats.map((entry) => ({
+        key: entry.condition,
+        label: entry.label,
+        count: entry.count,
+        color: weatherColors[entry.condition],
+        icon: <WeatherIcon condition={entry.condition} />
+      }))),
     [weatherStats]
   );
 
@@ -301,80 +339,20 @@ export function HomePage() {
 
       <section className="insight-grid">
         <article className="panel-card insight-card">
-          <div className="panel-head">
-            <div>
-              <span className="section-tag">{t("home.insightsCategory")}</span>
-              <h3>{t("home.insightsCategoryTitle")}</h3>
-            </div>
-          </div>
           <div className="insight-chart-panel">
-            <InsightPieChart label={t("home.insightsCategoryTitle")} gradient={categoryPieGradient}>
-              <InsightCenterLabel kind="category" label={t("home.insightsCategory")} />
-            </InsightPieChart>
-            <div className="insight-legend">
-              {categoryStats.map((entry, index) => (
-                <div key={entry.label} className="insight-legend-item">
-                  <span
-                    className="insight-legend-icon"
-                    aria-hidden="true"
-                    style={{ color: categoryColors[index % categoryColors.length] }}
-                  >
-                    <CategoryIcon category={entry.category} />
-                  </span>
-                  <span>{entry.label}</span>
-                </div>
-              ))}
-            </div>
+            <InsightPieChart label={t("home.insightsCategoryTitle")} gradient={categoryPieGradient} markers={categoryMarkers} />
           </div>
         </article>
 
         <article className="panel-card insight-card">
-          <div className="panel-head">
-            <div>
-              <span className="section-tag">{t("home.insightsCondition")}</span>
-              <h3>{t("home.insightsConditionTitle")}</h3>
-            </div>
-          </div>
           <div className="condition-pie-grid">
             <div className="insight-subpanel">
               <span className="section-tag">{t("home.insightsSeason")}</span>
-              <InsightPieChart label={t("home.insightsSeason")} gradient={seasonPieGradient}>
-                <InsightCenterLabel kind="season" label={t("home.insightsSeason")} />
-              </InsightPieChart>
-              <div className="insight-legend">
-                {seasonStats.map((entry, index) => (
-                  <div key={entry.key} className="insight-legend-item">
-                    <span
-                      className="insight-legend-icon"
-                      aria-hidden="true"
-                      style={{ color: seasonColors[index % seasonColors.length] }}
-                    >
-                      <SeasonIcon season={entry.key} />
-                    </span>
-                    <span>{entry.label}</span>
-                  </div>
-                ))}
-              </div>
+              <InsightPieChart label={t("home.insightsSeason")} gradient={seasonPieGradient} markers={seasonMarkers} />
             </div>
             <div className="insight-subpanel">
               <span className="section-tag">{t("home.insightsWeather")}</span>
-              <InsightPieChart label={t("home.insightsWeather")} gradient={weatherPieGradient}>
-                <InsightCenterLabel kind="weather" label={t("home.insightsWeather")} />
-              </InsightPieChart>
-              <div className="insight-legend">
-                {weatherStats.map((entry) => (
-                  <div key={entry.condition} className="insight-legend-item">
-                    <span
-                      className="insight-legend-icon"
-                      aria-hidden="true"
-                      style={{ color: weatherColors[entry.condition] }}
-                    >
-                      <WeatherIcon condition={entry.condition} />
-                    </span>
-                    <span>{entry.label}</span>
-                  </div>
-                ))}
-              </div>
+              <InsightPieChart label={t("home.insightsWeather")} gradient={weatherPieGradient} markers={weatherMarkers} />
             </div>
           </div>
         </article>

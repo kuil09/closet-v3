@@ -333,8 +333,7 @@ button {
 
 .insight-chart-panel,
 .condition-pie-grid,
-.insight-subpanel,
-.insight-legend {
+.insight-subpanel {
   display: grid;
   gap: 1rem;
 }
@@ -350,8 +349,11 @@ button {
 }
 
 .insight-pie-wrap {
+  position: relative;
   display: grid;
   place-items: center;
+  min-height: 18rem;
+  padding: 2.6rem;
 }
 
 .insight-pie-chart {
@@ -365,81 +367,49 @@ button {
 .insight-pie-core {
   position: absolute;
   inset: 19%;
-  display: grid;
-  place-items: center;
   border-radius: inherit;
   background: color-mix(in srgb, var(--surface-elevated) 94%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border) 55%, transparent);
 }
 
-.insight-pie-center-label {
-  padding: 0 0.6rem;
-  text-align: center;
-  font-size: 0.68rem;
-  line-height: 1.2;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.insight-pie-center-stack {
-  display: grid;
-  justify-items: center;
-  gap: 0.45rem;
-}
-
-.insight-pie-center-icon {
+.insight-pie-marker {
+  position: absolute;
+  left: calc(50% + var(--insight-marker-x));
+  top: calc(50% + var(--insight-marker-y));
+  transform: translate(-50%, -50%);
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 999px;
-  color: var(--text);
-  background: color-mix(in srgb, var(--surface-soft) 84%, var(--surface-elevated));
-  border: 1px solid color-mix(in srgb, var(--border) 76%, transparent);
-}
-
-.insight-pie-center-icon .insight-icon-svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-.insight-legend {
-  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
-  gap: 0.6rem;
-}
-
-.insight-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
+  gap: 0.5rem;
   min-width: 0;
-  padding: 0.65rem 0.75rem;
+  max-width: 7.2rem;
+  padding: 0.45rem 0.6rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface-soft) 72%, var(--surface-elevated));
-  border: 1px solid color-mix(in srgb, var(--border) 72%, transparent);
+  background: color-mix(in srgb, var(--surface-elevated) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--insight-marker-color) 34%, var(--border));
+  box-shadow: 0 10px 22px color-mix(in srgb, var(--insight-marker-color) 12%, transparent);
 }
 
-.insight-legend-item span:last-child {
+.insight-pie-marker-text {
   min-width: 0;
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.74rem;
+  line-height: 1.15;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.insight-legend-icon {
+.insight-pie-marker-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.95rem;
-  height: 1.95rem;
+  width: 1.5rem;
+  height: 1.5rem;
   flex-shrink: 0;
   border-radius: 999px;
-  background: color-mix(in srgb, currentColor 12%, var(--surface-elevated));
-  border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+  color: var(--insight-marker-color);
+  background: color-mix(in srgb, var(--insight-marker-color) 12%, var(--surface-elevated));
+  border: 1px solid color-mix(in srgb, var(--insight-marker-color) 18%, transparent);
 }
 
 .insight-icon-svg {
@@ -1946,12 +1916,22 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .insight-legend {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .insight-pie-chart {
     width: min(100%, 11.5rem);
+  }
+
+  .insight-pie-wrap {
+    min-height: 16rem;
+    padding: 2.2rem 1.4rem;
+  }
+
+  .insight-pie-marker {
+    max-width: 5.7rem;
+    padding: 0.38rem 0.48rem;
+  }
+
+  .insight-pie-marker-text {
+    font-size: 0.68rem;
   }
 
   .weather-actions {
