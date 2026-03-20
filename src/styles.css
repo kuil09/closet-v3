@@ -470,6 +470,19 @@ button {
   gap: 0.75rem;
 }
 
+.lookbook-card-button {
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.lookbook-card-button:hover,
+.lookbook-card-button:focus-visible {
+  transform: translateY(-1px);
+}
+
 .lookbook-card .lookbook-poster {
   min-height: 240px;
 }

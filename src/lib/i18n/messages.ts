@@ -127,6 +127,8 @@ export type MessageKey =
   | "lookbook.untitled"
   | "lookbook.fileName"
   | "lookbook.layers"
+  | "lookbook.validationItem"
+  | "lookbook.clearError"
   | "lookbook.backgroundPaper"
   | "lookbook.backgroundMist"
   | "lookbook.backgroundSand"
@@ -282,6 +284,8 @@ const base: Catalog = {
   "lookbook.untitled": "Untitled lookbook",
   "lookbook.fileName": "lookbook",
   "lookbook.layers": "layers",
+  "lookbook.validationItem": "Add at least one garment to save this lookbook.",
+  "lookbook.clearError": "Dismiss validation message",
   "lookbook.backgroundPaper": "paper",
   "lookbook.backgroundMist": "mist",
   "lookbook.backgroundSand": "sand",
@@ -435,6 +439,8 @@ export const messages: Record<Locale, Catalog> = {
     "lookbook.untitled": "제목 없는 룩북",
     "lookbook.fileName": "lookbook",
     "lookbook.layers": "레이어",
+    "lookbook.validationItem": "룩북을 저장하려면 의류를 1개 이상 추가하세요.",
+    "lookbook.clearError": "검증 메시지 닫기",
     "lookbook.backgroundPaper": "페이퍼",
     "lookbook.backgroundMist": "미스트",
     "lookbook.backgroundSand": "샌드",

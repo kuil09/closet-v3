@@ -169,9 +169,26 @@ describe("app flows", () => {
     await user.clear(titleInput);
     await user.type(titleInput, "Studio Test");
     await user.click(view.getByText("Add note"));
+    await user.click(view.getByRole("button", { name: /Closet drawer/i }));
+    await user.click(view.getByRole("button", { name: /Over-Sized Cashmere Coat/i }));
     await user.click(view.getByText("Save lookbook"));
     await user.click(view.getByRole("button", { name: /Saved boards/i }));
     await waitFor(() => expect(view.getAllByText("Studio Test").length).toBeGreaterThan(0));
+  });
+
+  test("requires at least one garment before saving a lookbook", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/lookbook");
+
+    await view.findByDisplayValue("Autumn Redaction");
+    await user.click(view.getByText("New board"));
+    const titleInput = view.getByLabelText("Lookbook Maker");
+    await user.clear(titleInput);
+    await user.type(titleInput, "Text Only Board");
+    await user.click(view.getByText("Save lookbook"));
+
+    await view.findByText("Add at least one garment to save this lookbook.");
+    expect((await atelierDb.lookbooks.toArray()).some((entry) => entry.title === "Text Only Board")).toBe(false);
   });
 
   test("clears local data after confirmation", async () => {
@@ -252,5 +269,14 @@ describe("app flows", () => {
     });
 
     await view.findByText(/Total Pieces/i);
+  });
+
+  test("opens a saved lookbook from the home gallery", async () => {
+    const user = userEvent.setup();
+    const view = renderAt("/");
+
+    await view.findByText(/My Lookbooks/i);
+    await user.click(view.getByRole("button", { name: /Autumn Redaction/i }));
+    await view.findByDisplayValue("Autumn Redaction");
   });
 });

@@ -66,7 +66,12 @@ export function HomePage() {
         {sortedLookbooks.length > 0 ? (
           <div className="lookbook-grid">
             {visibleLookbooks.map((lookbook) => (
-              <article key={lookbook.id} className="lookbook-card">
+              <button
+                key={lookbook.id}
+                type="button"
+                className="lookbook-card lookbook-card-button"
+                onClick={() => navigate(`/lookbook?lookbook=${lookbook.id}`)}
+              >
                 <div className={`lookbook-poster is-${lookbook.backgroundStyle}`}>
                   <div className="lookbook-overlay">{lookbook.title}</div>
                 </div>
@@ -78,7 +83,7 @@ export function HomePage() {
                     </div>
                   ) : null}
                 </div>
-              </article>
+              </button>
             ))}
           </div>
         ) : (

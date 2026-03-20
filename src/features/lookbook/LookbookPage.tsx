@@ -3,6 +3,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { Image as KonvaImage, Layer, Rect, Stage, Text as KonvaText } from "react-konva";
 import type Konva from "konva";
 import useImage from "use-image";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { saveLookbook } from "../../lib/db/repository";
 import type { ClosetItem, Lookbook, LookbookElement } from "../../lib/db/types";
@@ -89,6 +90,8 @@ function elementLabel(element: LookbookElement): string {
 
 export function LookbookPage() {
   const { t } = useI18n();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const untitledTitle = t("lookbook.untitled");
   const items = useLiveQuery(() => atelierDb.items.filter((item) => item.status !== "archived").toArray(), [], []);
   const lookbooks = useLiveQuery(() => atelierDb.lookbooks.toArray(), [], []);
@@ -96,13 +99,30 @@ export function LookbookPage() {
     createBlankLookbook(untitledTitle, t("lookbook.defaultHeadline"), t("lookbook.defaultBody"))
   );
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
+  const [didInitializeBoard, setDidInitializeBoard] = useState(false);
   const stageRef = useRef<Konva.Stage>(null);
+  const requestedLookbookId = searchParams.get("lookbook");
 
   useEffect(() => {
-    if (lookbooks.length > 0 && current.title === untitledTitle) {
-      setCurrent(lookbooks[0]);
+    if (lookbooks.length === 0) {
+      return;
     }
-  }, [current.title, lookbooks, untitledTitle]);
+
+    const requestedLookbook = requestedLookbookId ? lookbooks.find((lookbook) => lookbook.id === requestedLookbookId) : null;
+    if (requestedLookbook) {
+      setCurrent(requestedLookbook);
+      setSelectedElementId(requestedLookbook.elements[0]?.id ?? null);
+      setDidInitializeBoard(true);
+      return;
+    }
+
+    if (!didInitializeBoard) {
+      setCurrent(lookbooks[0]);
+      setSelectedElementId(lookbooks[0].elements[0]?.id ?? null);
+      setDidInitializeBoard(true);
+    }
+  }, [didInitializeBoard, lookbooks, requestedLookbookId]);
 
   const selectedElement = useMemo(
     () => current.elements.find((element) => element.id === selectedElementId) ?? null,
@@ -140,6 +160,7 @@ export function LookbookPage() {
       elements: normalizeElements([...prev.elements, nextElement]),
       updatedAt: new Date().toISOString()
     }));
+    setValidationError(null);
     setSelectedElementId(nextElement.id);
   }
 
@@ -216,6 +237,12 @@ export function LookbookPage() {
   }
 
   async function persistCurrent() {
+    if (!current.elements.some((element) => element.type === "item" && element.refId)) {
+      setValidationError(t("lookbook.validationItem"));
+      return;
+    }
+
+    setValidationError(null);
     await saveLookbook({ ...current, updatedAt: new Date().toISOString() });
   }
 
@@ -233,6 +260,14 @@ export function LookbookPage() {
   return (
     <div className="lookbook-layout">
       <section className="panel-card">
+        {validationError ? (
+          <div className="inline-error">
+            <span>{validationError}</span>
+            <button className="mini-button" onClick={() => setValidationError(null)}>
+              {t("lookbook.clearError")}
+            </button>
+          </div>
+        ) : null}
         <div className="toolbar">
           <div>
             <span className="section-tag">{t("lookbook.title")}</span>
@@ -281,6 +316,8 @@ export function LookbookPage() {
                 const next = createBlankLookbook(untitledTitle, t("lookbook.defaultHeadline"), t("lookbook.defaultBody"));
                 setCurrent(next);
                 setSelectedElementId(next.elements[0]?.id ?? null);
+                setValidationError(null);
+                navigate("/lookbook");
               }}
             >
               {t("lookbook.newBoard")}
@@ -461,7 +498,16 @@ export function LookbookPage() {
           <div className="saved-lookbook-list">
             {lookbooks.length === 0 ? <p className="muted-copy">{t("lookbook.noBoards")}</p> : null}
             {lookbooks.map((lookbook) => (
-              <button key={lookbook.id} className="saved-lookbook-item" onClick={() => setCurrent(lookbook)}>
+              <button
+                key={lookbook.id}
+                className="saved-lookbook-item"
+                onClick={() => {
+                  setCurrent(lookbook);
+                  setSelectedElementId(lookbook.elements[0]?.id ?? null);
+                  setValidationError(null);
+                  navigate(`/lookbook?lookbook=${lookbook.id}`);
+                }}
+              >
                 <strong>{lookbook.title}</strong>
                 <span>{lookbook.description || lookbook.backgroundStyle}</span>
               </button>
