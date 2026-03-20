@@ -1,6 +1,7 @@
 import type { Locale } from "../db/types";
 
 export type MessageKey =
+  | "common.all"
   | "info.open"
   | "info.close"
   | "disclosure.open"
@@ -55,6 +56,11 @@ export type MessageKey =
   | "wardrobe.colorTo"
   | "wardrobe.colorRangeHint"
   | "wardrobe.colorRangeAll"
+  | "weather.clear"
+  | "weather.cloudy"
+  | "weather.rain"
+  | "weather.snow"
+  | "weather.wind"
   | "register.title"
   | "register.captureTitle"
   | "register.editingTitle"
@@ -75,9 +81,15 @@ export type MessageKey =
   | "register.removeAsset"
   | "register.name"
   | "register.category"
+  | "register.categoryOuterwear"
+  | "register.categoryTops"
+  | "register.categoryBottoms"
+  | "register.categoryShoes"
+  | "register.categoryAccessories"
   | "register.materials"
   | "register.storageLocation"
   | "register.occasionTags"
+  | "register.occasionPlaceholder"
   | "register.styleNotes"
   | "register.temperature"
   | "register.tempFreezing"
@@ -94,6 +106,11 @@ export type MessageKey =
   | "register.weatherSection"
   | "register.paletteSection"
   | "register.metaSection"
+  | "register.metaTypeCare"
+  | "register.metaTypePriceTag"
+  | "register.metaTypeReceipt"
+  | "register.metaTypeExtra"
+  | "register.untitledPiece"
   | "settings.title"
   | "settings.productControls"
   | "settings.localOnly"
@@ -116,6 +133,7 @@ export type MessageKey =
 type Catalog = Record<MessageKey, string>;
 
 const base: Catalog = {
+  "common.all": "All",
   "info.open": "Show help",
   "info.close": "Hide help",
   "disclosure.open": "Open",
@@ -170,6 +188,11 @@ const base: Catalog = {
   "wardrobe.colorTo": "Lightest color",
   "wardrobe.colorRangeHint": "Use stored garment colors to narrow the wardrobe from darker tones to lighter ones.",
   "wardrobe.colorRangeAll": "All saved colors",
+  "weather.clear": "Clear",
+  "weather.cloudy": "Cloudy",
+  "weather.rain": "Rain",
+  "weather.snow": "Snow",
+  "weather.wind": "Wind",
   "register.title": "Register Item",
   "register.captureTitle": "Capture a new piece",
   "register.editingTitle": "Editing",
@@ -190,9 +213,15 @@ const base: Catalog = {
   "register.removeAsset": "Remove asset",
   "register.name": "Name",
   "register.category": "Category",
+  "register.categoryOuterwear": "Outerwear",
+  "register.categoryTops": "Tops",
+  "register.categoryBottoms": "Bottoms",
+  "register.categoryShoes": "Shoes",
+  "register.categoryAccessories": "Accessories",
   "register.materials": "Materials",
   "register.storageLocation": "Storage location",
   "register.occasionTags": "Occasion / tags",
+  "register.occasionPlaceholder": "Summer, Daily, Workwear",
   "register.styleNotes": "Style notes",
   "register.temperature": "Temperature",
   "register.tempFreezing": "Freezing",
@@ -209,6 +238,11 @@ const base: Catalog = {
   "register.weatherSection": "Weather and temperature fit",
   "register.paletteSection": "Color palette",
   "register.metaSection": "Meta assets",
+  "register.metaTypeCare": "Care",
+  "register.metaTypePriceTag": "Price tag",
+  "register.metaTypeReceipt": "Receipt",
+  "register.metaTypeExtra": "Extra",
+  "register.untitledPiece": "Untitled piece",
   "settings.title": "Settings",
   "settings.productControls": "Product controls",
   "settings.localOnly": "All data stays in this browser profile. Cloud sync and backup are intentionally disabled.",
@@ -233,6 +267,7 @@ export const messages: Record<Locale, Catalog> = {
   en: base,
   ko: {
     ...base,
+    "common.all": "전체",
     "info.open": "도움말 보기",
     "info.close": "도움말 닫기",
     "disclosure.open": "열기",
@@ -284,6 +319,11 @@ export const messages: Record<Locale, Catalog> = {
     "wardrobe.colorTo": "밝은 쪽 끝",
     "wardrobe.colorRangeHint": "저장된 의류 팔레트를 기준으로 어두운 색부터 밝은 색까지 범위를 좁혀보세요.",
     "wardrobe.colorRangeAll": "저장된 전체 색상",
+    "weather.clear": "맑음",
+    "weather.cloudy": "흐림",
+    "weather.rain": "비",
+    "weather.snow": "눈",
+    "weather.wind": "바람",
     "register.title": "아이템 등록",
     "register.captureTitle": "새 아이템 등록",
     "register.editingTitle": "편집 중",
@@ -304,9 +344,15 @@ export const messages: Record<Locale, Catalog> = {
     "register.removeAsset": "자산 제거",
     "register.name": "이름",
     "register.category": "카테고리",
+    "register.categoryOuterwear": "아우터",
+    "register.categoryTops": "상의",
+    "register.categoryBottoms": "하의",
+    "register.categoryShoes": "신발",
+    "register.categoryAccessories": "액세서리",
     "register.materials": "소재",
     "register.storageLocation": "보관 위치",
     "register.occasionTags": "상황 / 태그",
+    "register.occasionPlaceholder": "여름, 데일리, 워크웨어",
     "register.styleNotes": "스타일 노트",
     "register.temperature": "온도",
     "register.tempFreezing": "매우 추움",
@@ -323,6 +369,11 @@ export const messages: Record<Locale, Catalog> = {
     "register.weatherSection": "날씨와 온도 적합도",
     "register.paletteSection": "색상 팔레트",
     "register.metaSection": "메타 자산",
+    "register.metaTypeCare": "케어",
+    "register.metaTypePriceTag": "가격표",
+    "register.metaTypeReceipt": "영수증",
+    "register.metaTypeExtra": "추가 자료",
+    "register.untitledPiece": "이름 없는 아이템",
     "settings.title": "설정",
     "settings.productControls": "제품 설정",
     "settings.localOnly": "모든 데이터는 현재 브라우저 프로필에만 저장됩니다. 클라우드 동기화와 백업은 제공하지 않습니다.",

@@ -684,6 +684,8 @@ button {
 }
 
 .item-card {
+  width: 100%;
+  max-width: 100%;
   padding: 0.65rem;
   display: grid;
   gap: 0.75rem;
@@ -747,6 +749,9 @@ button {
 
 .item-card-media {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .item-palette-dots {
@@ -786,6 +791,9 @@ button {
 .item-meta {
   display: grid;
   gap: 0.4rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .recommendation-body strong,
@@ -802,6 +810,18 @@ button {
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.item-card-body strong {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .card-button {
@@ -810,8 +830,11 @@ button {
 }
 
 .card-actions {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
 }
 
 .card-icon-button {

@@ -200,7 +200,7 @@ describe("app flows", () => {
     const view = renderAt("/", 1280, { geolocationFails: true });
 
     await waitFor(() => expect(view.getAllByText("Weather unavailable").length).toBeGreaterThan(0));
-    expect(await view.findByText(/Permission denied/i)).toBeTruthy();
+    expect(await view.findByText(/Automatic weather could not be loaded/i)).toBeTruthy();
   });
 
   test("switches weather units directly from the home card", async () => {

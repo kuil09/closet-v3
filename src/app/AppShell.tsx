@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useI18n } from "../lib/i18n/i18n";
+import { weatherMessageKey } from "../lib/i18n/label-keys";
 import { usePreferencesStore } from "../lib/state/preferences-store";
 import { useWeather } from "../lib/weather/use-weather";
 import { formatTemperature } from "../lib/utils/format";
@@ -129,7 +130,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 {!loading && context && formatTemperature(context.temperatureC, units)}
                 {!loading && !context && t("home.weatherUnavailable")}
               </strong>
-              <span>{context ? context.condition : error ? error : t("home.weatherUnavailable")}</span>
+              <span>{context ? t(weatherMessageKey(context.condition)) : error ? t("home.weatherFallback") : t("home.weatherUnavailable")}</span>
             </div>
             <div className="weather-actions topbar-weather-actions" aria-label={t("settings.units")}>
               <button

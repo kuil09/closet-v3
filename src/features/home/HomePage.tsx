@@ -3,6 +3,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { useI18n } from "../../lib/i18n/i18n";
+import { categoryMessageKey } from "../../lib/i18n/label-keys";
 import { ItemImage } from "../shared/ItemImage";
 import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
@@ -47,7 +48,9 @@ export function HomePage() {
               <div className="item-image-wrap">
                 <ItemPaletteDots colors={item.paletteColors} />
                 <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
-                <span className="item-chip">{item.category}</span>
+                <span className="item-chip">
+                  {categoryMessageKey(item.category) ? t(categoryMessageKey(item.category)!) : item.category}
+                </span>
               </div>
               <div className="item-card-body">
                 <strong>{item.name}</strong>

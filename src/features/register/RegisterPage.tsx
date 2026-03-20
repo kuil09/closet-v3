@@ -5,6 +5,7 @@ import { atelierDb } from "../../lib/db/app-db";
 import { saveClosetItem, saveStoredImage } from "../../lib/db/repository";
 import type { ClosetItem, MetaAssetType, TemperatureBand, WeatherCondition } from "../../lib/db/types";
 import { useI18n } from "../../lib/i18n/i18n";
+import { categoryMessageKey, metaAssetTypeMessageKey, temperatureMessageKey, weatherMessageKey } from "../../lib/i18n/label-keys";
 import { ingestImage, useStoredImageSource } from "../../lib/media/images";
 import { temperatureBandLabel } from "../../lib/utils/format";
 import { makeId } from "../../lib/utils/id";
@@ -119,21 +120,6 @@ function sampleImageColor(image: HTMLImageElement, clientX: number, clientY: num
   return `#${channelToHex(red)}${channelToHex(green)}${channelToHex(blue)}`;
 }
 
-function temperatureMessageKey(band: TemperatureBand) {
-  switch (band) {
-    case "freezing":
-      return "register.tempFreezing" as const;
-    case "cold":
-      return "register.tempCold" as const;
-    case "mild":
-      return "register.tempMild" as const;
-    case "warm":
-      return "register.tempWarm" as const;
-    case "hot":
-      return "register.tempHot" as const;
-  }
-}
-
 function weatherIcon(condition: WeatherCondition) {
   switch (condition) {
     case "clear":
@@ -182,6 +168,22 @@ export function RegisterPage() {
   const heroImageRef = previewUrl ?? storedUrl ?? draft.heroImage;
   const selectedTemperature = draft.temperatureBand[0] ?? null;
   const selectedTemperatureIndex = selectedTemperature ? Math.max(0, temperatureOptions.indexOf(selectedTemperature)) : 2;
+  const localizedCategories = useMemo(
+    () =>
+      categories.map((category) => ({
+        value: category,
+        label: categoryMessageKey(category) ? t(categoryMessageKey(category)!) : category
+      })),
+    [t]
+  );
+  const localizedMetaAssetTypes = useMemo(
+    () =>
+      metaAssetTypes.map((type) => ({
+        value: type,
+        label: t(metaAssetTypeMessageKey(type))
+      })),
+    [t]
+  );
   const draftTitle = useMemo(
     () => (draft.id ? `${t("register.editingTitle")} ${draft.name || t("register.title")}` : t("register.captureTitle")),
     [draft.id, draft.name, t]
@@ -194,7 +196,7 @@ export function RegisterPage() {
     () =>
       [
         ...(selectedTemperature ? [t(temperatureMessageKey(selectedTemperature))] : []),
-        ...draft.weatherTags.map((tag) => `${weatherIcon(tag)} ${tag}`)
+        ...draft.weatherTags.map((tag) => `${weatherIcon(tag)} ${t(weatherMessageKey(tag))}`)
       ]
         .slice(0, 3)
         .join(" · ") || t("register.unset"),
@@ -282,7 +284,7 @@ export function RegisterPage() {
     await saveClosetItem({
       id: itemIdToSave,
       status,
-      name: draft.name.trim() || "Untitled piece",
+      name: draft.name.trim() || t("register.untitledPiece"),
       category: draft.category,
       materials: splitCommaList(draft.materials),
       heroImage,
@@ -405,9 +407,9 @@ export function RegisterPage() {
                     value={draft.category}
                     onChange={(event) => setDraft((current) => ({ ...current, category: event.target.value }))}
                   >
-                    {categories.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
+                    {localizedCategories.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
                       </option>
                     ))}
                   </select>
@@ -458,7 +460,7 @@ export function RegisterPage() {
               <input
                 aria-label={t("register.occasionTags")}
                 className="text-input"
-                placeholder="Summer, Daily, Workwear"
+                placeholder={t("register.occasionPlaceholder")}
                 value={draft.occasionTags}
                 onChange={(event) => setDraft((current) => ({ ...current, occasionTags: event.target.value }))}
               />
@@ -536,7 +538,7 @@ export function RegisterPage() {
                       }
                     >
                       <span aria-hidden="true">{weatherIcon(option)}</span>
-                      <span>{option}</span>
+                      <span>{t(weatherMessageKey(option))}</span>
                     </button>
                   );
                 })}
@@ -617,9 +619,9 @@ export function RegisterPage() {
                 value={pendingMetaType}
                 onChange={(event) => setPendingMetaType(event.target.value as MetaAssetType)}
               >
-                {metaAssetTypes.map((type) => (
-                  <option key={type} value={type}>
-                    {type}
+                {localizedMetaAssetTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
                   </option>
                 ))}
               </select>
@@ -651,7 +653,7 @@ export function RegisterPage() {
                     <ItemImage imageRef={asset.imageId} alt={asset.label} className="meta-asset-thumb" />
                     <div className="meta-asset-copy">
                       <strong>{asset.label}</strong>
-                      <span>{asset.type}</span>
+                      <span>{t(metaAssetTypeMessageKey(asset.type))}</span>
                     </div>
                   </div>
                   <button
@@ -673,7 +675,7 @@ export function RegisterPage() {
                     <div className="image-fallback meta-asset-thumb" aria-label={asset.file.name} />
                     <div className="meta-asset-copy">
                       <strong>{asset.file.name}</strong>
-                      <span>{asset.type}</span>
+                      <span>{t(metaAssetTypeMessageKey(asset.type))}</span>
                     </div>
                   </div>
                   <button

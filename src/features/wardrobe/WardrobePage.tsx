@@ -4,9 +4,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
 import { archiveItem, toggleFavorite } from "../../lib/db/repository";
 import type { ClosetItem, TemperatureBand, WeatherCondition } from "../../lib/db/types";
+import { categoryMessageKey, temperatureMessageKey, weatherMessageKey } from "../../lib/i18n/label-keys";
+import { useI18n } from "../../lib/i18n/i18n";
+import type { MessageKey } from "../../lib/i18n/messages";
 import { normalizeToken } from "../../lib/utils/format";
 import { buildPaletteTags, itemMatchesPaletteRange, itemPaletteLightness } from "../../lib/utils/palette-range";
-import { useI18n } from "../../lib/i18n/i18n";
 import { InfoHint } from "../shared/InfoHint";
 import { DisclosureSection } from "../shared/DisclosureSection";
 import { ItemImage } from "../shared/ItemImage";
@@ -14,6 +16,7 @@ import { ItemPaletteDots } from "../shared/ItemPaletteDots";
 
 type SortField = "updated" | "name" | "color";
 type SortDirection = "asc" | "desc";
+const ALL_FILTER_VALUE = "All";
 
 export function WardrobePage() {
   const { t } = useI18n();
@@ -22,29 +25,29 @@ export function WardrobePage() {
   const items = useLiveQuery(() => atelierDb.items.toArray(), [], []);
   const [previewItem, setPreviewItem] = useState<ClosetItem | null>(null);
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("All");
+  const [category, setCategory] = useState(ALL_FILTER_VALUE);
   const [showFavorites, setShowFavorites] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [sortField, setSortField] = useState<SortField>("updated");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [materialFilter, setMaterialFilter] = useState("All");
-  const [occasionFilter, setOccasionFilter] = useState("All");
-  const [temperatureFilter, setTemperatureFilter] = useState<TemperatureBand | "All">("All");
-  const [weatherFilter, setWeatherFilter] = useState<WeatherCondition | "All">("All");
+  const [materialFilter, setMaterialFilter] = useState(ALL_FILTER_VALUE);
+  const [occasionFilter, setOccasionFilter] = useState(ALL_FILTER_VALUE);
+  const [temperatureFilter, setTemperatureFilter] = useState<TemperatureBand | typeof ALL_FILTER_VALUE>(ALL_FILTER_VALUE);
+  const [weatherFilter, setWeatherFilter] = useState<WeatherCondition | typeof ALL_FILTER_VALUE>(ALL_FILTER_VALUE);
   const [colorRangeStart, setColorRangeStart] = useState(0);
   const [colorRangeEnd, setColorRangeEnd] = useState<number | null>(null);
   const deferredSearch = useDeferredValue(search);
 
   const categories = useMemo(
-    () => ["All", ...Array.from(new Set(items.map((item) => item.category)))],
+    () => [ALL_FILTER_VALUE, ...Array.from(new Set(items.map((item) => item.category)))],
     [items]
   );
   const materials = useMemo(
-    () => ["All", ...Array.from(new Set(items.flatMap((item) => item.materials).filter(Boolean)))],
+    () => [ALL_FILTER_VALUE, ...Array.from(new Set(items.flatMap((item) => item.materials).filter(Boolean)))],
     [items]
   );
   const occasions = useMemo(
-    () => ["All", ...Array.from(new Set(items.flatMap((item) => item.occasionTags).filter(Boolean)))],
+    () => [ALL_FILTER_VALUE, ...Array.from(new Set(items.flatMap((item) => item.occasionTags).filter(Boolean)))],
     [items]
   );
   const colorTags = useMemo(() => buildPaletteTags(items), [items]);
@@ -90,19 +93,19 @@ export function WardrobePage() {
       if (showFavorites && !item.favorite) {
         return false;
       }
-      if (category !== "All" && item.category !== category) {
+      if (category !== ALL_FILTER_VALUE && item.category !== category) {
         return false;
       }
-      if (materialFilter !== "All" && !item.materials.includes(materialFilter)) {
+      if (materialFilter !== ALL_FILTER_VALUE && !item.materials.includes(materialFilter)) {
         return false;
       }
-      if (occasionFilter !== "All" && !item.occasionTags.includes(occasionFilter)) {
+      if (occasionFilter !== ALL_FILTER_VALUE && !item.occasionTags.includes(occasionFilter)) {
         return false;
       }
-      if (temperatureFilter !== "All" && !item.temperatureBand.includes(temperatureFilter)) {
+      if (temperatureFilter !== ALL_FILTER_VALUE && !item.temperatureBand.includes(temperatureFilter)) {
         return false;
       }
-      if (weatherFilter !== "All" && !item.weatherTags.includes(weatherFilter)) {
+      if (weatherFilter !== ALL_FILTER_VALUE && !item.weatherTags.includes(weatherFilter)) {
         return false;
       }
       if (
@@ -273,7 +276,7 @@ export function WardrobePage() {
             <select className="control-select" value={category} onChange={(event) => setCategory(event.target.value)}>
               {categories.map((entry) => (
                 <option key={entry} value={entry}>
-                  {entry}
+                  {entry === ALL_FILTER_VALUE ? t("common.all") : categoryMessageKey(entry) ? t(categoryMessageKey(entry)!) : entry}
                 </option>
               ))}
             </select>
@@ -309,7 +312,7 @@ export function WardrobePage() {
               <select className="control-select" value={materialFilter} onChange={(event) => setMaterialFilter(event.target.value)}>
                 {materials.map((entry) => (
                   <option key={entry} value={entry}>
-                    {entry}
+                    {entry === ALL_FILTER_VALUE ? t("common.all") : entry}
                   </option>
                 ))}
               </select>
@@ -319,7 +322,7 @@ export function WardrobePage() {
               <select className="control-select" value={occasionFilter} onChange={(event) => setOccasionFilter(event.target.value)}>
                 {occasions.map((entry) => (
                   <option key={entry} value={entry}>
-                    {entry}
+                    {entry === ALL_FILTER_VALUE ? t("common.all") : entry}
                   </option>
                 ))}
               </select>
@@ -329,14 +332,14 @@ export function WardrobePage() {
               <select
                 className="control-select"
                 value={temperatureFilter}
-                onChange={(event) => setTemperatureFilter(event.target.value as TemperatureBand | "All")}
+                onChange={(event) => setTemperatureFilter(event.target.value as TemperatureBand | typeof ALL_FILTER_VALUE)}
               >
-                <option value="All">All</option>
-                <option value="freezing">freezing</option>
-                <option value="cold">cold</option>
-                <option value="mild">mild</option>
-                <option value="warm">warm</option>
-                <option value="hot">hot</option>
+                <option value={ALL_FILTER_VALUE}>{t("common.all")}</option>
+                <option value="freezing">{t(temperatureMessageKey("freezing"))}</option>
+                <option value="cold">{t(temperatureMessageKey("cold"))}</option>
+                <option value="mild">{t(temperatureMessageKey("mild"))}</option>
+                <option value="warm">{t(temperatureMessageKey("warm"))}</option>
+                <option value="hot">{t(temperatureMessageKey("hot"))}</option>
               </select>
             </label>
             <label>
@@ -344,14 +347,14 @@ export function WardrobePage() {
               <select
                 className="control-select"
                 value={weatherFilter}
-                onChange={(event) => setWeatherFilter(event.target.value as WeatherCondition | "All")}
+                onChange={(event) => setWeatherFilter(event.target.value as WeatherCondition | typeof ALL_FILTER_VALUE)}
               >
-                <option value="All">All</option>
-                <option value="clear">clear</option>
-                <option value="cloudy">cloudy</option>
-                <option value="rain">rain</option>
-                <option value="snow">snow</option>
-                <option value="wind">wind</option>
+                <option value={ALL_FILTER_VALUE}>{t("common.all")}</option>
+                <option value="clear">{t(weatherMessageKey("clear"))}</option>
+                <option value="cloudy">{t(weatherMessageKey("cloudy"))}</option>
+                <option value="rain">{t(weatherMessageKey("rain"))}</option>
+                <option value="snow">{t(weatherMessageKey("snow"))}</option>
+                <option value="wind">{t(weatherMessageKey("wind"))}</option>
               </select>
             </label>
           </div>
@@ -410,14 +413,7 @@ function WardrobeCard({
   onToggleArchived
 }: {
   item: ClosetItem;
-  t: (
-    key:
-      | "wardrobe.unfavorite"
-      | "wardrobe.favorite"
-      | "wardrobe.restore"
-      | "wardrobe.archive"
-      | "wardrobe.edit"
-  ) => string;
+  t: (key: MessageKey) => string;
   onPreview: () => void;
   onEdit: () => void;
   onToggleFavorite: () => void;
@@ -447,7 +443,9 @@ function WardrobeCard({
         <button className="item-image-wrap card-button" onClick={onPreview} aria-label={item.name}>
           <ItemPaletteDots colors={item.paletteColors} />
           <ItemImage imageRef={item.heroImage} alt={item.name} className="cover-image garment-card-image" />
-          <span className="item-chip">{item.category}</span>
+          <span className="item-chip">
+            {categoryMessageKey(item.category) ? t(categoryMessageKey(item.category)!) : item.category}
+          </span>
         </button>
       </div>
       <div className="item-card-body">
