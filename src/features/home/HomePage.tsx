@@ -277,50 +277,54 @@ function PaletteGlyphPaths() {
 function InsightDonutChart({
   label,
   slices,
-  renderGlyph
+  renderGlyph,
+  showLabels = true
 }: {
   label: string;
   slices: DonutSlice[];
   renderGlyph: (key: string) => ReactNode;
+  showLabels?: boolean;
 }) {
   return (
-    <div className="insight-pie-wrap">
+    <div className={`insight-pie-wrap ${showLabels ? "" : "insight-pie-wrap-minimal"}`.trim()}>
       <svg className="insight-donut-svg" viewBox={`0 0 ${DONUT_WIDTH} ${DONUT_HEIGHT}`} aria-label={label} role="img">
         {slices.map((slice) => (
           <path key={slice.key} d={slice.path} className="insight-donut-slice" style={{ fill: slice.color }} />
         ))}
         <circle className="insight-donut-core" cx={DONUT_CENTER_X} cy={DONUT_CENTER_Y} r={DONUT_INNER_RADIUS - 1} />
-        {slices.map((slice) => {
-          const labelWidth = Math.max(72, slice.label.length * 7.4 + 42);
-          const labelHeight = 30;
-          const labelX = slice.side === "right" ? DONUT_WIDTH - labelWidth - 12 : 12;
-          const labelY = slice.labelY - labelHeight / 2;
-          const lineEndX = slice.side === "right" ? labelX : labelX + labelWidth;
+        {showLabels
+          ? slices.map((slice) => {
+              const labelWidth = Math.max(72, slice.label.length * 7.4 + 42);
+              const labelHeight = 30;
+              const labelX = slice.side === "right" ? DONUT_WIDTH - labelWidth - 12 : 12;
+              const labelY = slice.labelY - labelHeight / 2;
+              const lineEndX = slice.side === "right" ? labelX : labelX + labelWidth;
 
-          return (
-            <g key={`${slice.key}-label`} className="insight-donut-callout">
-              <path
-                className="insight-donut-callout-line"
-                d={`M ${slice.lineStartX} ${slice.lineStartY} L ${slice.lineBendX} ${slice.lineBendY} L ${lineEndX} ${slice.labelY}`}
-                style={{ stroke: slice.color }}
-              />
-              <rect x={labelX} y={labelY} rx={15} ry={15} width={labelWidth} height={labelHeight} className="insight-donut-label" />
-              <circle
-                cx={labelX + 15}
-                cy={labelY + labelHeight / 2}
-                r={9}
-                className="insight-donut-label-chip"
-                style={{ fill: `${slice.color}22`, stroke: slice.color }}
-              />
-              <svg x={labelX + 9} y={labelY + 9} width={12} height={12} viewBox="0 0 20 20" className="insight-icon-svg">
-                {renderGlyph(slice.key)}
-              </svg>
-              <text x={labelX + 29} y={labelY + 18} className="insight-donut-label-text">
-                {slice.label}
-              </text>
-            </g>
-          );
-        })}
+              return (
+                <g key={`${slice.key}-label`} className="insight-donut-callout">
+                  <path
+                    className="insight-donut-callout-line"
+                    d={`M ${slice.lineStartX} ${slice.lineStartY} L ${slice.lineBendX} ${slice.lineBendY} L ${lineEndX} ${slice.labelY}`}
+                    style={{ stroke: slice.color }}
+                  />
+                  <rect x={labelX} y={labelY} rx={15} ry={15} width={labelWidth} height={labelHeight} className="insight-donut-label" />
+                  <circle
+                    cx={labelX + 15}
+                    cy={labelY + labelHeight / 2}
+                    r={9}
+                    className="insight-donut-label-chip"
+                    style={{ fill: `${slice.color}22`, stroke: slice.color }}
+                  />
+                  <svg x={labelX + 9} y={labelY + 9} width={12} height={12} viewBox="0 0 20 20" className="insight-icon-svg">
+                    {renderGlyph(slice.key)}
+                  </svg>
+                  <text x={labelX + 29} y={labelY + 18} className="insight-donut-label-text">
+                    {slice.label}
+                  </text>
+                </g>
+              );
+            })
+          : null}
       </svg>
     </div>
   );
@@ -476,6 +480,7 @@ export function HomePage() {
               label={t("home.insightsPaletteTitle")}
               slices={paletteSlices}
               renderGlyph={() => <PaletteGlyphPaths />}
+              showLabels={false}
             />
           </div>
         </article>

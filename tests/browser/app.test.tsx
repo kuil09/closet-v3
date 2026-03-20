@@ -423,7 +423,6 @@ describe("app flows", () => {
     await waitFor(() => expect(categoryCard?.textContent).toContain("Outerwear"));
     await waitFor(() => expect(seasonCard?.textContent).toContain("Winter"));
     await waitFor(() => expect(weatherCard?.textContent).toContain("Clear"));
-    await waitFor(() => expect(paletteCard?.textContent).toContain("#"));
     expect(categoryCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
     expect(categoryCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
     expect(seasonCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
@@ -431,7 +430,7 @@ describe("app flows", () => {
     expect(weatherCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
     expect(weatherCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
     expect(paletteCard?.querySelectorAll(".insight-donut-svg").length).toBeGreaterThan(0);
-    expect(paletteCard?.querySelectorAll(".insight-donut-label").length).toBeGreaterThan(0);
+    expect(paletteCard?.querySelectorAll(".insight-donut-label").length).toBe(0);
     expect(view.getByText(String(activeSeedCount))).toBeTruthy();
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
