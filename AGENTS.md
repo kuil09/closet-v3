@@ -4,7 +4,7 @@ This file is the maintenance guide for coding agents working in this repository.
 
 ## Mission
 
-Keep The Atelier healthy as a `local-only` wardrobe and lookbook product.
+Keep The Atelier healthy as a `local-only` wardrobe product.
 
 The product must remain:
 
@@ -41,7 +41,6 @@ Prefer:
 - Dexie for IndexedDB
 - Zustand for lightweight persisted preferences
 - React Router
-- React Konva for the lookbook canvas
 - Vite PWA plugin
 - Bun test + Testing Library + happy-dom
 - Playwright only for CI screenshot capture
@@ -68,7 +67,7 @@ If a feature seems to need a server, stop and reconsider. This repository is int
 
 ### 2. Keep state boundaries clear
 
-- IndexedDB stores product data: items, lookbooks, images, weather cache
+- IndexedDB stores product data: items, images, weather cache
 - Zustand/localStorage stores lightweight app preferences
 - UI-only disclosure state can stay in localStorage when it does not belong in product data
 
@@ -144,7 +143,7 @@ node --check scripts/capture-ci-screenshots.mjs
 
 ## UI and UX Expectations
 
-- Keep the top-level screens focused: Home, Wardrobe, Register, Lookbook, Settings
+- Keep the top-level screens focused: Home, Wardrobe, Register, Settings
 - Primary actions should remain immediately visible
 - Rare actions should be tucked into disclosure sections
 - Mobile should use sheet-style access for secondary controls when appropriate

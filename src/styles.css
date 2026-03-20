@@ -132,7 +132,6 @@ button {
 .page-stack,
 .settings-grid,
 .recommendation-list,
-.saved-lookbook-list,
 .meta-list {
   display: grid;
   gap: 0.9rem;
@@ -184,7 +183,6 @@ button {
 .filter-actions,
 .button-row,
 .toolbar,
-.lookbook-controls,
 .card-actions,
 .chip-row,
 .palette-row,
@@ -224,7 +222,6 @@ button {
 .item-card,
 .filter-bar,
 .drawer-card,
-.saved-lookbook-item,
 .empty-state {
   background: color-mix(in srgb, var(--surface-elevated) 92%, transparent);
   border: 1px solid var(--border);
@@ -258,8 +255,7 @@ button {
 .hero-copy p,
 .muted-copy,
 .recommendation-card p,
-.item-meta span,
-.saved-lookbook-item span {
+.item-meta span {
   color: var(--muted);
 }
 
@@ -572,66 +568,6 @@ button {
   margin-bottom: 1rem;
 }
 
-.today-look-card,
-.lookbook-grid {
-  display: grid;
-  gap: 1rem;
-}
-
-.lookbook-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.lookbook-poster {
-  min-height: 300px;
-  border-radius: 1.25rem;
-  display: flex;
-  align-items: flex-end;
-  padding: 1.4rem;
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.06em;
-  font-size: 2rem;
-}
-
-.lookbook-poster.is-paper { background: linear-gradient(180deg, #ffffff, #f1f3f1); }
-.lookbook-poster.is-mist { background: linear-gradient(180deg, #ecefec, #dee4e0); }
-.lookbook-poster.is-sand { background: linear-gradient(180deg, #f5e7d0, #d3a56e); color: #4c4030; }
-.lookbook-poster.is-olive { background: linear-gradient(180deg, #dee4e0, #bcc7bf); }
-
-.lookbook-card {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.lookbook-card-button {
-  width: 100%;
-  text-align: left;
-  color: inherit;
-  cursor: pointer;
-  transition: transform 160ms ease, border-color 160ms ease;
-}
-
-.lookbook-card-button:hover,
-.lookbook-card-button:focus-visible {
-  transform: translateY(-1px);
-}
-
-.lookbook-card .lookbook-poster {
-  min-height: 240px;
-}
-
-.lookbook-card-body {
-  display: grid;
-  gap: 0.4rem;
-}
-
-.lookbook-card-body strong {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  letter-spacing: -0.04em;
-}
-
 .recommendation-list {
   gap: 0.85rem;
 }
@@ -807,15 +743,13 @@ button {
   border: 0;
 }
 
-.register-layout,
-.lookbook-layout {
+.register-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
   gap: 1rem;
 }
 
 .register-preview,
-.lookbook-sidebar,
 .register-form-card,
 .inspector-grid,
 .register-sidebar,
@@ -1066,7 +1000,6 @@ button {
 }
 
 .preview-card,
-.saved-lookbook-item,
 .drawer-card {
   padding: 1rem;
 }
@@ -1139,33 +1072,11 @@ button {
   border: 1px solid var(--border);
 }
 
-.lookbook-canvas-shell {
-  display: flex;
-  justify-content: center;
-  overflow: auto;
-  padding: 1rem;
-  background: color-mix(in srgb, var(--surface-soft) 86%, transparent);
-  border-radius: 1.5rem;
-}
-
-.lookbook-sidebar {
-  align-content: start;
-}
-
-.lookbook-mobile-tools {
-  display: none;
-}
-
 .drawer-card,
-.saved-lookbook-item {
+.drawer-card {
   text-align: left;
   display: grid;
   gap: 0.8rem;
-}
-
-.saved-lookbook-item.is-selected {
-  border: 1px solid color-mix(in srgb, var(--primary) 42%, transparent);
-  background: color-mix(in srgb, var(--primary-soft) 60%, var(--surface-elevated));
 }
 
 .drawer-thumb {
@@ -1240,8 +1151,7 @@ button {
 
 @media (max-width: 1100px) {
   .two-column-grid,
-  .register-layout,
-  .lookbook-layout {
+  .register-layout {
     grid-template-columns: 1fr;
   }
 
@@ -1292,8 +1202,7 @@ button {
 
   .stats-grid,
   .form-grid,
-  .settings-grid,
-  .lookbook-grid {
+  .settings-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1315,15 +1224,9 @@ button {
     justify-content: flex-start;
   }
 
-  .lookbook-mobile-tools {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-  }
-
   .mobile-nav {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     position: fixed;
     left: 0;
     right: 0;

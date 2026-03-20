@@ -1,6 +1,6 @@
 # The Atelier
 
-The Atelier is a local-only digital wardrobe and lookbook studio built with React, TypeScript, Vite, and Bun.
+The Atelier is a local-only digital wardrobe studio built with React, TypeScript, Vite, and Bun.
 
 This product is intentionally designed without a backend:
 
@@ -9,7 +9,7 @@ This product is intentionally designed without a backend:
 - No cloud sync
 - No AI auto-analysis
 
-All wardrobe data, uploaded images, lookbooks, preferences, and cached weather state stay in the browser on the current device/profile.
+All wardrobe data, uploaded images, preferences, and cached weather state stay in the browser on the current device/profile.
 
 ## Product Scope
 
@@ -18,7 +18,6 @@ The app includes:
 - Home dashboard with wardrobe stats, recent items, current weather, and rule-based recommendations
 - Wardrobe catalog with search, sorting, favorites, and archive handling
 - Item registration with hero image, palette colors, metadata assets, style notes, and draft/saved states
-- Lookbook maker with free-form composition, layer controls, local save, and PNG export
 - Settings for theme, language, motion, units, manual weather fallback, and local data reset
 
 ## Tech Stack
@@ -42,14 +41,14 @@ The app includes:
 - Offline behavior: PWA shell + cached assets + cached weather responses
 - Deployment target: GitHub Pages
 
-The app never sends wardrobe or lookbook data to a remote service.
+The app never sends wardrobe data to a remote service.
 
 ## Project Structure
 
 ```text
 src/
   app/         App shell, routing, lazy-loaded pages, PWA entry
-  features/    Home, wardrobe, register, lookbook, settings
+  features/    Home, wardrobe, register, settings
   lib/         DB, i18n, media, recommendation, state, weather, utils
 tests/
   browser/     App-level browser flows
@@ -107,7 +106,7 @@ The test suite covers:
 - i18n fallback behavior
 - Weather adapter mapping
 - Recommendation engine scoring
-- Browser flows for theme/language switching, item registration, lookbook save, manual weather override, and local data reset
+- Browser flows for theme/language switching, item registration, weather display, and local data reset
 
 ## Visual CI Screenshots
 
@@ -118,7 +117,7 @@ Pull requests also run a visual smoke pass in GitHub Actions:
 - Upload the PNGs as a workflow artifact
 - Post or update a pull request comment with a link to the screenshot artifact
 
-Current captures include desktop views for Home, Wardrobe, Register, and Lookbook, plus a mobile Settings capture that shows the sheet-style secondary controls.
+Current captures include desktop views for Home, Wardrobe, and Register, plus a mobile Settings capture that shows the sheet-style secondary controls.
 
 ## GitHub Pages Deployment
 

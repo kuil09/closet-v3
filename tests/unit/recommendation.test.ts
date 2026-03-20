@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { buildRecommendations, scoreItem } from "../../src/lib/recommendation/engine";
-import { seedItems, seedLookbooks } from "../../src/lib/db/seed";
+import { seedItems } from "../../src/lib/db/seed";
 import type { WeatherContext } from "../../src/lib/db/types";
 
 const mildWeather: WeatherContext = {
@@ -20,9 +20,9 @@ describe("recommendation engine", () => {
     expect(scoreItem(coat, mildWeather)).toBeGreaterThan(scoreItem(blazer, mildWeather));
   });
 
-  test("returns lookbook and item recommendations", () => {
-    const recommendations = buildRecommendations(seedItems, seedLookbooks, mildWeather);
-    expect(recommendations.some((entry) => entry.kind === "lookbook")).toBe(true);
-    expect(recommendations.some((entry) => entry.kind === "item")).toBe(true);
+  test("returns item recommendations only", () => {
+    const recommendations = buildRecommendations(seedItems, mildWeather);
+    expect(recommendations.length).toBeGreaterThan(0);
+    expect(recommendations.every((entry) => entry.kind === "item")).toBe(true);
   });
 });

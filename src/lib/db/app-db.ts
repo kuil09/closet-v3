@@ -1,20 +1,18 @@
 import Dexie, { type Table } from "dexie";
-import { seedItems, seedLookbooks } from "./seed";
-import type { ClosetItem, Lookbook, StoredImage, WeatherCacheEntry } from "./types";
+import { seedItems } from "./seed";
+import type { ClosetItem, StoredImage, WeatherCacheEntry } from "./types";
 
 export class AtelierDatabase extends Dexie {
   items!: Table<ClosetItem, string>;
   images!: Table<StoredImage, string>;
-  lookbooks!: Table<Lookbook, string>;
   preferences!: Table<{ key: string; value: unknown }, string>;
   weatherCache!: Table<WeatherCacheEntry, string>;
 
   constructor() {
     super("atelier-db");
-    this.version(1).stores({
+    this.version(2).stores({
       items: "id, status, category, favorite, updatedAt",
       images: "id, createdAt",
-      lookbooks: "id, updatedAt",
       preferences: "key",
       weatherCache: "id"
     });
@@ -34,9 +32,8 @@ export async function ensureSeedData() {
 }
 
 export async function importSampleData() {
-  await atelierDb.transaction("rw", atelierDb.items, atelierDb.lookbooks, async () => {
+  await atelierDb.transaction("rw", atelierDb.items, async () => {
     await atelierDb.items.bulkPut(seedItems);
-    await atelierDb.lookbooks.bulkPut(seedLookbooks);
   });
 
   localStorage.setItem(seedFlagKey, "true");
@@ -47,12 +44,10 @@ export async function clearAllProductData() {
     "rw",
     atelierDb.items,
     atelierDb.images,
-    atelierDb.lookbooks,
     atelierDb.weatherCache,
     async () => {
       await atelierDb.items.clear();
       await atelierDb.images.clear();
-      await atelierDb.lookbooks.clear();
       await atelierDb.weatherCache.clear();
     }
   );

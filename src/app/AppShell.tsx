@@ -10,7 +10,6 @@ const navItems = [
   { to: "/", key: "nav.home" as const, icon: "⌂" },
   { to: "/wardrobe", key: "nav.wardrobe" as const, icon: "▦" },
   { to: "/register", key: "nav.register" as const, icon: "+" },
-  { to: "/lookbook", key: "nav.lookbook" as const, icon: "✦" },
   { to: "/settings", key: "nav.settings" as const, icon: "⚙" }
 ];
 

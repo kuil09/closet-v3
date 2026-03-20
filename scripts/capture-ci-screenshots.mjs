@@ -26,19 +26,10 @@ const captures = [
     navLabel: "Register Item"
   },
   {
-    name: "lookbook-desktop",
-    description: "Lookbook maker canvas",
-    viewport: { width: 1440, height: 1080 },
-    navLabel: "Lookbook Maker"
-  },
-  {
     name: "settings-mobile",
     description: "Settings on mobile with sheet-based controls",
     viewport: { width: 430, height: 932 },
-    navLabel: "Settings",
-    afterLoad: async (page) => {
-      await page.getByRole("button", { name: /Weather settings/i }).click();
-    }
+    navLabel: "Settings"
   }
 ];
 

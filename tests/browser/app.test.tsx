@@ -3,7 +3,7 @@ import { act, fireEvent, render, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { App } from "../../src/app/App";
 import { atelierDb } from "../../src/lib/db/app-db";
-import { seedItems, seedLookbooks } from "../../src/lib/db/seed";
+import { seedItems } from "../../src/lib/db/seed";
 
 function mockEnvironment(options?: { fetchFails?: boolean; geolocationFails?: boolean }) {
   globalThis.fetch = mock(async () => {
@@ -89,18 +89,13 @@ describe("app flows", () => {
     expect(document.documentElement.dataset.theme).toBe("dark");
   });
 
-  test("opens the related pages from home summary cards", async () => {
+  test("opens the related wardrobe pages from home summary cards", async () => {
     const user = userEvent.setup();
     const view = renderAt("/");
 
     await view.findByText(/Total Pieces/i);
     await user.click(view.getByRole("button", { name: /Total Pieces/i }));
     await view.findByLabelText("Search wardrobe");
-
-    await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
-    await view.findByText(/Total Pieces/i);
-    await user.click(view.getByRole("button", { name: /Lookbooks/i }));
-    await view.findByRole("heading", { name: /Lookbook Maker/i });
 
     await user.click(view.getAllByRole("link", { name: /Home$/ })[0]);
     await view.findByText(/Total Pieces/i);
@@ -196,38 +191,6 @@ describe("app flows", () => {
     await waitFor(() => expect(view.getByText(/^18C$/i)).toBeTruthy());
     await user.click(view.getByRole("button", { name: /^Fahrenheit$/ }));
     await waitFor(() => expect(view.getByText(/^64F$/i)).toBeTruthy());
-  });
-
-  test("saves a new lookbook composition and shows it in saved boards", async () => {
-    const user = userEvent.setup();
-    const view = renderAt("/lookbook");
-
-    await view.findByDisplayValue("Autumn Redaction");
-    await user.click(view.getByText("New board"));
-    const titleInput = view.getByLabelText("Lookbook Maker");
-    await user.clear(titleInput);
-    await user.type(titleInput, "Studio Test");
-    await user.click(view.getByText("Add note"));
-    await user.click(view.getByRole("button", { name: /Closet drawer/i }));
-    await user.click(view.getByRole("button", { name: /Over-Sized Cashmere Coat/i }));
-    await user.click(view.getByText("Save lookbook"));
-    await user.click(view.getByRole("button", { name: /Saved boards/i }));
-    await waitFor(() => expect(view.getAllByText("Studio Test").length).toBeGreaterThan(0));
-  });
-
-  test("requires at least one garment before saving a lookbook", async () => {
-    const user = userEvent.setup();
-    const view = renderAt("/lookbook");
-
-    await view.findByDisplayValue("Autumn Redaction");
-    await user.click(view.getByText("New board"));
-    const titleInput = view.getByLabelText("Lookbook Maker");
-    await user.clear(titleInput);
-    await user.type(titleInput, "Text Only Board");
-    await user.click(view.getByText("Save lookbook"));
-
-    await view.findByText("Add at least one garment to save this lookbook.");
-    expect((await atelierDb.lookbooks.toArray()).some((entry) => entry.title === "Text Only Board")).toBe(false);
   });
 
   test("clears local data after confirmation", async () => {
@@ -358,13 +321,11 @@ describe("app flows", () => {
     await view.findByRole("button", { name: /^Clear local data$/ });
   });
 
-  test("opens a saved lookbook from the home gallery", async () => {
-    const user = userEvent.setup();
+  test("shows recent items on the home screen", async () => {
     await atelierDb.items.bulkPut(seedItems);
-    await atelierDb.lookbooks.bulkPut(seedLookbooks);
     const view = renderAt("/");
 
-    await user.click(await view.findByRole("button", { name: /Autumn Redaction/i }));
-    await view.findByDisplayValue("Autumn Redaction");
+    await view.findByText(/Fresh additions and drafts/i);
+    expect(view.getAllByRole("button", { name: /Total Pieces|Favorites/i }).length).toBe(2);
   });
 });

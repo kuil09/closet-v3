@@ -1,5 +1,4 @@
-import { getDisplayFontStack } from "../i18n/font-stacks";
-import type { ClosetItem, Lookbook, LookbookElement } from "./types";
+import type { ClosetItem } from "./types";
 
 const now = new Date().toISOString();
 
@@ -122,58 +121,6 @@ export const seedItems: ClosetItem[] = [
     favorite: false,
     styleNotes: "Draft entry for tailored evening looks.",
     metaAssets: [],
-    createdAt: now,
-    updatedAt: now
-  }
-];
-
-const seedLookbookElements: LookbookElement[] = [
-  {
-    id: "el_headline",
-    type: "headline",
-    position: { x: 50, y: 44 },
-    size: { width: 240, height: 92 },
-    rotation: 0,
-    zIndex: 1,
-    locked: false,
-    style: { color: "#5F5E5E", fontSize: 34, fontFamily: getDisplayFontStack("en"), fontWeight: 800 },
-    refId: null,
-    text: "AUTUMN\nREDACTION"
-  },
-  {
-    id: "el_coat",
-    type: "item",
-    position: { x: 240, y: 110 },
-    size: { width: 210, height: 280 },
-    rotation: -5,
-    zIndex: 2,
-    locked: false,
-    style: { borderRadius: 18 },
-    refId: "item_coat"
-  },
-  {
-    id: "el_shirt",
-    type: "item",
-    position: { x: 150, y: 310 },
-    size: { width: 160, height: 220 },
-    rotation: 4,
-    zIndex: 3,
-    locked: false,
-    style: { borderRadius: 18 },
-    refId: "item_shirt"
-  }
-];
-
-export const seedLookbooks: Lookbook[] = [
-  {
-    id: "look_autumn",
-    title: "Autumn Redaction",
-    description: "Curated for transitional weather and soft tailoring.",
-    backgroundStyle: "sand",
-    canvasSize: { width: 520, height: 680 },
-    elements: seedLookbookElements,
-    sourceItemIds: ["item_coat", "item_shirt"],
-    thumbnailImageId: null,
     createdAt: now,
     updatedAt: now
   }

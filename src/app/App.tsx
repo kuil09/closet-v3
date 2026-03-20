@@ -9,7 +9,6 @@ import { WardrobePage } from "../features/wardrobe/WardrobePage";
 import { AppShell } from "./AppShell";
 
 const RegisterPage = lazy(() => import("../features/register/RegisterPage").then((module) => ({ default: module.RegisterPage })));
-const LookbookPage = lazy(() => import("../features/lookbook/LookbookPage").then((module) => ({ default: module.LookbookPage })));
 const SettingsPage = lazy(() => import("../features/settings/SettingsPage").then((module) => ({ default: module.SettingsPage })));
 
 function RedirectBootstrap() {
@@ -93,14 +92,6 @@ export function App() {
               element={
                 <AppShell>
                   <RegisterPage />
-                </AppShell>
-              }
-            />
-            <Route
-              path="/lookbook"
-              element={
-                <AppShell>
-                  <LookbookPage />
                 </AppShell>
               }
             />

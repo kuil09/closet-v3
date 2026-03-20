@@ -4,7 +4,7 @@ import { messages } from "../../src/lib/i18n/messages";
 describe("i18n catalog", () => {
   test("returns translated Korean navigation labels", () => {
     expect(messages.ko["nav.home"]).toBe("홈");
-    expect(messages.ko["nav.lookbook"]).toBe("룩북 메이커");
+    expect(messages.ko["nav.settings"]).toBe("설정");
   });
 
   test("keeps English fallback-compatible keys for all locales", () => {

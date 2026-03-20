@@ -1,6 +1,5 @@
 import type {
   ClosetItem,
-  Lookbook,
   Recommendation,
   TemperatureBand,
   WeatherCondition,
@@ -52,7 +51,6 @@ export function scoreItem(item: ClosetItem, weather: WeatherContext | null): num
 
 export function buildRecommendations(
   items: ClosetItem[],
-  lookbooks: Lookbook[],
   weather: WeatherContext | null
 ): Recommendation[] {
   const activeItems = items.filter((item) => item.status !== "archived");
@@ -72,18 +70,5 @@ export function buildRecommendations(
     matchedTemperatureBands: tempBands.filter((band) => item.temperatureBand.includes(band))
   }));
 
-  const lookbookRecommendations = lookbooks.slice(0, 2).map<Recommendation>((lookbook) => ({
-    id: makeId("rec"),
-    kind: "lookbook",
-    itemIds: lookbook.sourceItemIds,
-    lookbookId: lookbook.id,
-    reason: weather
-      ? `Saved composition aligned with ${weather.condition} styling`
-      : "Saved composition from your gallery",
-    score: 60,
-    matchedWeatherTags: weatherMatch,
-    matchedTemperatureBands: tempBands
-  }));
-
-  return [...lookbookRecommendations, ...itemRecommendations];
+  return itemRecommendations;
 }

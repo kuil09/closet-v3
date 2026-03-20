@@ -8,7 +8,6 @@ export type UsageFrequency = "rarely" | "regularly" | "often";
 export type TemperatureBand = "freezing" | "cold" | "mild" | "warm" | "hot";
 export type WeatherCondition = "clear" | "cloudy" | "rain" | "snow" | "wind";
 export type MetaAssetType = "care" | "price_tag" | "receipt" | "extra";
-export type LookbookElementType = "item" | "headline" | "bodyText" | "shape";
 
 export interface MetaAsset {
   id: string;
@@ -55,42 +54,6 @@ export interface ClosetItem {
   lastWornAt?: string | null;
 }
 
-export interface LookbookElementStyle {
-  fill?: string;
-  color?: string;
-  fontSize?: number;
-  fontFamily?: string;
-  fontWeight?: number;
-  opacity?: number;
-  borderRadius?: number;
-}
-
-export interface LookbookElement {
-  id: string;
-  type: LookbookElementType;
-  position: { x: number; y: number };
-  size: { width: number; height: number };
-  rotation: number;
-  zIndex: number;
-  locked: boolean;
-  style: LookbookElementStyle;
-  refId: string | null;
-  text?: string;
-}
-
-export interface Lookbook {
-  id: string;
-  title: string;
-  description: string;
-  backgroundStyle: "paper" | "mist" | "sand" | "olive";
-  canvasSize: { width: number; height: number };
-  elements: LookbookElement[];
-  sourceItemIds: string[];
-  thumbnailImageId: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface WeatherContext {
   source: "auto" | "manual";
   locationName: string;
@@ -104,9 +67,8 @@ export interface WeatherContext {
 
 export interface Recommendation {
   id: string;
-  kind: "item" | "lookbook" | "outfit";
+  kind: "item";
   itemIds: string[];
-  lookbookId?: string;
   reason: string;
   score: number;
   matchedWeatherTags: WeatherCondition[];

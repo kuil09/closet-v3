@@ -1,5 +1,5 @@
 import { atelierDb } from "./app-db";
-import type { ClosetItem, Lookbook, StoredImage, WeatherContext } from "./types";
+import type { ClosetItem, StoredImage, WeatherContext } from "./types";
 
 export async function saveStoredImage(image: StoredImage): Promise<string> {
   await atelierDb.images.put(image);
@@ -22,10 +22,6 @@ export async function archiveItem(itemId: string, archived: boolean) {
     status: archived ? "archived" : "saved",
     updatedAt: new Date().toISOString()
   });
-}
-
-export async function saveLookbook(lookbook: Lookbook) {
-  await atelierDb.lookbooks.put(lookbook);
 }
 
 export async function saveWeatherContext(context: WeatherContext) {

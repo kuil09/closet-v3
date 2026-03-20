@@ -68,7 +68,6 @@ jobs:
           - Home dashboard (desktop)
           - Wardrobe catalog (desktop)
           - Register item (desktop)
-          - Lookbook maker (desktop)
           - Settings with mobile sheet controls
 
           Download the `visual-smoke-screenshots` artifact from this run to inspect the PNGs.
@@ -88,7 +87,6 @@ jobs:
               '- Home dashboard (desktop)',
               '- Wardrobe catalog (desktop)',
               '- Register item (desktop)',
-              '- Lookbook maker (desktop)',
               '- Settings with mobile sheet controls',
               '',
               artifactUrl
