@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useNavigate } from "react-router-dom";
 import { atelierDb } from "../../lib/db/app-db";
@@ -16,9 +16,37 @@ const seasonBands: Array<{ key: "winter" | "spring" | "summer" | "fall"; bands: 
 ];
 
 const weatherOrder: WeatherCondition[] = ["clear", "cloudy", "rain", "snow", "wind"];
+const categoryColors = ["#2C3331", "#7F6B4E", "#9A8F7F", "#B6ACA0", "#D7D2CA"];
+const seasonColors = ["#88A1B5", "#9BAE8A", "#D8A34A", "#94755B"];
+const weatherColors: Record<WeatherCondition, string> = {
+  clear: "#D8A34A",
+  cloudy: "#AAB1B6",
+  rain: "#6B88A8",
+  snow: "#D8E3EE",
+  wind: "#8E9489"
+};
 
 function hasAnyTemperatureBand(item: ClosetItem, bands: TemperatureBand[]) {
   return item.temperatureBand.some((band) => bands.includes(band));
+}
+
+function buildPieGradient(entries: Array<{ count: number; color: string }>) {
+  const visibleEntries = entries.filter((entry) => entry.count > 0);
+  const total = visibleEntries.reduce((sum, entry) => sum + entry.count, 0);
+
+  if (total === 0) {
+    return "conic-gradient(#D7D2CA 0% 100%)";
+  }
+
+  let cursor = 0;
+  return `conic-gradient(${visibleEntries
+    .map((entry) => {
+      const start = (cursor / total) * 100;
+      cursor += entry.count;
+      const end = (cursor / total) * 100;
+      return `${entry.color} ${start}% ${end}%`;
+    })
+    .join(", ")})`;
 }
 
 function CategoryIcon({ category }: { category: string }) {
@@ -134,6 +162,26 @@ function WeatherIcon({ condition }: { condition: WeatherCondition }) {
   }
 }
 
+function InsightPieChart({
+  label,
+  gradient,
+  children
+}: {
+  label: string;
+  gradient: string;
+  children?: ReactNode;
+}) {
+  return (
+    <div className="insight-pie-wrap">
+      <div className="insight-pie-chart" aria-label={label} role="img" style={{ background: gradient }}>
+        <span className="insight-pie-core" aria-hidden="true">
+          {children}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function HomePage() {
   const { t } = useI18n();
   const navigate = useNavigate();
@@ -184,9 +232,18 @@ export function HomePage() {
         .filter((entry) => entry.count > 0),
     [activeItems, t]
   );
-  const categoryPeak = Math.max(1, ...categoryStats.map((entry) => entry.count));
-  const categoryTotal = Math.max(1, categoryStats.reduce((sum, entry) => sum + entry.count, 0));
-  const conditionPeak = Math.max(1, ...seasonStats.map((entry) => entry.count), ...weatherStats.map((entry) => entry.count));
+  const categoryPieGradient = useMemo(
+    () => buildPieGradient(categoryStats.map((entry, index) => ({ count: entry.count, color: categoryColors[index % categoryColors.length] }))),
+    [categoryStats]
+  );
+  const seasonPieGradient = useMemo(
+    () => buildPieGradient(seasonStats.map((entry, index) => ({ count: entry.count, color: seasonColors[index % seasonColors.length] }))),
+    [seasonStats]
+  );
+  const weatherPieGradient = useMemo(
+    () => buildPieGradient(weatherStats.map((entry) => ({ count: entry.count, color: weatherColors[entry.condition] }))),
+    [weatherStats]
+  );
 
   return (
     <div className="page-stack">
@@ -209,32 +266,22 @@ export function HomePage() {
               <h3>{t("home.insightsCategoryTitle")}</h3>
             </div>
           </div>
-          <div className="insight-distribution" aria-hidden="true">
-            {categoryStats.map((entry) => (
-              <span
-                key={entry.label}
-                className="insight-distribution-segment"
-                style={{ width: `${(entry.count / categoryTotal) * 100}%` }}
-              />
-            ))}
-          </div>
-          <div className="metric-list metric-list-rich">
-            {categoryStats.map((entry) => (
-              <div key={entry.label} className="metric-row">
-                <div className="metric-leading">
-                  <span className="metric-icon-shell" aria-hidden="true">
+          <div className="insight-chart-panel">
+            <InsightPieChart label={t("home.insightsCategoryTitle")} gradient={categoryPieGradient} />
+            <div className="insight-legend">
+              {categoryStats.map((entry, index) => (
+                <div key={entry.label} className="insight-legend-item">
+                  <span
+                    className="insight-legend-icon"
+                    aria-hidden="true"
+                    style={{ color: categoryColors[index % categoryColors.length] }}
+                  >
                     <CategoryIcon category={entry.category} />
                   </span>
-                  <div className="metric-copy">
-                    <span>{entry.label}</span>
-                    <div className="metric-bar">
-                      <span className="metric-bar-fill" style={{ width: `${(entry.count / categoryPeak) * 100}%` }} />
-                    </div>
-                  </div>
+                  <span>{entry.label}</span>
                 </div>
-                <strong>{entry.count}</strong>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </article>
 
@@ -245,45 +292,43 @@ export function HomePage() {
               <h3>{t("home.insightsConditionTitle")}</h3>
             </div>
           </div>
-          <div className="condition-insight-grid">
-            <div className="metric-group">
+          <div className="condition-pie-grid">
+            <div className="insight-subpanel">
               <span className="section-tag">{t("home.insightsSeason")}</span>
-              <div className="metric-list metric-list-rich">
-                {seasonStats.map((entry) => (
-                  <div key={entry.key} className="metric-row">
-                    <div className="metric-leading">
-                      <span className="metric-icon-shell" aria-hidden="true">
-                        <SeasonIcon season={entry.key} />
-                      </span>
-                      <div className="metric-copy">
-                        <span>{entry.label}</span>
-                        <div className="metric-bar">
-                          <span className="metric-bar-fill" style={{ width: `${(entry.count / conditionPeak) * 100}%` }} />
-                        </div>
-                      </div>
-                    </div>
-                    <strong>{entry.count}</strong>
+              <InsightPieChart label={t("home.insightsSeason")} gradient={seasonPieGradient}>
+                <span className="insight-pie-center-label">{t("home.insightsSeason")}</span>
+              </InsightPieChart>
+              <div className="insight-legend">
+                {seasonStats.map((entry, index) => (
+                  <div key={entry.key} className="insight-legend-item">
+                    <span
+                      className="insight-legend-icon"
+                      aria-hidden="true"
+                      style={{ color: seasonColors[index % seasonColors.length] }}
+                    >
+                      <SeasonIcon season={entry.key} />
+                    </span>
+                    <span>{entry.label}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="metric-group">
+            <div className="insight-subpanel">
               <span className="section-tag">{t("home.insightsWeather")}</span>
-              <div className="metric-list metric-list-rich">
+              <InsightPieChart label={t("home.insightsWeather")} gradient={weatherPieGradient}>
+                <span className="insight-pie-center-label">{t("home.insightsWeather")}</span>
+              </InsightPieChart>
+              <div className="insight-legend">
                 {weatherStats.map((entry) => (
-                  <div key={entry.condition} className="metric-row">
-                    <div className="metric-leading">
-                      <span className="metric-icon-shell" aria-hidden="true">
-                        <WeatherIcon condition={entry.condition} />
-                      </span>
-                      <div className="metric-copy">
-                        <span>{entry.label}</span>
-                        <div className="metric-bar">
-                          <span className="metric-bar-fill" style={{ width: `${(entry.count / conditionPeak) * 100}%` }} />
-                        </div>
-                      </div>
-                    </div>
-                    <strong>{entry.count}</strong>
+                  <div key={entry.condition} className="insight-legend-item">
+                    <span
+                      className="insight-legend-icon"
+                      aria-hidden="true"
+                      style={{ color: weatherColors[entry.condition] }}
+                    >
+                      <WeatherIcon condition={entry.condition} />
+                    </span>
+                    <span>{entry.label}</span>
                   </div>
                 ))}
               </div>

@@ -407,6 +407,7 @@ describe("app flows", () => {
   test("shows recent items on the home screen", async () => {
     await atelierDb.items.bulkPut(seedItems);
     const view = renderAt("/");
+    const activeSeedCount = seedItems.filter((item) => item.status !== "archived").length;
 
     await view.findByText(/Fresh additions and drafts/i);
     expect(view.getAllByRole("button", { name: /Total Pieces|Favorites/i }).length).toBe(2);
@@ -416,9 +417,10 @@ describe("app flows", () => {
     expect(conditionCard).toBeTruthy();
     await waitFor(() => expect(categoryCard?.textContent).toContain("Outerwear"));
     await waitFor(() => expect(conditionCard?.textContent).toContain("Winter"));
-    expect(categoryCard?.querySelectorAll(".insight-distribution-segment").length).toBeGreaterThan(0);
-    expect(conditionCard?.querySelectorAll(".metric-icon-shell").length).toBeGreaterThan(0);
-    expect(view.getAllByText(/^5$/).length).toBeGreaterThan(0);
+    expect(categoryCard?.querySelectorAll(".insight-pie-chart").length).toBeGreaterThan(0);
+    expect(conditionCard?.querySelectorAll(".insight-pie-chart").length).toBeGreaterThan(1);
+    expect(conditionCard?.querySelectorAll(".insight-legend-item").length).toBeGreaterThan(0);
+    expect(view.getByText(String(activeSeedCount))).toBeTruthy();
     const firstRecentCard = view.container.querySelector(".item-card .item-image-wrap");
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeGreaterThan(0);
     expect(firstRecentCard?.querySelectorAll(".item-palette-dot").length).toBeLessThanOrEqual(3);
