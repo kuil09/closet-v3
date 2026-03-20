@@ -320,6 +320,9 @@ button {
 .wardrobe-filter-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  position: sticky;
+  top: 6.25rem;
+  z-index: 2;
   align-items: stretch;
   gap: 1rem;
 }
@@ -1340,6 +1343,10 @@ button {
 
   .topbar {
     padding: 1rem;
+  }
+
+  .wardrobe-filter-panel {
+    top: 4.9rem;
   }
 
   .topbar-controls {
