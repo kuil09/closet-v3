@@ -529,8 +529,7 @@ describe("app flows", () => {
 
     await view.findByText("Palette range");
     expect(view.getByLabelText("Sort by")).toBeTruthy();
-    expect(view.getByRole("button", { name: /^Descending$/ })).toBeTruthy();
-    expect(view.getByRole("button", { name: /^Ascending$/ })).toBeTruthy();
+    expect(view.getByRole("button", { name: /^Order: Descending$/ })).toBeTruthy();
     expect(view.queryByLabelText("Search wardrobe")).toBeNull();
     expect(view.queryByLabelText("Category")).toBeNull();
     expect(view.queryByRole("button", { name: /^Show archived$/ })).toBeNull();
@@ -594,20 +593,22 @@ describe("app flows", () => {
     await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe(visibleSeedItems.at(-1)?.name ?? ""));
 
     await user.selectOptions(view.getByLabelText("Sort by"), "name");
-    await user.click(view.getByRole("button", { name: /^Ascending$/ }));
+    await user.click(view.getByRole("button", { name: /^Order: Descending$/ }));
     await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedNameAsc));
+    expect(view.getByRole("button", { name: /^Order: Ascending$/ }).getAttribute("aria-pressed")).toBe("true");
 
-    await user.click(view.getByRole("button", { name: /^Descending$/ }));
+    await user.click(view.getByRole("button", { name: /^Order: Ascending$/ }));
     await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedNameDesc));
+    expect(view.getByRole("button", { name: /^Order: Descending$/ }).getAttribute("aria-pressed")).toBe("false");
 
     await user.selectOptions(view.getByLabelText("Sort by"), "updated");
-    await user.click(view.getByRole("button", { name: /^Ascending$/ }));
+    await user.click(view.getByRole("button", { name: /^Order: Descending$/ }));
     await waitFor(() => expect(getWardrobeCardTitles(view.container)[0]).toBe(visibleSeedItems[0]?.name ?? ""));
 
     await user.selectOptions(view.getByLabelText("Sort by"), "color");
     await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedColorAsc));
 
-    await user.click(view.getByRole("button", { name: /^Descending$/ }));
+    await user.click(view.getByRole("button", { name: /^Order: Ascending$/ }));
     await waitFor(() => expect(getWardrobeCardTitles(view.container).slice(0, 3)).toEqual(expectedColorDesc));
   });
 

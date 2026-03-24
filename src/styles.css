@@ -565,8 +565,7 @@ button {
 .wardrobe-toolbar,
 .wardrobe-toolbar-copy,
 .wardrobe-primary-controls,
-.wardrobe-sort-row,
-.wardrobe-sort-toggle {
+.wardrobe-sort-row {
   display: grid;
 }
 
@@ -610,13 +609,9 @@ button {
 }
 
 .wardrobe-sort-toggle {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem;
-}
-
-.wardrobe-sort-toggle .chip {
-  width: 100%;
-  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  justify-self: start;
 }
 
 .wardrobe-quick-controls,

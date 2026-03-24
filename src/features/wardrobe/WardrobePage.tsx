@@ -206,6 +206,12 @@ export function WardrobePage() {
   ]);
   const lookbookItems = filtered.slice(0, MAX_LOOKBOOK_ITEMS);
   const lookbookTitleValue = lookbookTitle.trim() || t("wardrobe.lookbookDefaultTitle");
+  const sortDirectionLabel = t(sortDirection === "asc" ? "wardrobe.sortAscending" : "wardrobe.sortDescending");
+  const sortDirectionToggleLabel = `${t("wardrobe.sortDirection")}: ${sortDirectionLabel}`;
+
+  function toggleSortDirection() {
+    setSortDirection((current) => (current === "asc" ? "desc" : "asc"));
+  }
 
   async function handleLookbookExport() {
     if (lookbookItems.length === 0 || isExportingLookbook) {
@@ -308,24 +314,16 @@ export function WardrobePage() {
             </label>
             <div className="wardrobe-quick-field wardrobe-quick-field-direction">
               <span>{t("wardrobe.sortDirection")}</span>
-              <div className="wardrobe-sort-toggle" role="group" aria-label={t("wardrobe.sortDirection")}>
-                <button
-                  className={`chip ${sortDirection === "desc" ? "is-active" : ""}`}
-                  type="button"
-                  aria-pressed={sortDirection === "desc"}
-                  onClick={() => setSortDirection("desc")}
-                >
-                  {t("wardrobe.sortDescending")}
-                </button>
-                <button
-                  className={`chip ${sortDirection === "asc" ? "is-active" : ""}`}
-                  type="button"
-                  aria-pressed={sortDirection === "asc"}
-                  onClick={() => setSortDirection("asc")}
-                >
-                  {t("wardrobe.sortAscending")}
-                </button>
-              </div>
+              <button
+                className="card-icon-button wardrobe-sort-toggle"
+                type="button"
+                aria-label={sortDirectionToggleLabel}
+                aria-pressed={sortDirection === "asc"}
+                title={sortDirectionToggleLabel}
+                onClick={toggleSortDirection}
+              >
+                <SortDirectionGlyph direction={sortDirection} />
+              </button>
             </div>
           </div>
         </div>
@@ -641,6 +639,19 @@ function EditGlyph() {
     <svg aria-hidden="true" viewBox="0 0 20 20" className="card-action-glyph" fill="none">
       <path className="card-action-glyph-stroke" d="M4.5 13.8 13.8 4.5l1.7 1.7-9.3 9.3-2.7.9z" />
       <path className="card-action-glyph-stroke" d="M11.9 4.9 14.8 7.8" />
+    </svg>
+  );
+}
+
+function SortDirectionGlyph({ direction }: { direction: SortDirection }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 20 20" className="card-action-glyph" fill="none">
+      <path className="card-action-glyph-stroke" d="M10 4.5v11" />
+      {direction === "asc" ? (
+        <path className="card-action-glyph-stroke" d="M6.8 7.7 10 4.5l3.2 3.2" />
+      ) : (
+        <path className="card-action-glyph-stroke" d="M6.8 12.3 10 15.5l3.2-3.2" />
+      )}
     </svg>
   );
 }
